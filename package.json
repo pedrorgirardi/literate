@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "server": "npx shadow-cljs server",
     "watch": "npx shadow-cljs watch :main"
   },
   "dependencies": {
