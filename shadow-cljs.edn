@@ -1,0 +1,15 @@
+{:deps {:aliases [:dev]}
+
+ :nrepl {:port 9000}
+
+ :jvm-opts ["-Xmx2G"]
+
+ :dev-http {8000 "resources/public"}
+
+ :builds
+ {:main
+  {:target :browser
+   :output-dir "resources/public/js/main"
+   :asset-path "/js/main"
+   :modules {:main {:init-fn literate.core/init}}
+   :devtools {:after-load literate.core/init}}}}

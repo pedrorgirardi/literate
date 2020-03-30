@@ -1,0 +1,15 @@
+{
+  "name": "literate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "watch": "npx shadow-cljs watch :main"
+  },
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "shadow-cljs": "^2.8.94"
+  }
+}
