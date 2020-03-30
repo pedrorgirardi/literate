@@ -2,7 +2,7 @@
   (:require [rum.core :as rum :refer [defc]]))
 
 (defc App []
-  [:span "Literate"])
+  [:span.text-3xl "Literate"])
 
 (defn ^:export init []
-  (rum/mount (App) js/document.body))
+  (rum/mount (App) (.getElementById js/document "app")))
