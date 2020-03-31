@@ -7,5 +7,8 @@
 
   (server)
 
+  (require '[ring.middleware.anti-forgery :as anti-forgery])
+
+  (force anti-forgery/*anti-forgery-token*)
 
   )

@@ -2,7 +2,9 @@
 
  :deps
  {org.clojure/clojure {:mvn/version "1.10.1"}
-  rum {:mvn/version "0.11.4" :exclusions [cljsjs/react cljsjs/react-dom]}}
+  org.clojure/core.async {:mvn/version "1.0.567"}
+  rum {:mvn/version "0.11.4" :exclusions [cljsjs/react cljsjs/react-dom]}
+  com.taoensso/sente {:mvn/version "1.15.0"}}
 
  :aliases
  {:dev
@@ -13,8 +15,7 @@
                 ring/ring-core {:mvn/version "1.8.0"}
                 ring/ring-defaults {:mvn/version "0.3.2"}
                 http-kit {:mvn/version "2.3.0"}
-                compojure {:mvn/version "1.6.1"}
-                com.taoensso/sente {:mvn/version "1.15.0"}}}
+                compojure {:mvn/version "1.6.1"}}}
 
   :test
   {:extra-paths ["src/test/clojure" "src/test/resources"]}
