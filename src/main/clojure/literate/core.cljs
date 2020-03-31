@@ -74,20 +74,21 @@
                                                                   :type "quantitative"}}}}]))
 
 (defc App < rum/reactive []
-  (into [:div.flex.flex-col.p-10.rounded
+  (into [:div.flex.flex-col.p-10
 
          [:span.text-lg.text-gray-700.mb-10
           {:style {:font-family "Cinzel"}}
           "Literate"]]
 
         (for [cell (rum/react state-ref)]
-          [:div.relative.flex.bg-white.mb-10.shadow
+          [:div
 
-           ;; Literate type
-           ;;[:span.absolute.top-0.mt-3.right-0.mr-3.text-xs.tracking-wider.uppercase.text-gray-500
-           ;; (name (:literate/type cell))]
+           [:div.flex.justify-end
+            [:span.font-mono.font-semibold.text-xs.uppercase.text-gray-600.bg-blue-100.rounded-t.py-1.px-3
+             (name (:literate/type cell))]]
 
-           (render cell)])))
+           [:div.flex.bg-white.mb-10.shadow
+            (render cell)]])))
 
 (defn ^:export init []
   (rum/mount (App) (.getElementById js/document "app")))
