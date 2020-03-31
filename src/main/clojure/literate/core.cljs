@@ -2,8 +2,6 @@
   (:require [rum.core :as rum :refer [defc]]
             ["vega-embed" :default vega-embed]))
 
-(defmulti render :literate/type)
-
 (defc Code [code]
   [:code.p-3.bg-yellow-100.rounded code])
 
@@ -15,6 +13,12 @@
   [vega-lite-spec]
   [:div.w-screen])
 
+
+;; ---
+
+
+(defmulti render :literate/type)
+
 (defmethod render :literate.type/code
   [{:literate/keys [code]}]
   (Code code))
@@ -22,6 +26,11 @@
 (defmethod render :literate.type/vega-lite
   [{:literate/keys [vega-lite-spec]}]
   (VegaLite vega-lite-spec))
+
+
+;; ---
+
+
 
 (def state-ref (atom [#:literate {:type :literate.type/code
                                   :code "(f x)"}
