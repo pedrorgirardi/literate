@@ -94,15 +94,15 @@
 (defc App < rum/reactive []
   (into [:div.flex.flex-col.p-10
 
-         [:span.fixed.top-0.left-0.text-lg.text-gray-700.px-5.py-2
+         [:span.absolute.top-0.left-0.text-lg.text-gray-700.px-5.py-2
           {:style {:font-family "Cinzel"}}
           "Literate"]]
 
         (for [cell (rum/react state-ref)]
           [:div.shadow.mb-10
 
-           [:div.flex.justify-end.bg-gray-200.border-b-2.border-gray-200
-            [:span.font-mono.font-semibold.text-xs.uppercase.text-gray-600.rounded-t.py-1.px-3
+           [:div.flex.bg-teal-600
+            [:span.font-mono.font-semibold.text-xs.uppercase.text-white.rounded-t.py-1.px-3
              (name (:literate/type cell))]]
 
            [:div.flex.bg-white
