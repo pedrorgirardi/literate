@@ -46,7 +46,12 @@
                                                                   :type "quantitative"}}}}]))
 
 (defc App < rum/reactive []
-  (into [:div.flex.flex-col.p-10.rounded]
+  (into [:div.flex.flex-col.p-10.rounded
+
+         [:span.text-2xl.text-yellow-600.mb-10
+          {:style {:font-family "Cinzel"}}
+          "Literate"]]
+
         (for [cell (rum/react state-ref)]
           [:div.relative.flex.bg-gray-100.p-10.mb-10.shadow
            ;; Cell type
