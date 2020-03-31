@@ -76,7 +76,7 @@
 (defc App < rum/reactive []
   (into [:div.flex.flex-col.p-10
 
-         [:span.text-lg.text-gray-700.mb-10
+         [:span.fixed.top-0.left-0.text-lg.text-gray-700.px-5.py-2
           {:style {:font-family "Cinzel"}}
           "Literate"]]
 
