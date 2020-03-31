@@ -48,7 +48,7 @@
 (defc App < rum/reactive []
   (into [:div.flex.flex-col.p-10.rounded]
         (for [cell (rum/react state-ref)]
-          [:div.relative.flex.bg-gray-100.p-10.mb-10
+          [:div.relative.flex.bg-gray-100.p-10.mb-10.shadow
            ;; Cell type
            [:span.absolute.top-0.mt-3.right-0.mr-3.text-xs.tracking-wider.uppercase.text-gray-500
             (name (:literate/type cell))]
