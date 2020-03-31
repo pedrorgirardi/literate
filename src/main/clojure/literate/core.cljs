@@ -7,7 +7,8 @@
 (defc Code < {:did-mount (fn [state]
                            (let [[code] (:rum/args state)]
                              (codemirror (rum/dom-node state) #js {"value" code
-                                                                   "mode" "clojure"}))
+                                                                   "mode" "clojure"
+                                                                   "lineNumbers" true}))
 
                            state)}
   [code]
