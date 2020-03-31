@@ -13,7 +13,7 @@
 
                                state)}
   [vega-lite-spec]
-  [:div])
+  [:div.w-screen])
 
 (defmethod render :literate.type/code
   [{:literate/keys [code]}]
