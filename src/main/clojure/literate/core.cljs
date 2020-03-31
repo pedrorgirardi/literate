@@ -1,9 +1,17 @@
 (ns literate.core
   (:require [rum.core :as rum :refer [defc]]
-            ["vega-embed" :default vega-embed]))
+            ["vega-embed" :default vega-embed]
+            ["codemirror" :as codemirror]
+            ["codemirror/mode/clojure/clojure"]))
 
-(defc Code [code]
-  [:code.p-3.bg-yellow-100.rounded code])
+(defc Code < {:did-mount (fn [state]
+                           (let [[code] (:rum/args state)]
+                             (codemirror (rum/dom-node state) #js {"value" code
+                                                                   "mode" "clojure"}))
+
+                           state)}
+  [code]
+  [:div.w-screen])
 
 (defc VegaLite < {:did-mount (fn [state]
                                (let [[vega-lite-spec] (:rum/args state)]
@@ -33,7 +41,7 @@
 
 
 (def state-ref (atom [#:literate {:type :literate.type/code
-                                  :code "(f x)"}
+                                  :code "(map inc [1 2 3])\n\n{:x 1}\n\n[1 2 3]\n\n(def n 1)"}
 
                       #:literate {:type :literate.type/vega-lite
                                   :vega-lite-spec {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
