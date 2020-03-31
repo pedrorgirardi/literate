@@ -36,7 +36,7 @@
                                   :code "(f x)"}
 
                       #:literate {:type :literate.type/vega-lite
-                                  :vega-lite-spec {"$schema" "https://vega.github.io/schema/vega-lite/v2.0.json"
+                                  :vega-lite-spec {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
                                                    :description "A simple bar chart with embedded data."
                                                    :data {:values
                                                           [{:a "A" :b 28}
@@ -52,6 +52,16 @@
                                                    :encoding {:x {:field "a"
                                                                   :type "ordinal"}
                                                               :y {:field "b"
+                                                                  :type "quantitative"}}}}
+
+                      #:literate {:type :literate.type/vega-lite
+                                  :vega-lite-spec {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
+                                                   :data {:url "https://vega.github.io/editor/data/movies.json"}
+                                                   :mark "bar"
+                                                   :encoding {:x {:field "IMDB_Rating"
+                                                                  :type "quantitative"
+                                                                  :bin true}
+                                                              :y {:aggregate "count"
                                                                   :type "quantitative"}}}}]))
 
 (defc App < rum/reactive []
