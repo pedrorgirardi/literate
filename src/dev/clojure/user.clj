@@ -1,7 +1,11 @@
-(ns user)
+(ns user
+  (:require [literate.server :as server]))
 
 (comment
 
-  (require '[shadow.cljs.devtools.api :as shadow])
+  (def server (server/run-server))
+
+  (server)
+
 
   )
