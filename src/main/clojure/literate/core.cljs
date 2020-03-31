@@ -20,7 +20,7 @@
 
                                state)}
   [vega-lite-spec]
-  [:div.w-screen])
+  [:div.w-screen.m-2])
 
 
 ;; ---
@@ -81,10 +81,11 @@
           "Literate"]]
 
         (for [cell (rum/react state-ref)]
-          [:div.relative.flex.bg-white.p-10.mb-10.shadow.rounded
-           ;; Cell type
-           [:span.absolute.top-0.mt-3.right-0.mr-3.text-xs.tracking-wider.uppercase.text-gray-500
-            (name (:literate/type cell))]
+          [:div.relative.flex.bg-white.mb-10.shadow
+
+           ;; Literate type
+           ;;[:span.absolute.top-0.mt-3.right-0.mr-3.text-xs.tracking-wider.uppercase.text-gray-500
+           ;; (name (:literate/type cell))]
 
            (render cell)])))
 
