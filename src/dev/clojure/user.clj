@@ -1,14 +1,11 @@
 (ns user
-  (:require [literate.server :as server]))
+  (:require [clojure.tools.namespace.repl :refer [refresh]]
+            [literate.server :as server]))
 
 (comment
 
+  (refresh)
+
   (def server (server/run-server))
 
-  (server)
-
-  (require '[ring.middleware.anti-forgery :as anti-forgery])
-
-  (force anti-forgery/*anti-forgery-token*)
-
-  )
+  (server))
