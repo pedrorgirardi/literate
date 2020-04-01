@@ -29,7 +29,7 @@
                            (let [[code] (:rum/args state)]
                              (codemirror (rum/dom-node state) #js {"value" code
                                                                    "mode" "clojure"
-                                                                   "lineNumbers" true}))
+                                                                   "lineNumbers" false}))
 
                            state)}
   [code]
@@ -41,7 +41,7 @@
 
                                state)}
   [vega-lite-spec]
-  [:div.w-screen.m-2])
+  [:div.w-screen])
 
 
 ;; ---
@@ -102,13 +102,13 @@
           "Literate"]]
 
         (for [cell (rum/react state-ref)]
-          [:div.shadow.mb-10.rounded
+          [:div.shadow.mb-6.rounded
 
-           [:div.flex.bg-gray-600.rounded-t
-            [:span.font-mono.font-semibold.text-xs.uppercase.text-white.rounded-t.py-1.px-3
+           [:div.flex.rounded-t.border-b-2
+            [:span.font-mono.font-semibold.text-xs.uppercase.text-black.rounded-t.py-1.px-3
              (name (:literate/type cell))]]
 
-           [:div.flex.bg-white.rounded-b
+           [:div.flex.bg-white.p-2.rounded-b
             (render cell)]])))
 
 (defn ^:export init []
