@@ -8,13 +8,16 @@
             ["codemirror/mode/clojure/clojure"]))
 
 
-(defonce state-ref (atom {:literate/literates []}))
+(defonce state-ref (atom {:literate/literates {}}))
 
 (defn literates [state]
-  (:literate/literates state))
+  (vals (:literate/literates state)))
 
-(defn add-literate [state literate]
-  (update state :literate/literates conj literate))
+(defn add-literate [state {:literate/keys [uuid] :as literate}]
+  (assoc-in state [:literate/literates uuid] literate))
+
+(defn remove-literate [state uuid]
+  (update state :literate/literates dissoc uuid))
 
 
 ;; ---
@@ -82,20 +85,18 @@
           {:style {:font-family "Cinzel"}}
           "Literate"]]
 
-        (map-indexed
-          (fn [index literate]
-            [:div.shadow.mb-6.rounded
+        (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
+          [:div.shadow.mb-6.rounded
 
-             [:div.flex.items-center.justify-between.rounded-t.border-b-2.px-3.py-1
-              [:span.font-mono.font-semibold.text-xs.uppercase.text-black.rounded-t
-               (name (:literate/type literate))]
+           [:div.flex.items-center.justify-between.rounded-t.border-b-2.px-3.py-1
+            [:span.font-mono.font-semibold.text-xs.uppercase.text-black.rounded-t
+             (name (:literate/type literate))]
 
-              [:i.zmdi.zmdi-close.text-gray-500.hover:text-red-700.cursor-pointer
-               {:on-click #(js/console.log index)}]]
+            [:i.zmdi.zmdi-close.text-gray-500.hover:text-red-700.cursor-pointer
+             {:on-click #(swap! state-ref remove-literate uuid)}]]
 
-             [:div.flex.bg-white.p-2.rounded-b
-              (render literate)]])
-          (literates (rum/react state-ref)))))
+           [:div.flex.bg-white.p-2.rounded-b
+            (render literate)]])))
 
 
 (defn handler [{:keys [?data]}]
