@@ -8,6 +8,18 @@
             ["codemirror/mode/clojure/clojure"]))
 
 
+(defonce state-ref (atom {:literate/literates []}))
+
+(defn literates [state]
+  (:literate/literates state))
+
+(defn add-literate [state literate]
+  (update state :literate/literates conj literate))
+
+
+;; ---
+
+
 (let [token (when-let [el (.getElementById js/document "sente-csrf-token")]
               (.getAttribute el "data-csrf-token"))
 
@@ -63,8 +75,6 @@
 ;; ---
 
 
-(defonce state-ref (atom []))
-
 (defc App < rum/reactive []
   (into [:div.flex.flex-col.p-10
 
@@ -72,21 +82,21 @@
           {:style {:font-family "Cinzel"}}
           "Literate"]]
 
-        (for [cell (rum/react state-ref)]
+        (for [literate (literates (rum/react state-ref))]
           [:div.shadow.mb-6.rounded
 
            [:div.flex.rounded-t.border-b-2
             [:span.font-mono.font-semibold.text-xs.uppercase.text-black.rounded-t.py-1.px-3
-             (name (:literate/type cell))]]
+             (name (:literate/type literate))]]
 
            [:div.flex.bg-white.p-2.rounded-b
-            (render cell)]])))
+            (render literate)]])))
 
 
 (defn handler [{:keys [?data]}]
   (let [[event data] ?data]
     (when (= :literate/literate event)
-      (swap! state-ref #(conj % data)))))
+      (swap! state-ref add-literate data))))
 
 
 (defn ^:dev/before-load stop-sente-router []
