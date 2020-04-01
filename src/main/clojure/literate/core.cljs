@@ -21,6 +21,8 @@
   (def chsk-send! send-fn)
   (def chsk-state state))
 
+(def sente-router-ref (atom (fn [] nil)))
+
 
 ;; ---
 
@@ -61,38 +63,7 @@
 ;; ---
 
 
-
-(def state-ref (atom [#:literate {:type :literate.type/code
-                                  :code "(map inc [1 2 3])\n\n{:x 1}\n\n[1 2 3]\n\n(def n 1)"}
-
-                      #:literate {:type :literate.type/vega-lite
-                                  :vega-lite-spec {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-                                                   :description "A simple bar chart with embedded data."
-                                                   :data {:values
-                                                          [{:a "A" :b 28}
-                                                           {:a "B" :b 55}
-                                                           {:a "C" :b 43}
-                                                           {:a "D" :b 91}
-                                                           {:a "E" :b 81}
-                                                           {:a "F" :b 53}
-                                                           {:a "G" :b 19}
-                                                           {:a "H" :b 87}
-                                                           {:a "I" :b 52}]}
-                                                   :mark "bar"
-                                                   :encoding {:x {:field "a"
-                                                                  :type "ordinal"}
-                                                              :y {:field "b"
-                                                                  :type "quantitative"}}}}
-
-                      #:literate {:type :literate.type/vega-lite
-                                  :vega-lite-spec {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-                                                   :data {:url "https://vega.github.io/editor/data/movies.json"}
-                                                   :mark "bar"
-                                                   :encoding {:x {:field "IMDB_Rating"
-                                                                  :type "quantitative"
-                                                                  :bin true}
-                                                              :y {:aggregate "count"
-                                                                  :type "quantitative"}}}}]))
+(defonce state-ref (atom []))
 
 (defc App < rum/reactive []
   (into [:div.flex.flex-col.p-10
@@ -111,8 +82,17 @@
            [:div.flex.bg-white.p-2.rounded-b
             (render cell)]])))
 
+
+(defn handler [{:keys [?data]}]
+  (let [[event data] ?data]
+    (when (= :literate/literate event)
+      (swap! state-ref #(conj % data)))))
+
+
+(defn ^:dev/before-load stop-sente-router []
+  (@sente-router-ref))
+
 (defn ^:export init []
-  (sente/start-client-chsk-router! ch-chsk (fn [message]
-                                             (js/console.log (select-keys message [:id :event :?data]))))
+  (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler))
 
   (rum/mount (App) (.getElementById js/document "app")))
