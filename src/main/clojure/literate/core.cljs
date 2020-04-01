@@ -102,13 +102,13 @@
           "Literate"]]
 
         (for [cell (rum/react state-ref)]
-          [:div.shadow.mb-10
+          [:div.shadow.mb-10.rounded
 
-           [:div.flex.bg-teal-600
+           [:div.flex.bg-gray-600.rounded-t
             [:span.font-mono.font-semibold.text-xs.uppercase.text-white.rounded-t.py-1.px-3
              (name (:literate/type cell))]]
 
-           [:div.flex.bg-white
+           [:div.flex.bg-white.rounded-b
             (render cell)]])))
 
 (defn ^:export init []

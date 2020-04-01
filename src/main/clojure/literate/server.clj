@@ -27,7 +27,7 @@
     (page/include-css "https://fonts.googleapis.com/css2?family=Cinzel&display=swap")
     (page/include-css "css/codemirror.css")
 
-    [:body.bg-orange-100
+    [:body.bg-gray-100
      [:div#sente-csrf-token {:data-csrf-token (:anti-forgery-token req)}]
 
      [:div#app.container.mx-auto.h-screen]
