@@ -41,6 +41,13 @@
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
 
-(defn run-server []
-  (http-kit/run-server (wrap-defaults app site-defaults) {:port 8008}))
+(defn run-server
+  "Start Literate HTTP server (default port is 8090).
+
+   Returns `(fn [& {:keys [timeout] :or {timeout 100}}])`
+   which you can call to stop the server.
+
+   `options` are the same as org.httpkit.server/run-server."
+  [& [options]]
+  (http-kit/run-server (wrap-defaults app site-defaults) options))
 

@@ -4,8 +4,10 @@
 
 (comment
 
-  (refresh)
+  (def stop-server (server/run-server))
 
-  (def server (server/run-server))
+  (do
+    (stop-server)
+    (refresh))
 
-  (server))
+  )
