@@ -112,4 +112,7 @@
             (render cell)]])))
 
 (defn ^:export init []
+  (sente/start-client-chsk-router! ch-chsk (fn [message]
+                                             (js/console.log (select-keys message [:id :event :?data]))))
+
   (rum/mount (App) (.getElementById js/document "app")))

@@ -10,4 +10,10 @@
     (stop-server)
     (refresh))
 
+
+  @server/connected-uids
+
+  (doseq [uid (:any @server/connected-uids)]
+    (server/chsk-send! uid [:literate/!send "Hello"]))
+
   )
