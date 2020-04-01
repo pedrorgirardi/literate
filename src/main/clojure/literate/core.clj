@@ -1,0 +1,14 @@
+(ns literate.core
+  (:require [literate.server :as server]))
+
+(defn vega-lite [vega-lite-spec]
+  #:literate {:type :literate.type/vega-lite
+              :vega-lite-spec vega-lite-spec})
+
+(defn code [form]
+  #:literate {:type :literate.type/code
+              :code (str form)})
+
+(defn present [literate]
+  (doseq [uid (:any @server/connected-uids)]
+    (server/chsk-send! uid [:literate/literate literate])))
