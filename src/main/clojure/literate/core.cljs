@@ -82,15 +82,20 @@
           {:style {:font-family "Cinzel"}}
           "Literate"]]
 
-        (for [literate (literates (rum/react state-ref))]
-          [:div.shadow.mb-6.rounded
+        (map-indexed
+          (fn [index literate]
+            [:div.shadow.mb-6.rounded
 
-           [:div.flex.rounded-t.border-b-2
-            [:span.font-mono.font-semibold.text-xs.uppercase.text-black.rounded-t.py-1.px-3
-             (name (:literate/type literate))]]
+             [:div.flex.items-center.justify-between.rounded-t.border-b-2.px-3.py-1
+              [:span.font-mono.font-semibold.text-xs.uppercase.text-black.rounded-t
+               (name (:literate/type literate))]
 
-           [:div.flex.bg-white.p-2.rounded-b
-            (render literate)]])))
+              [:i.zmdi.zmdi-close.text-gray-500.hover:text-red-700.cursor-pointer
+               {:on-click #(js/console.log index)}]]
+
+             [:div.flex.bg-white.p-2.rounded-b
+              (render literate)]])
+          (literates (rum/react state-ref)))))
 
 
 (defn handler [{:keys [?data]}]
