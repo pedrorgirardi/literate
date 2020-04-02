@@ -88,23 +88,23 @@
 
 
 (defc App < rum/reactive []
-  (into [:div.flex.flex-col.p-10
+  (into [:div.flex.flex-col.p-10.mt-10
 
          [:span.absolute.top-0.left-0.text-lg.text-gray-700.px-5.py-2
           {:style {:font-family "Cinzel"}}
           "Literate"]]
 
         (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
-          [:div.shadow.mb-6.rounded
+          [:div.mb-6
 
-           [:div.flex.items-center.justify-between.rounded-t.border-b-2.px-3.py-1
-            [:span.font-mono.font-semibold.text-xs.uppercase.text-black.rounded-t
+           [:div.flex.items-center.justify-between.rounded-t.mb-2
+            [:span.font-mono.text-xs.uppercase.text-gray-500.rounded-t
              (name (:literate/type literate))]
 
-            [:i.zmdi.zmdi-close.text-gray-500.hover:text-red-700.cursor-pointer
+            [:i.zmdi.zmdi-close.text-gray-300.hover:text-red-700.cursor-pointer
              {:on-click #(swap! state-ref remove-literate uuid)}]]
 
-           [:div.flex.bg-white.p-2.rounded-b
+           [:div.flex
             (render literate)]])))
 
 
