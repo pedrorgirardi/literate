@@ -6,18 +6,18 @@
   (doseq [uid (:any @server/connected-uids)]
     (server/chsk-send! uid [:literate/literate literate])))
 
-(defn vega-lite [vega-lite-spec]
+(defn vega-lite-literate [vega-lite-spec]
   #:literate {:uuid (str (UUID/randomUUID))
               :type :literate.type/vega-lite
               :vega-lite-spec vega-lite-spec})
 
-(defn code [form]
+(defn code-literate [form]
   #:literate {:uuid (str (UUID/randomUUID))
               :type :literate.type/code
               :code (str form)})
 
-(defn present-code [form]
-  (present (code form)))
+(defn code [form]
+  (present (code-literate form)))
 
-(defn present-vega-lite [vega-lite-spec]
-  (present (vega-lite vega-lite-spec)))
+(defn vega-lite [vega-lite-spec]
+  (present (vega-lite-literate vega-lite-spec)))
