@@ -12,7 +12,7 @@
 
   (refresh)
 
-  (l/markdown "Welcome to Literate")
+  (l/markdown "Welcome to Literate\n")
 
   (l/code (slurp (io/resource "literate/core.clj")))
 

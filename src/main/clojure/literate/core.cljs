@@ -63,7 +63,7 @@
 
 (defc Markdown
   [markdown]
-  [:div {:dangerouslySetInnerHTML {:__html (marked markdown)}}])
+  [:div.font-thin {:dangerouslySetInnerHTML {:__html (marked markdown)}}])
 
 
 ;; ---
@@ -97,11 +97,11 @@
         (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
           [:div.mb-6
 
-           [:div.flex.items-center.justify-between.rounded-t.mb-2
-            [:span.font-mono.text-xs.uppercase.text-gray-500.rounded-t
+           [:div.flex.mb-2
+            [:span.text-xs.uppercase.text-gray-500
              (name (:literate/type literate))]
 
-            [:i.zmdi.zmdi-close.text-gray-300.hover:text-red-700.cursor-pointer
+            [:i.zmdi.zmdi-close.ml-4.text-gray-300.hover:text-gray-700.cursor-pointer
              {:on-click #(swap! state-ref remove-literate uuid)}]]
 
            [:div.flex
