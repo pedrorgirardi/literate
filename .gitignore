@@ -3,5 +3,5 @@ node_modules/
 .idea/
 .cpcache/
 .shadow-cljs/
-resources/public/js/dev/
+resources/public/js/cljs-runtime/
 .nrepl-port

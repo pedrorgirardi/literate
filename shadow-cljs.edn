@@ -11,11 +11,5 @@
   {:target :browser
    :modules {:main {:init-fn literate.core/init}}
    :devtools {:after-load literate.core/init}
-
-   :dev
-   {:output-dir "resources/public/js/dev"
-    :asset-path "/js/dev"}
-
-   :release
-   {:output-dir "resources/public/js"
-    :asset-path "/js"}}}}
+   :output-dir "resources/public/js"
+   :asset-path "/js"}}}

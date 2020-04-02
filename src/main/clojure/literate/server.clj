@@ -33,7 +33,7 @@
 
      [:div#app.container.mx-auto.h-screen]
 
-     (page/include-js "js/main/main.js")]))
+     (page/include-js "js/main.js")]))
 
 (defroutes app
   (GET "/" req (index req))
