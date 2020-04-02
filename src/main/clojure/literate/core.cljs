@@ -3,7 +3,8 @@
   (:require [cljs.core.async :as async :refer [<! >! put! chan]]
             [taoensso.sente :as sente :refer (cb-success?)]
             [rum.core :as rum :refer [defc]]
-            ["vega-embed" :default vega-embed]
+            ["marked" :as marked]
+            ["vega-embed" :as vega-embed]
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]))
 
@@ -60,6 +61,10 @@
   [vega-lite-spec]
   [:div.w-screen])
 
+(defc Markdown
+  [markdown]
+  [:div {:dangerouslySetInnerHTML {:__html (marked markdown)}}])
+
 
 ;; ---
 
@@ -73,6 +78,10 @@
 (defmethod render :literate.type/vega-lite
   [{:literate/keys [vega-lite-spec]}]
   (VegaLite vega-lite-spec))
+
+(defmethod render :literate.type/markdown
+  [{:literate/keys [markdown]}]
+  (Markdown markdown))
 
 
 ;; ---

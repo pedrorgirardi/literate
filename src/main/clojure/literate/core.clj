@@ -16,8 +16,16 @@
               :type :literate.type/code
               :code (str form)})
 
+(defn markdown-literate [markdown]
+  #:literate {:uuid (str (UUID/randomUUID))
+              :type :literate.type/markdown
+              :markdown markdown})
+
 (defn code [form]
   (present (code-literate form)))
 
 (defn vega-lite [vega-lite-spec]
   (present (vega-lite-literate vega-lite-spec)))
+
+(defn markdown [markdown]
+  (present (markdown-literate markdown)))
