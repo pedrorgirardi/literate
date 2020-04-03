@@ -4,6 +4,7 @@
             [cljs.pprint :as pprint]
             [taoensso.sente :as sente :refer (cb-success?)]
             [rum.core :as rum :refer [defc]]
+
             ["marked" :as marked]
             ["vega-embed" :as vega-embed]
             ["codemirror" :as codemirror]
@@ -91,11 +92,7 @@
 (defc App < rum/reactive []
   [:div.flex.flex-col.pt-24
 
-   [:div.fixed.bottom-0.right-0.mr-4.mb-4.rounded-full.hover:bg-green-200.h-8.w-8.flex.items-center.justify-center.text-2xl
-    {:on-click #(swap! state-ref add-literate #:literate {:uuid (str (random-uuid))
-                                                          :type :literate.type/code
-                                                          :code (with-out-str (pprint/pprint @state-ref))})}
-    [:i.zmdi.zmdi-bug.text-green-500]]
+   ;; -- Nav
 
    [:div.flex.bg-white.border-b.border-gray-200.fixed.top-0.inset-x-0.z-100.h-16.items-center.justify-between.px-6
     [:span.text-lg.text-gray-700
@@ -105,6 +102,9 @@
     [:div
      [:span.text-gray-600.hover:text-gray-900.cursor-default "Import"]
      [:span.text-gray-600.hover:text-gray-900.cursor-default.ml-4 "Export"]]]
+
+
+   ;; -- Literates
 
    (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
      [:div.flex.mb-6.shadow
@@ -116,7 +116,17 @@
         [:i.zmdi.zmdi-close.text-gray-600]]]
 
       [:div.w-full
-       (render literate)]])])
+       (render literate)]])
+
+
+   ;; -- Debug
+
+   [:div.fixed.bottom-0.right-0.mr-4.mb-4
+    [:div.rounded-full.h-8.w-8.flex.items-center.justify-center.text-2xl.hover:bg-green-200
+     {:on-click #(swap! state-ref add-literate #:literate {:uuid (str (random-uuid))
+                                                           :type :literate.type/code
+                                                           :code (with-out-str (pprint/pprint @state-ref))})}
+     [:i.zmdi.zmdi-bug.text-green-500]]]])
 
 
 (defn handler [{:keys [?data]}]
