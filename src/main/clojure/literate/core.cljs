@@ -88,11 +88,12 @@
 
 
 (defc App < rum/reactive []
-  (into [:div.flex.flex-col.p-10.mt-10
+  (into [:div.flex.flex-col.pt-24
 
-         [:span.absolute.top-0.left-0.text-lg.text-gray-700.px-5.py-2
-          {:style {:font-family "Cinzel"}}
-          "Literate"]]
+         [:div {:class "flex bg-white border-b border-gray-200 fixed top-0 inset-x-0 z-100 h-16 items-center px-6"}
+          [:span.text-lg.text-gray-700
+           {:style {:font-family "Cinzel"}}
+           "Literate"]]]
 
         (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
           [:div.mb-6
