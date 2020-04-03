@@ -100,13 +100,10 @@
            [:span.text-gray-600.hover:text-gray-900.cursor-pointer.ml-4 "Export"]]]]
 
         (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
-          [:div.mb-6
+          [:div.flex.mb-6
 
-           [:div.flex.mb-2
-            [:span.text-xs.uppercase.text-gray-500
-             (name (:literate/type literate))]
-
-            [:i.zmdi.zmdi-close.ml-4.text-gray-300.hover:text-gray-700.cursor-pointer
+           [:div.bg-gray-200.px-2
+            [:i.zmdi.zmdi-close.text-gray-400.hover:text-gray-700.cursor-pointer
              {:on-click #(swap! state-ref remove-literate uuid)}]]
 
            [:div.flex
