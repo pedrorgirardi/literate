@@ -51,7 +51,7 @@
 
                            state)}
   [code]
-  [:div.w-screen])
+  [:div])
 
 (defc VegaLite < {:did-mount (fn [state]
                                (let [[vega-lite-spec] (:rum/args state)]
@@ -59,11 +59,11 @@
 
                                state)}
   [vega-lite-spec]
-  [:div.w-screen])
+  [:div])
 
 (defc Markdown
   [markdown]
-  [:div.font-thin {:dangerouslySetInnerHTML {:__html (marked markdown)}}])
+  [:div.bg-white.px-2.py-1.font-thin {:dangerouslySetInnerHTML {:__html (marked markdown)}}])
 
 
 ;; ---
@@ -100,13 +100,13 @@
            [:span.text-gray-600.hover:text-gray-900.cursor-pointer.ml-4 "Export"]]]]
 
         (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
-          [:div.flex.mb-6
+          [:div.flex.mb-6.shadow
 
            [:div.bg-gray-200.px-2
             [:i.zmdi.zmdi-close.text-gray-400.hover:text-gray-700.cursor-pointer
              {:on-click #(swap! state-ref remove-literate uuid)}]]
 
-           [:div.flex
+           [:div.w-full
             (render literate)]])))
 
 
