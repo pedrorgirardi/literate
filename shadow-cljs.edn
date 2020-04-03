@@ -9,7 +9,7 @@
  :builds
  {:main
   {:target :browser
-   :modules {:main {:init-fn literate.core/init}}
-   :devtools {:after-load literate.core/init}
+   :modules {:main {:init-fn literate.client/init}}
+   :devtools {:after-load literate.client/init}
    :output-dir "resources/public/js"
    :asset-path "/js"}}}

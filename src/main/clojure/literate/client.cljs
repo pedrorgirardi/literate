@@ -1,4 +1,4 @@
-(ns literate.core
+(ns literate.client
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :as async :refer [<! >! put! chan]]
             [taoensso.sente :as sente :refer (cb-success?)]
