@@ -96,15 +96,16 @@
            "Literate"]
 
           [:div
-           [:span.text-gray-600.hover:text-gray-900.cursor-pointer "Import"]
-           [:span.text-gray-600.hover:text-gray-900.cursor-pointer.ml-4 "Export"]]]]
+           [:span.text-gray-600.hover:text-gray-900.cursor-default "Import"]
+           [:span.text-gray-600.hover:text-gray-900.cursor-default.ml-4 "Export"]]]]
 
         (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
           [:div.flex.mb-6.shadow
 
-           [:div.bg-gray-200.px-2
-            [:i.zmdi.zmdi-close.text-gray-400.hover:text-gray-700.cursor-pointer
-             {:on-click #(swap! state-ref remove-literate uuid)}]]
+           [:div.bg-gray-200.px-2.py-1
+            [:div.rounded-full.hover:bg-gray-400.h-5.w-5.flex.items-center.justify-center
+             {:on-click #(swap! state-ref remove-literate uuid)}
+             [:i.zmdi.zmdi-close.text-gray-600]]]
 
            [:div.w-full
             (render literate)]])))
