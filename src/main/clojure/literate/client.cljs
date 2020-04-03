@@ -1,6 +1,7 @@
 (ns literate.client
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :as async :refer [<! >! put! chan]]
+            [cljs.pprint :as pprint]
             [taoensso.sente :as sente :refer (cb-success?)]
             [rum.core :as rum :refer [defc]]
             ["marked" :as marked]
@@ -89,6 +90,11 @@
 
 (defc App < rum/reactive []
   (into [:div.flex.flex-col.pt-24
+
+         [:div.fixed.bottom-0.right-0.mr-4.mb-4.rounded-full.hover:bg-green-200.h-8.w-8.flex.items-center.justify-center.text-2xl
+          {:on-click #(swap! state-ref add-literate #:literate {:type :literate.type/code
+                                                                :code (with-out-str (pprint/pprint @state-ref))})}
+          [:i.zmdi.zmdi-bug.text-green-500]]
 
          [:div.flex.bg-white.border-b.border-gray-200.fixed.top-0.inset-x-0.z-100.h-16.items-center.justify-between.px-6
           [:span.text-lg.text-gray-700
