@@ -10,5 +10,7 @@ npm run watch
 ```
 
 ### Server
-```(literate.server/run-server {:port 8090})```
+```clojure
+(literate.server/run-server {:port 8090})
+```
 
