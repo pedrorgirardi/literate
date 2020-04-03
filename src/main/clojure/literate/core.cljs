@@ -90,10 +90,14 @@
 (defc App < rum/reactive []
   (into [:div.flex.flex-col.pt-24
 
-         [:div {:class "flex bg-white border-b border-gray-200 fixed top-0 inset-x-0 z-100 h-16 items-center px-6"}
+         [:div.flex.bg-white.border-b.border-gray-200.fixed.top-0.inset-x-0.z-100.h-16.items-center.justify-between.px-6
           [:span.text-lg.text-gray-700
            {:style {:font-family "Cinzel"}}
-           "Literate"]]]
+           "Literate"]
+
+          [:div
+           [:span.text-gray-600.hover:text-gray-900.cursor-pointer "Import"]
+           [:span.text-gray-600.hover:text-gray-900.cursor-pointer.ml-4 "Export"]]]]
 
         (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
           [:div.mb-6
