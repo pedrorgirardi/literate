@@ -11,16 +11,17 @@
             ["codemirror/mode/clojure/clojure"]))
 
 
-(defonce state-ref (atom {:literate/literates {}}))
+(defonce state-ref (atom {:literate/snippets []}))
 
-(defn literates [state]
-  (vals (:literate/literates state)))
+(defn snippets [state]
+  (:literate/snippets state))
 
-(defn add-literate [state {:literate/keys [uuid] :as literate}]
-  (assoc-in state [:literate/literates uuid] literate))
+(defn add-snippet [state snippet]
+  (update state :literate/snippets (fnil conj []) snippet))
 
-(defn remove-literate [state uuid]
-  (update state :literate/literates dissoc uuid))
+(defn remove-snippet [state uuid]
+  (update state :literate/snippets (fn [snippets]
+                                     (filterv #(not= uuid (:snippet/uuid %)) snippets))))
 
 
 ;; ---
@@ -71,18 +72,18 @@
 ;; ---
 
 
-(defmulti render :literate/type)
+(defmulti render :snippet/type)
 
-(defmethod render :literate.type/code
-  [{:literate/keys [code]}]
+(defmethod render :snippet.type/code
+  [{:snippet/keys [code]}]
   (Code code))
 
-(defmethod render :literate.type/vega-lite
-  [{:literate/keys [vega-lite-spec]}]
+(defmethod render :snippet.type/vega-lite
+  [{:keys [:snippet/vega-lite-spec]}]
   (VegaLite vega-lite-spec))
 
-(defmethod render :literate.type/markdown
-  [{:literate/keys [markdown]}]
+(defmethod render :snippet.type/markdown
+  [{:snippet/keys [markdown]}]
   (Markdown markdown))
 
 
@@ -106,33 +107,34 @@
 
    ;; -- Literates
 
-   (for [{:literate/keys [uuid] :as literate} (literates (rum/react state-ref))]
+   (for [{:keys [:snippet/uuid] :as snippet} (snippets (rum/react state-ref))]
      [:div.flex.mb-6.shadow
-      {:key (:literate/uuid literate)}
+      {:key (:snippet/uuid snippet)}
 
       [:div.bg-gray-200.px-2.py-1
        [:div.rounded-full.hover:bg-gray-400.h-5.w-5.flex.items-center.justify-center
-        {:on-click #(swap! state-ref remove-literate uuid)}
+        {:on-click #(swap! state-ref remove-snippet uuid)}
         [:i.zmdi.zmdi-close.text-gray-600]]]
 
       [:div.w-full
-       (render literate)]])
+       (render snippet)]])
 
 
    ;; -- Debug
 
    [:div.fixed.bottom-0.right-0.mr-4.mb-4
     [:div.rounded-full.h-8.w-8.flex.items-center.justify-center.text-2xl.hover:bg-green-200
-     {:on-click #(swap! state-ref add-literate #:literate {:uuid (str (random-uuid))
-                                                           :type :literate.type/code
-                                                           :code (with-out-str (pprint/pprint @state-ref))})}
+     {:on-click #(swap! state-ref add-snippet #:snippet {:uuid (str (random-uuid))
+                                                         :type :snippet.type/code
+                                                         :code (with-out-str (pprint/pprint @state-ref))})}
      [:i.zmdi.zmdi-bug.text-green-500]]]])
 
 
 (defn handler [{:keys [?data]}]
   (let [[event data] ?data]
-    (when (= :literate/literate event)
-      (swap! state-ref add-literate data))))
+    (when (= :literate/snippet event)
+      (swap! state-ref add-snippet data)
+      (js/console.log 'state-ref @state-ref))))
 
 
 (defn ^:dev/before-load stop-sente-router []
