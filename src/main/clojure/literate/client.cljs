@@ -135,8 +135,13 @@
      [:i.zmdi.zmdi-bug.text-green-500]]]])
 
 
-(defn handler [{:keys [?data]}]
+(defn handler [{:keys [?data] :as m}]
   (let [[event data] ?data]
+    (js/console.group "Sente")
+    (js/console.log (select-keys m [:id :?data]))
+    (js/console.table (clj->js (:?data m)))
+    (js/console.groupEnd)
+
     (when (= :literate/snippet event)
       (swap! state-ref add-snippet data))))
 
