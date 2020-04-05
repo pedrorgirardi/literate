@@ -1,7 +1,10 @@
 (ns literate.client
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [cljs.core.async :as async :refer [<! >! put! chan]]
+  (:require [clojure.spec.alpha :as s]
+            [cljs.core.async :as async :refer [<! >! put! chan]]
             [cljs.pprint :as pprint]
+
+            [literate.specs]
             [taoensso.sente :as sente :refer (cb-success?)]
             [rum.core :as rum :refer [defc]]
 
@@ -12,6 +15,10 @@
 
 
 (defonce state-ref (atom {:literate/snippets []}))
+
+(add-watch state-ref ::state (fn [_ _ _ state]
+                               (when-not (s/valid? :literate/client-state state)
+                                 (js/console.error "Invalid state" (s/explain-str :literate/client-state state)))))
 
 (defn snippets [state]
   (:literate/snippets state))
@@ -133,8 +140,7 @@
 (defn handler [{:keys [?data]}]
   (let [[event data] ?data]
     (when (= :literate/snippet event)
-      (swap! state-ref add-snippet data)
-      (js/console.log 'state-ref @state-ref))))
+      (swap! state-ref add-snippet data))))
 
 
 (defn ^:dev/before-load stop-sente-router []
