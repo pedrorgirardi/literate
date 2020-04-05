@@ -1,7 +1,5 @@
 (ns literate.client
-  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [clojure.spec.alpha :as s]
-            [cljs.core.async :as async :refer [<! >! put! chan]]
+  (:require [cljs.spec.alpha :as s]
             [cljs.pprint :as pprint]
 
             [literate.specs]
