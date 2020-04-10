@@ -3,8 +3,7 @@
             [clojure.java.io :as io]
             [literate.server :as server]
             [literate.core :as l]
-            [rum.server-render]
-            [hiccup.core :as hiccup]))
+            [rum.server-render]))
 
 (def stop-server
   (fn []
