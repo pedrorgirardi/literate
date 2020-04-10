@@ -26,8 +26,21 @@
                                                    [:h1.text-6xl "Hello from Hiccup"]
                                                    [:span "Text"]]))
 
-  (l/hiccup [:div.bg-white.p-2
-             [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]])
+  (l/hiccup [:div.bg-white.p-2.font-thin
+             [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]
+
+             [:p.font-semibold "Literate is a graphical user interface extension for your Clojure REPL."]
+
+             [:p.mt-4 "This interface that you're looking at it's called a " [:span.font-bold "Snippet"]
+              ", and you can create one from a Clojure REPL."]
+
+             [:p.mt-2.mb1 "There's a few different types of Snippets that are supported:"]
+
+             [:ul.list-disc.list-inside.ml-2
+              [:li "Code"]
+              [:li "Markdown"]
+              [:li "Hiccup"]
+              [:li "Vega Lite"]]])
 
   (l/code (slurp (io/resource "literate/core.clj")))
 
