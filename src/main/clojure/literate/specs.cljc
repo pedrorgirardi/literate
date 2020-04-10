@@ -5,7 +5,9 @@
 
 (s/def :snippet/type #{:snippet.type/code
                        :snippet.type/markdown
-                       :snippet.type/vega-lite})
+                       :snippet.type/vega-lite
+                       :snippet.type/hiccup
+                       :snippet.type/html})
 
 (s/def :literate/snippet (s/keys :req [:snippet/uuid
                                        :snippet/type]))

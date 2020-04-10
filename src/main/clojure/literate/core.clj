@@ -1,5 +1,6 @@
 (ns literate.core
-  (:require [literate.server :as server])
+  (:require [literate.server :as server]
+            [rum.server-render])
   (:import (java.util UUID)))
 
 (defn present [snippet]
@@ -21,6 +22,16 @@
              :type :snippet.type/markdown
              :markdown markdown})
 
+(defn html-snippet [html]
+  #:snippet {:uuid (str (UUID/randomUUID))
+             :type :snippet.type/html
+             :html html})
+
+(defn hiccup-snippet [hiccup]
+  #:snippet {:uuid (str (UUID/randomUUID))
+             :type :snippet.type/hiccup
+             :html (rum.server-render/render-static-markup hiccup)})
+
 (defn code [form]
   (present (code-snippet form)))
 
@@ -29,3 +40,9 @@
 
 (defn markdown [markdown]
   (present (markdown-snippet markdown)))
+
+(defn html [html]
+  (present (html-snippet html)))
+
+(defn hiccup [hiccup]
+  (present (hiccup-snippet hiccup)))

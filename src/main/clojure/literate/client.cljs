@@ -73,6 +73,10 @@
   [markdown]
   [:div.bg-white.px-2.py-1.font-thin {:dangerouslySetInnerHTML {:__html (marked markdown)}}])
 
+(defc Html
+  [html]
+  [:div {:dangerouslySetInnerHTML {:__html html}}])
+
 
 ;; ---
 
@@ -90,6 +94,14 @@
 (defmethod render :snippet.type/markdown
   [{:snippet/keys [markdown]}]
   (Markdown markdown))
+
+(defmethod render :snippet.type/hiccup
+  [{:snippet/keys [html]}]
+  (Html html))
+
+(defmethod render :snippet.type/html
+  [{:snippet/keys [html]}]
+  (Html html))
 
 
 ;; ---

@@ -2,17 +2,33 @@
   (:require [clojure.tools.namespace.repl :refer [refresh]]
             [clojure.java.io :as io]
             [literate.server :as server]
-            [literate.core :as l]))
+            [literate.core :as l]
+            [rum.server-render]
+            [hiccup.core :as hiccup]))
+
+(def stop-server
+  (fn []
+    nil))
+
+(defn start-server []
+  (alter-var-root #'stop-server (fn [_]
+                                  (server/run-server {:port 8080}))))
+
+(defn reset []
+  (stop-server)
+
+  (refresh :after `start-server))
 
 (comment
 
-  (def stop-server (server/run-server))
-
-  (stop-server)
-
-  (refresh)
-
   (l/markdown "**Welcome to Literate**\n\nEval some forms to get started!")
+
+  (l/html (rum.server-render/render-static-markup [:div.bg-white.p-2
+                                                   [:h1.text-6xl "Hello from Hiccup"]
+                                                   [:span "Text"]]))
+
+  (l/hiccup [:div.bg-white.p-2
+             [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]])
 
   (l/code (slurp (io/resource "literate/core.clj")))
 
