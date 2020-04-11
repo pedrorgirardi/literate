@@ -2,21 +2,17 @@
   (:require [cljs.spec.alpha :as s]
             [cljs.pprint :as pprint]
 
+            [literate.db :as db]
             [literate.specs]
+
             [taoensso.sente :as sente :refer (cb-success?)]
             [rum.core :as rum :refer [defc]]
+            [datascript.core :as d]
 
             ["marked" :as marked]
             ["vega-embed" :as vega-embed]
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]))
-
-
-(defonce state-ref (atom {:literate/snippets []}))
-
-(add-watch state-ref ::state (fn [_ _ _ state]
-                               (when-not (s/valid? :literate/client-state state)
-                                 (js/console.error "Invalid state" (s/explain-str :literate/client-state state)))))
 
 (defn snippets [state]
   (:literate/snippets state))
@@ -110,7 +106,7 @@
 ;; ---
 
 
-(defc App < rum/reactive []
+(defc App []
   [:div.flex.flex-col.pt-24
 
    ;; -- Nav
@@ -127,13 +123,13 @@
 
    ;; -- Literates
 
-   (for [{:keys [:snippet/uuid] :as snippet} (snippets (rum/react state-ref))]
+   (for [{:db/keys [id] :as snippet} (db/all-snippets)]
      [:div.flex.mb-6.shadow
       {:key (:snippet/uuid snippet)}
 
       [:div.bg-gray-200.px-2.py-1
        [:div.rounded-full.hover:bg-gray-400.h-5.w-5.flex.items-center.justify-center
-        {:on-click #(swap! state-ref remove-snippet uuid)}
+        {:on-click #(db/remove-snippet id)}
         [:i.zmdi.zmdi-close.text-gray-600]]]
 
       [:div.w-full
@@ -144,9 +140,9 @@
 
    [:div.fixed.bottom-0.right-0.mr-4.mb-4
     [:div.rounded-full.h-8.w-8.flex.items-center.justify-center.text-2xl.hover:bg-green-200
-     {:on-click #(swap! state-ref add-snippet #:snippet {:uuid (str (random-uuid))
-                                                         :type :snippet.type/code
-                                                         :code (with-out-str (pprint/pprint @state-ref))})}
+     {:on-click #(d/transact! db/conn [#:snippet {:uuid (str (random-uuid))
+                                                  :type :snippet.type/code
+                                                  :code (with-out-str (pprint/pprint (db/all-snippets)))}])}
      [:i.zmdi.zmdi-bug.text-green-500]]]])
 
 
@@ -158,8 +154,10 @@
     (js/console.groupEnd)
 
     (when (= :literate/!present event)
-      (swap! state-ref add-snippet-deck data))))
+      (d/transact! db/conn data))))
 
+(defn mount []
+  (rum/mount (App) (.getElementById js/document "app")))
 
 (defn ^:dev/before-load stop-sente-router []
   (@sente-router-ref))
@@ -167,4 +165,9 @@
 (defn ^:export init []
   (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler))
 
-  (rum/mount (App) (.getElementById js/document "app")))
+  (d/listen! db/conn (fn [_]
+                       (js/console.log "Will re-render...")
+
+                       (mount)))
+
+  (mount))

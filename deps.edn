@@ -9,6 +9,7 @@
   compojure {:mvn/version "1.6.1"}
   hiccup {:mvn/version "1.0.5"}
   rum {:mvn/version "0.11.4" :exclusions [cljsjs/react cljsjs/react-dom]}
+  datascript {:mvn/version "0.18.10"}
   com.taoensso/sente {:mvn/version "1.15.0"}}
 
  :aliases

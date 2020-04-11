@@ -1,9 +1,13 @@
 (ns user
   (:require [clojure.tools.namespace.repl :refer [refresh]]
             [clojure.java.io :as io]
+
+            [literate.db :as db]
             [literate.server :as server]
             [literate.core :as l]
-            [rum.server-render]))
+
+            [rum.server-render]
+            [datascript.core :as d]))
 
 (def stop-server
   (fn []
@@ -75,12 +79,29 @@
 
   (def title (l/hiccup-snippet [:h1 "Title"]))
 
+  (l/present [title])
+
+  (let [updated-title (merge title (select-keys (l/hiccup-snippet [:h1 "New title"]) [:snippet/html]))]
+    (l/present [updated-title]))
+
   (l/present
     [(l/hiccup-snippet [:h1 "Title"])
 
      (l/hiccup-snippet [:h2 "Sub-title"])])
 
-  (let [updated-title (merge title (select-keys (l/hiccup-snippet [:h1 "Updated Title"]) [:snippet.type/html]))]
-    (l/present [updated-title]))
+
+  (def example-snippet
+    #:snippet {:uuid (str (java.util.UUID/randomUUID))
+               :type :snippet.type/code})
+
+
+  (d/transact! db/conn [(assoc example-snippet :snippet/code "1")])
+
+
+  (d/q '[:find [(pull ?e [*]) ...]
+         :in $
+         :where
+         [?e :snippet/uuid]]
+       @db/conn)
 
   )
