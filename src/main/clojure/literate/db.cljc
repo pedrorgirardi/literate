@@ -2,14 +2,10 @@
   (:require [datascript.core :as d]))
 
 (defonce conn (d/create-conn {:snippet/uuid
-                              {:db/unique :db.unique/identity}
-
-                              :snippet/snippets
-                              {:db/cardinality :db.cardinality/many
-                               :db/valueType :db.type/ref}}))
+                              {:db/unique :db.unique/identity}}))
 
 (defn all-snippets []
-  (d/q '[:find [(pull ?e [* {:snippet/snippets [*]}]) ...]
+  (d/q '[:find [(pull ?e [*]) ...]
          :in $
          :where
          [?e :snippet/uuid]]

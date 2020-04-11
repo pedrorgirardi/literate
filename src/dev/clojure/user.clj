@@ -129,7 +129,9 @@
        :encoding {:x {:field "a"
                       :type "ordinal"}
                   :y {:field "b"
-                      :type "quantitative"}}}))
+                      :type "quantitative"}}})
+
+    (l/code-snippet (slurp (io/resource "literate/core.clj"))))
 
 
   (def example-snippet
