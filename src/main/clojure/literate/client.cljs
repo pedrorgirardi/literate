@@ -63,7 +63,7 @@
 (defc Deck
   [snippets]
   (into [:div] (for [snippet snippets]
-                 (Card snippet))))
+                 [:div.mb-4 (Card snippet)])))
 
 (defc Card [{:snippet/keys [type code markdown vega-lite-spec html snippets]}]
   [:div.w-full (case type
@@ -82,10 +82,7 @@
                  :snippet.type/deck
                  (Deck snippets)
 
-                 (do
-                   (js/console.warn "Unknow type" type)
-
-                   [:div "-"]))])
+                 [:div "-"])])
 
 ;; ---
 
