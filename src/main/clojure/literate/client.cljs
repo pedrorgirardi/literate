@@ -32,6 +32,7 @@
 
 ;; ---
 
+(declare Card)
 
 (defc Code < {:did-mount (fn [state]
                            (let [[code] (:rum/args state)]
@@ -59,32 +60,29 @@
   [html]
   [:div {:dangerouslySetInnerHTML {:__html html}}])
 
+(defc Deck
+  [snippets]
+  (into [:div] (for [snippet snippets]
+                 [:div.mb-4 (Card snippet)])))
 
-;; ---
+(defc Card [{:snippet/keys [type code markdown vega-lite-spec html snippets]}]
+  [:div.w-full (case type
+                 :snippet.type/code
+                 (Code code)
 
+                 :snippet.type/markdown
+                 (Markdown markdown)
 
-(defmulti render :snippet/type)
+                 :snippet.type/vega-lite
+                 (VegaLite vega-lite-spec)
 
-(defmethod render :snippet.type/code
-  [{:snippet/keys [code]}]
-  (Code code))
+                 :snippet.type/hiccup
+                 (Html html)
 
-(defmethod render :snippet.type/vega-lite
-  [{:keys [:snippet/vega-lite-spec]}]
-  (VegaLite vega-lite-spec))
+                 :snippet.type/deck
+                 (Deck snippets)
 
-(defmethod render :snippet.type/markdown
-  [{:snippet/keys [markdown]}]
-  (Markdown markdown))
-
-(defmethod render :snippet.type/hiccup
-  [{:snippet/keys [html]}]
-  (Html html))
-
-(defmethod render :snippet.type/html
-  [{:snippet/keys [html]}]
-  (Html html))
-
+                 [:div "-"])])
 
 ;; ---
 
@@ -115,8 +113,7 @@
         {:on-click #(db/remove-snippet id)}
         [:i.zmdi.zmdi-close.text-gray-600]]]
 
-      [:div.w-full
-       (render snippet)]])
+      (Card snippet)])
 
 
    ;; -- Debug

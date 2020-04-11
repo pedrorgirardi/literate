@@ -36,6 +36,11 @@
              :type :snippet.type/hiccup
              :html (rum.server-render/render-static-markup hiccup)})
 
+(defn deck-snippet [& snippets]
+  #:snippet {:uuid (str (UUID/randomUUID))
+             :type :snippet.type/deck
+             :snippets snippets})
+
 (defn code [form]
   (present [(code-snippet form)]))
 
@@ -50,3 +55,6 @@
 
 (defn hiccup [hiccup]
   (present [(hiccup-snippet hiccup)]))
+
+(defn deck [& snippets]
+  (present [(apply deck-snippet snippets)]))
