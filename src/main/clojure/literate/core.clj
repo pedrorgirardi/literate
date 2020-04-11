@@ -3,13 +3,14 @@
             [rum.server-render])
   (:import (java.util UUID)))
 
-(defn present [snippet-deck]
-  (when (seq snippet-deck)
+(defn present [& cards]
+  (when (seq cards)
     (doseq [uid (:any @server/connected-uids)]
-      (server/chsk-send! uid [:literate/!present snippet-deck]))))
+      (server/chsk-send! uid [:literate/!present cards]))))
 
-(defn edit-snippet [snippet & edits]
-  nil)
+(defn card [& snippets]
+  #:card {:uuid (str (UUID/randomUUID))
+          :snippets snippets})
 
 (defn vega-lite-snippet [vega-lite-spec]
   #:snippet {:uuid (str (UUID/randomUUID))
@@ -41,20 +42,20 @@
              :type :snippet.type/deck
              :snippets snippets})
 
-(defn code [form]
-  (present [(code-snippet form)]))
+(defn code [code]
+  (present (card (code-snippet code))))
 
 (defn vega-lite [vega-lite-spec]
-  (present [(vega-lite-snippet vega-lite-spec)]))
+  (present (card (vega-lite-snippet vega-lite-spec))))
 
 (defn markdown [markdown]
-  (present [(markdown-snippet markdown)]))
+  (present (card (markdown-snippet markdown))))
 
 (defn html [html]
-  (present [(html-snippet html)]))
+  (present (card (html-snippet html))))
 
 (defn hiccup [hiccup]
-  (present [(hiccup-snippet hiccup)]))
+  (present (card (hiccup-snippet hiccup))))
 
 (defn deck [& snippets]
-  (present [(apply deck-snippet snippets)]))
+  (present (apply deck-snippet snippets)))

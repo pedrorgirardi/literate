@@ -60,29 +60,23 @@
   [html]
   [:div {:dangerouslySetInnerHTML {:__html html}}])
 
-(defc Deck
-  [snippets]
-  (into [:div] (for [snippet snippets]
-                 [:div.mb-4 (Card snippet)])))
+(defc Card [{:card/keys [snippets]}]
+  (into [:div.w-full]
+        (for [{:snippet/keys [type code markdown vega-lite-spec html]} snippets]
+          [:div.mb-4 (case type
+                       :snippet.type/code
+                       (Code code)
 
-(defc Card [{:snippet/keys [type code markdown vega-lite-spec html snippets]}]
-  [:div.w-full (case type
-                 :snippet.type/code
-                 (Code code)
+                       :snippet.type/markdown
+                       (Markdown markdown)
 
-                 :snippet.type/markdown
-                 (Markdown markdown)
+                       :snippet.type/vega-lite
+                       (VegaLite vega-lite-spec)
 
-                 :snippet.type/vega-lite
-                 (VegaLite vega-lite-spec)
+                       :snippet.type/hiccup
+                       (Html html)
 
-                 :snippet.type/hiccup
-                 (Html html)
-
-                 :snippet.type/deck
-                 (Deck snippets)
-
-                 [:div "-"])])
+                       [:div [:span "Unknown Snippet type " [:code type]]])])))
 
 ;; ---
 
@@ -104,25 +98,27 @@
 
    ;; -- Literates
 
-   (for [{:db/keys [id] :as snippet} (db/all-snippets)]
+   (for [{:db/keys [id] :as card} (db/all-cards)]
      [:div.flex.mb-6.shadow
-      {:key (:snippet/uuid snippet)}
+      {:key id}
 
       [:div.bg-gray-200.px-2.py-1
        [:div.rounded-full.hover:bg-gray-400.h-5.w-5.flex.items-center.justify-center
-        {:on-click #(db/remove-snippet id)}
+        {:on-click #(db/retract-entity id)}
         [:i.zmdi.zmdi-close.text-gray-600]]]
 
-      (Card snippet)])
+      (Card card)])
 
 
    ;; -- Debug
 
    [:div.fixed.bottom-0.right-0.mr-4.mb-4
     [:div.rounded-full.h-8.w-8.flex.items-center.justify-center.text-2xl.hover:bg-green-200
-     {:on-click #(d/transact! db/conn [#:snippet {:uuid (str (random-uuid))
-                                                  :type :snippet.type/code
-                                                  :code (with-out-str (pprint/pprint (db/all-snippets)))}])}
+     {:on-click #(d/transact! db/conn [#:card {:uuid (str (random-uuid))
+                                               :snippets
+                                               [#:snippet {:uuid (str (random-uuid))
+                                                           :type :snippet.type/code
+                                                           :code (with-out-str (pprint/pprint (db/all-cards)))}]}])}
      [:i.zmdi.zmdi-bug.text-green-500]]]])
 
 
@@ -130,7 +126,6 @@
   (let [[event data] ?data]
     (js/console.group "Sente")
     (js/console.log (select-keys m [:id :?data]))
-    (js/console.table (clj->js (:?data m)))
     (js/console.groupEnd)
 
     (when (= :literate/!present event)
