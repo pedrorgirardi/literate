@@ -85,8 +85,9 @@
 
           [:p.font-semibold "Literate is a graphical user interface extension for your Clojure REPL."]
 
-          [:p.mt-4 "This interface that you're looking at it's called a " [:span.font-bold "Snippet"]
-           ", and you can create one from a Clojure REPL."]
+          [:p.mt-4 "This interface is a " [:span.font-bold "Card"]
+           ", and it contains a set of " [:span.font-bold "Snippets"] ". "
+           "You can create Snippets and Cards from your Clojure REPL."]
 
           [:p.mt-2.mb1 "There's a few different types of Snippets that are supported:"]
 
@@ -95,6 +96,9 @@
            [:li "Markdown"]
            [:li "Hiccup"]
            [:li "Vega Lite"]]])
+
+       (l/hiccup-snippet
+         [:span.p-2.text-lg "Vega Lite Snippet"])
 
        (l/vega-lite-snippet
          {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
@@ -114,6 +118,9 @@
                          :type "ordinal"}
                      :y {:field "b"
                          :type "quantitative"}}})
+
+       (l/hiccup-snippet
+         [:span.p-2.text-lg "Code Snippet"])
 
        (l/code-snippet (slurp (io/resource "literate/core.clj"))))])
 
