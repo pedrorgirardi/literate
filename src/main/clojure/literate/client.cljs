@@ -76,7 +76,10 @@
                        :snippet.type/hiccup
                        (Html html)
 
-                       [:div [:span "Unknown Snippet type " [:code type]]])])))
+                       :snippet.type/html
+                       (Html html)
+
+                       [:div [:span "Unknown Snippet type " [:code (str type)]]])])))
 
 ;; ---
 
@@ -128,7 +131,7 @@
     (js/console.log (select-keys m [:id :?data]))
     (js/console.groupEnd)
 
-    (when (= :literate/!present event)
+    (when (= :literate/!transact event)
       (d/transact! db/conn data))))
 
 (defn mount []

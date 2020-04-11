@@ -11,16 +11,6 @@
                               {:db/valueType :db.type/ref
                                :db/cardinality :db.cardinality/many}}))
 
-(defn all-snippets []
-  (d/q '[:find [(pull ?e [*]) ...]
-         :in $
-         :where
-         [?e :snippet/uuid]]
-       @conn))
-
-(defn remove-snippet [id]
-  (d/transact! conn [[:db.fn/retractEntity id]]))
-
 (defn retract-entity [id]
   (d/transact! conn [[:db.fn/retractEntity id]]))
 
