@@ -24,6 +24,9 @@
 (defn add-snippet [state snippet]
   (update state :literate/snippets (fnil conj []) snippet))
 
+(defn add-snippet-deck [state snippet-deck]
+  (update state :literate/snippets (fnil into []) snippet-deck))
+
 (defn remove-snippet [state uuid]
   (update state :literate/snippets (fn [snippets]
                                      (filterv #(not= uuid (:snippet/uuid %)) snippets))))
@@ -154,8 +157,8 @@
     (js/console.table (clj->js (:?data m)))
     (js/console.groupEnd)
 
-    (when (= :literate/snippet event)
-      (swap! state-ref add-snippet data))))
+    (when (= :literate/!present event)
+      (swap! state-ref add-snippet-deck data))))
 
 
 (defn ^:dev/before-load stop-sente-router []

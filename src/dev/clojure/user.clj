@@ -73,4 +73,14 @@
                            :y {:aggregate "count"
                                :type "quantitative"}}})
 
+  (def title (l/hiccup-snippet [:h1 "Title"]))
+
+  (l/present
+    [(l/hiccup-snippet [:h1 "Title"])
+
+     (l/hiccup-snippet [:h2 "Sub-title"])])
+
+  (let [updated-title (merge title (select-keys (l/hiccup-snippet [:h1 "Updated Title"]) [:snippet.type/html]))]
+    (l/present [updated-title]))
+
   )

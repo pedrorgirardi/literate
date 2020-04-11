@@ -3,9 +3,13 @@
             [rum.server-render])
   (:import (java.util UUID)))
 
-(defn present [snippet]
-  (doseq [uid (:any @server/connected-uids)]
-    (server/chsk-send! uid [:literate/snippet snippet])))
+(defn present [snippet-deck]
+  (when (seq snippet-deck)
+    (doseq [uid (:any @server/connected-uids)]
+      (server/chsk-send! uid [:literate/!present snippet-deck]))))
+
+(defn edit-snippet [snippet & edits]
+  nil)
 
 (defn vega-lite-snippet [vega-lite-spec]
   #:snippet {:uuid (str (UUID/randomUUID))
@@ -33,16 +37,16 @@
              :html (rum.server-render/render-static-markup hiccup)})
 
 (defn code [form]
-  (present (code-snippet form)))
+  (present [(code-snippet form)]))
 
 (defn vega-lite [vega-lite-spec]
-  (present (vega-lite-snippet vega-lite-spec)))
+  (present [(vega-lite-snippet vega-lite-spec)]))
 
 (defn markdown [markdown]
-  (present (markdown-snippet markdown)))
+  (present [(markdown-snippet markdown)]))
 
 (defn html [html]
-  (present (html-snippet html)))
+  (present [(html-snippet html)]))
 
 (defn hiccup [hiccup]
-  (present (hiccup-snippet hiccup)))
+  (present [(hiccup-snippet hiccup)]))
