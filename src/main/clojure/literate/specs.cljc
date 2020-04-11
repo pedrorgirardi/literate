@@ -7,7 +7,8 @@
                        :snippet.type/markdown
                        :snippet.type/vega-lite
                        :snippet.type/hiccup
-                       :snippet.type/html})
+                       :snippet.type/html
+                       :snippet.type/deck})
 
 (s/def :literate/snippet (s/keys :req [:snippet/uuid
                                        :snippet/type]))
