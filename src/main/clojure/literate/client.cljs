@@ -14,23 +14,6 @@
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]))
 
-(defn snippets [state]
-  (:literate/snippets state))
-
-(defn add-snippet [state snippet]
-  (update state :literate/snippets (fnil conj []) snippet))
-
-(defn add-snippet-deck [state snippet-deck]
-  (update state :literate/snippets (fnil into []) snippet-deck))
-
-(defn remove-snippet [state uuid]
-  (update state :literate/snippets (fn [snippets]
-                                     (filterv #(not= uuid (:snippet/uuid %)) snippets))))
-
-
-;; ---
-
-
 (let [token (when-let [el (.getElementById js/document "sente-csrf-token")]
               (.getAttribute el "data-csrf-token"))
 
