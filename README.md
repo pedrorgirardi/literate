@@ -8,7 +8,7 @@ Literate is a graphical user interface extension for your Clojure REPL.
 
 ```clojure
 {literate {:git/url "https://github.com/pedrorgirardi/literate.git"
-           :sha "1aac6d06ba479702282c43b4efbde51644fcfeb0"}}
+           :sha "d5aa9738c31a4bfaf2aa41a3e97e22333a752613"}}
 ```
 
 ## Usage
