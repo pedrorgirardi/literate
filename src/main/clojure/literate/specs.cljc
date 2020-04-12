@@ -15,4 +15,13 @@
 
 (s/def :literate/snippets (s/coll-of :literate/snippet))
 
-(s/def :literate/client-state (s/keys :req [:literate/snippets]))
+(s/def :card/uuid string?)
+
+(s/def :card/snippets :literate/snippets)
+
+(s/def :literate/card (s/keys :req [:card/uuid
+                                    :card/snippets]))
+
+(s/def :literate/cards (s/coll-of :literate/card))
+
+
