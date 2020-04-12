@@ -3,51 +3,75 @@
             [rum.server-render])
   (:import (java.util UUID)))
 
-(defn transact [data]
+(defn transact
+  "Sends a transact event to the client."
+  [data]
   (when (seq data)
     (doseq [uid (:any @server/connected-uids)]
       (server/chsk-send! uid [:literate/!transact data]))))
 
-(defn card [& snippets]
+(defn card
+  "Returns a Card entity."
+  [& snippets]
   #:card {:uuid (str (UUID/randomUUID))
           :snippets snippets})
 
-(defn vega-lite-snippet [vega-lite-spec]
+(defn vega-lite-snippet
+  "Returns a Vega Lite Snippet entity."
+  [vega-lite-spec]
   #:snippet {:uuid (str (UUID/randomUUID))
              :type :snippet.type/vega-lite
              :vega-lite-spec vega-lite-spec})
 
-(defn code-snippet [form]
+(defn code-snippet
+  "Returns a Code Snippet entity."
+  [form]
   #:snippet {:uuid (str (UUID/randomUUID))
              :type :snippet.type/code
              :code (str form)})
 
-(defn markdown-snippet [markdown]
+(defn markdown-snippet
+  "Returns a Markdown Snippet entity."
+  [markdown]
   #:snippet {:uuid (str (UUID/randomUUID))
              :type :snippet.type/markdown
              :markdown markdown})
 
-(defn html-snippet [html]
+(defn html-snippet
+  "Returns an Html Snippet entity."
+  [html]
   #:snippet {:uuid (str (UUID/randomUUID))
              :type :snippet.type/html
              :html html})
 
-(defn hiccup-snippet [hiccup]
+(defn hiccup-snippet
+  "Returns a Hiccup Snippet entity."
+  [hiccup]
   #:snippet {:uuid (str (UUID/randomUUID))
              :type :snippet.type/hiccup
              :html (rum.server-render/render-static-markup hiccup)})
 
-(defn code [code]
+(defn code
+  "Transacts a Card containing a single Code Snippet."
+  [code]
   (transact [(card (code-snippet code))]))
 
-(defn vega-lite [vega-lite-spec]
+(defn vega-lite
+  "Transacts a Card containing a single Vega Lite Snippet."
+  [vega-lite-spec]
   (transact [(card (vega-lite-snippet vega-lite-spec))]))
 
-(defn markdown [markdown]
+(defn markdown
+  "Transacts a Card containing a single Markdown Snippet."
+  [markdown]
   (transact [(card (markdown-snippet markdown))]))
 
-(defn html [html]
+(defn html
+  "Transacts a Card containing a single Html Snippet."
+  [html]
   (transact [(card (html-snippet html))]))
 
-(defn hiccup [hiccup]
+(defn hiccup
+  "Transacts a Card containing a single Hiccup Snippet."
+  [hiccup]
   (transact [(card (hiccup-snippet hiccup))]))
