@@ -24,6 +24,8 @@
 
 (comment
 
+  (reset)
+
   (l/markdown "**Welcome to Literate**\n\nEval some forms to get started!")
 
   (l/html (rum.server-render/render-static-markup [:div.bg-white.p-2
