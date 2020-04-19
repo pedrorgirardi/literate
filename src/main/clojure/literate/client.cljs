@@ -32,7 +32,6 @@
 
 ;; ---
 
-(declare Card)
 
 (defc Code < {:did-mount (fn [state]
                            (let [[code] (:rum/args state)]
