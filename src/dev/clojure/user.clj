@@ -13,9 +13,9 @@
   (fn []
     nil))
 
-(defn start-server []
+(defn start-server [& [{:keys [port]}]]
   (alter-var-root #'stop-server (fn [_]
-                                  (server/run-server {:port 8080}))))
+                                  (server/run-server {:port (or port 8080)}))))
 
 (defn reset []
   (stop-server)
