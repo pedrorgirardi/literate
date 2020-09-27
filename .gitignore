@@ -6,3 +6,4 @@ node_modules/
 resources/public/js/cljs-runtime/
 .nrepl-port
 resources/public/js/
+.DS_Store
