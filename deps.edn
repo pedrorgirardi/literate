@@ -3,22 +3,21 @@
  :deps
  {org.clojure/clojure {:mvn/version "1.10.1"}
   org.clojure/core.async {:mvn/version "1.1.587"}
-  ring/ring-core {:mvn/version "1.8.0"}
+  ring/ring-core {:mvn/version "1.8.1"}
   ring/ring-defaults {:mvn/version "0.3.2"}
-  http-kit {:mvn/version "2.3.0"}
-  compojure {:mvn/version "1.6.1"}
-  hiccup {:mvn/version "1.0.5"}
-  rum {:mvn/version "0.11.5" :exclusions [cljsjs/react cljsjs/react-dom]}
-  datascript {:mvn/version "0.18.10"}
-  com.taoensso/sente {:mvn/version "1.15.0"}}
+  http-kit/http-kit {:mvn/version "2.5.0"}
+  compojure/compojure {:mvn/version "1.6.2"}
+  hiccup/hiccup {:mvn/version "1.0.5"}
+  rum/rum {:mvn/version "0.12.3" :exclusions [cljsjs/react cljsjs/react-dom]}
+  datascript/datascript {:mvn/version "1.0.1"}
+  com.taoensso/sente {:mvn/version "1.16.0"}}
 
  :aliases
  {:dev
   {:extra-paths ["src/dev/clojure"]
    :extra-deps {org.clojure/tools.namespace {:mvn/version "1.0.0"}
-                org.clojure/clojurescript {:mvn/version "1.10.597"}
-                thheller/shadow-cljs {:mvn/version "2.8.94"}
-                binaryage/devtools {:mvn/version "1.0.0"}}}
+                thheller/shadow-cljs {:mvn/version "2.11.4"}
+                binaryage/devtools {:mvn/version "1.0.2"}}}
 
   :test
   {:extra-paths ["src/test/clojure" "src/test/resources"]}
