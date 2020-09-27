@@ -15,13 +15,13 @@
  :aliases
  {:dev
   {:extra-paths ["src/dev/clojure"]
-   :extra-deps {org.clojure/tools.namespace {:mvn/version "1.0.0"}
-                thheller/shadow-cljs {:mvn/version "2.11.4"}
+   :extra-deps {org.clojure/tools.namespace {:mvn/version "1.0.0"}}}
+   
+
+  :app
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.4"}
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
-  :test
-  {:extra-paths ["src/test/clojure" "src/test/resources"]}
 
-  :depot
-  {:extra-deps {olical/depot {:mvn/version "1.8.4"}}
-   :main-opts ["-m" "depot.outdated.main"]}}}
+  :test
+  {:extra-paths ["src/test/clojure" "src/test/resources"]}}}
