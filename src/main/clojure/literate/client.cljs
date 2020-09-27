@@ -91,11 +91,7 @@
    [:div.flex.bg-white.border-b.border-gray-200.fixed.top-0.inset-x-0.z-100.h-16.items-center.justify-between.px-6
     [:span.text-lg.text-gray-700
      {:style {:font-family "Cinzel"}}
-     "Literate"]
-
-    [:div
-     [:span.text-gray-600.hover:text-gray-900.cursor-default "Import"]
-     [:span.text-gray-600.hover:text-gray-900.cursor-default.ml-4 "Export"]]]
+     "Literate"]]
 
 
    ;; -- Literates
