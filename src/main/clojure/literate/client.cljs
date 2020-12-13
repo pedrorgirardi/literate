@@ -89,8 +89,9 @@
   [:div.flex.flex-col
 
    ;; -- Header
- 
-   [:span.text-lg.text-gray-700.py-6 {:style {:font-family "Cinzel"}}
+
+   [:span.text-lg.text-gray-700.py-6
+    {:style {:font-family "Cinzel"}}
     "Literate"]
 
 
