@@ -84,17 +84,15 @@
 
 
 (defc App []
-  [:div.flex.flex-col.pt-24
+  [:div.flex.flex-col
 
-   ;; -- Nav
-
-   [:div.flex.bg-white.border-b.border-gray-200.fixed.top-0.inset-x-0.z-100.h-16.items-center.justify-between.px-6
-    [:span.text-lg.text-gray-700
-     {:style {:font-family "Cinzel"}}
-     "Literate"]]
+   ;; -- Header
+ 
+   [:span.text-lg.text-gray-700.py-6 {:style {:font-family "Cinzel"}}
+    "Literate"]
 
 
-   ;; -- Literates
+   ;; -- Cards
 
    (for [{:db/keys [id] :as card} (db/all-cards)]
      [:div.flex.mb-6.shadow
