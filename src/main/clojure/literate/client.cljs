@@ -60,25 +60,27 @@
   [:div {:dangerouslySetInnerHTML {:__html html}}])
 
 (defc Card [{:card/keys [snippets]}]
-  [:div.w-full
+  [:div.w-full.flex.flex-col.space-y-6
    (for [{:snippet/keys [uuid type code markdown vega-lite-spec html]} snippets]
-     [:div.mb-4 {:key uuid} (case type
-                              :snippet.type/code
-                              (Code code)
+     [:div {:key uuid}
+      (case type
+        :snippet.type/code
+        (Code code)
 
-                              :snippet.type/markdown
-                              (Markdown markdown)
+        :snippet.type/markdown
+        (Markdown markdown)
 
-                              :snippet.type/vega-lite
-                              (VegaLite vega-lite-spec)
+        :snippet.type/vega-lite
+        (VegaLite vega-lite-spec)
 
-                              :snippet.type/hiccup
-                              (Html html)
+        :snippet.type/hiccup
+        (Html html)
 
-                              :snippet.type/html
-                              (Html html)
+        :snippet.type/html
+        (Html html)
 
-                              [:div [:span "Unknown Snippet type " [:code (str type)]]])])])
+        [:div [:span "Unknown Snippet type " [:code (str type)]]])])])
+
 
 ;; ---
 
