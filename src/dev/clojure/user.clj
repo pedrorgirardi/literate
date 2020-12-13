@@ -141,6 +141,6 @@
   (l/transact [card-1 card-2])
 
   ;; -- Update `hiccup-snippet-1` - notice that both cards update.
-  (l/transact [(assoc hiccup-snippet-2 :snippet/html (rum.server-render/render-static-markup [:span "Bar"]))])
+  (l/transact [(assoc hiccup-snippet-1 :snippet/html (rum.server-render/render-static-markup [:span "Bar"]))])
 
   )

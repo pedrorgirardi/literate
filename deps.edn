@@ -2,24 +2,24 @@
 
  :deps
  {org.clojure/clojure {:mvn/version "1.10.1"}
-  org.clojure/core.async {:mvn/version "1.1.587"}
-  ring/ring-core {:mvn/version "1.8.1"}
+  org.clojure/core.async {:mvn/version "1.3.610"}
+  ring/ring-core {:mvn/version "1.8.2"}
   ring/ring-defaults {:mvn/version "0.3.2"}
   http-kit/http-kit {:mvn/version "2.5.0"}
   compojure/compojure {:mvn/version "1.6.2"}
   hiccup/hiccup {:mvn/version "1.0.5"}
   rum/rum {:mvn/version "0.12.3" :exclusions [cljsjs/react cljsjs/react-dom]}
-  datascript/datascript {:mvn/version "1.0.1"}
+  datascript/datascript {:mvn/version "1.0.2"}
   com.taoensso/sente {:mvn/version "1.16.0"}}
 
  :aliases
  {:dev
   {:extra-paths ["src/dev/clojure"]
-   :extra-deps {org.clojure/tools.namespace {:mvn/version "1.0.0"}}}
+   :extra-deps {org.clojure/tools.namespace {:mvn/version "1.1.0"}}}
    
 
   :app
-  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.4"}
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.8"}
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
 
