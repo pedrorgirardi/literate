@@ -75,10 +75,10 @@
                          (.addTo M)))
 
                    state)}
-  [_]
+  [snippet]
   [:div
    {:style
-    {:height "320px"}}])
+    {:height (or (get-in snippet [:snippet/style :height]) "320px")}}])
 
 (defc Card [{:card/keys [snippets]}]
   [:div.w-full.flex.flex-col.space-y-6

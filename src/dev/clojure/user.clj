@@ -145,7 +145,8 @@
 
 
   ;; -- Leaflet
-  (l/leaflet {:center [51.505 -0.09]
+  (l/leaflet {:style {:height "400px"}
+              :center [51.505 -0.09]
               :zoom 10})
 
   )

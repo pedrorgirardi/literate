@@ -53,11 +53,14 @@
 
 (defn leaflet-snippet
   "Returns a Leaflet Snippet entity."
-  [{:keys [center zoom]}]
-  #:snippet {:uuid (str (UUID/randomUUID))
-             :type :snippet.type/leaflet
-             :center center
-             :zoom zoom})
+  [{:keys [style center zoom]}]
+  (merge #:snippet {:uuid (str (UUID/randomUUID))
+                    :type :snippet.type/leaflet
+                    :center center
+                    :zoom zoom}
+
+         (when style
+           {:snippet/style style})))
 
 (defn code
   "Transacts a Card containing a single Code Snippet."
