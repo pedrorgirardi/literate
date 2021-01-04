@@ -81,6 +81,9 @@
 
   (l/transact
     [(l/card
+
+       ;; -- Hiccup
+
        (l/hiccup-snippet
          [:div.bg-white.p-2.font-thin
           [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]
@@ -97,7 +100,10 @@
            [:li "Code"]
            [:li "Markdown"]
            [:li "Hiccup"]
-           [:li "Vega Lite"]]])
+           [:li "Vega Lite"]
+           [:li "Leaflet"]]])
+
+       ;; -- Vega Lite
 
        (l/hiccup-snippet
          [:span.p-2.text-lg "Vega Lite Snippet"])
@@ -121,10 +127,21 @@
                      :y {:field "b"
                          :type "quantitative"}}})
 
+       ;; -- Code
+
        (l/hiccup-snippet
          [:span.p-2.text-lg "Code Snippet"])
 
-       (l/code-snippet (slurp (io/resource "literate/core.clj"))))])
+       (l/code-snippet (slurp (io/resource "literate/core.clj")))
+
+       ;; -- Leaflet
+
+       (l/hiccup-snippet
+         [:span.p-2.text-lg "Leaflet Snippet"])
+
+       (l/leaflet-snippet {:style {:height "400px"}
+                           :center [51.505 -0.09]
+                           :zoom 10}))])
 
 
   (def hiccup-snippet-1
