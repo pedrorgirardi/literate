@@ -143,4 +143,9 @@
   ;; -- Update `hiccup-snippet-1` - notice that both cards update.
   (l/transact [(assoc hiccup-snippet-1 :snippet/html (rum.server-render/render-static-markup [:span "Bar"]))])
 
+
+  ;; -- Leaflet
+  (l/leaflet {:center [51.505 -0.09]
+              :zoom 10})
+
   )

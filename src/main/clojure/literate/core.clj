@@ -51,6 +51,14 @@
              :type :snippet.type/hiccup
              :html (rum.server-render/render-static-markup hiccup)})
 
+(defn leaflet-snippet
+  "Returns a Leaflet Snippet entity."
+  [{:keys [center zoom]}]
+  #:snippet {:uuid (str (UUID/randomUUID))
+             :type :snippet.type/leaflet
+             :center center
+             :zoom zoom})
+
 (defn code
   "Transacts a Card containing a single Code Snippet."
   [code]
@@ -75,3 +83,8 @@
   "Transacts a Card containing a single Hiccup Snippet."
   [hiccup]
   (transact [(card (hiccup-snippet hiccup))]))
+
+(defn leaflet
+  "Transacts a Card containing a single Leaflet Snippet."
+  [{:keys [center zoom] :as m}]
+  (transact [(card (leaflet-snippet m))]))
