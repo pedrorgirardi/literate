@@ -10,6 +10,9 @@
     (doseq [uid (:any @server/connected-uids)]
       (server/chsk-send! uid [:literate/!transact data]))))
 
+(defn view [& widgets]
+  (transact widgets))
+
 (defn card
   "Returns a Card entity."
   [& snippets]

@@ -36,18 +36,18 @@
 
 (defc Code < {:did-mount
               (fn [state]
-                (let [{:snippet/keys [code]} (first (:rum/args state))]
+                (let [{:widget/keys [code]} (first (:rum/args state))]
                   (codemirror (rum/dom-node state) #js {"value" code
                                                         "mode" "clojure"
                                                         "lineNumbers" false}))
 
                 state)}
   [_]
-  [:div])
+  [:div.flex-1])
 
 (defc VegaLite < {:did-mount
                   (fn [state]
-                    (let [{:snippet/keys [vega-lite-spec]} (first (:rum/args state))]
+                    (let [{:widget/keys [vega-lite-spec]} (first (:rum/args state))]
                       (vega-embed (rum/dom-node state) (clj->js vega-lite-spec)))
 
                     state)}
@@ -141,6 +141,29 @@
 
         [:div [:span "Unknown Snippet type " [:code (str type)]]])])])
 
+(defc Widget [e]
+  (let [{widget-type :widget/type} e]
+    (case widget-type
+      :widget.type/vega-lite
+      (VegaLite e)
+
+      :widget.type/code
+      (Code e)
+
+      :snippet.type/markdown
+      (Markdown e)
+
+      :snippet.type/hiccup
+      (Html e)
+
+      :snippet.type/html
+      (Html e)
+
+      :snippet.type/leaflet
+      (Leaflet e)
+
+      [:div [:span "Unknown Widget type " [:code (str widget-type)]]])))
+
 
 ;; ---
 
@@ -155,9 +178,9 @@
     "Literate"]
 
 
-   ;; -- Cards
+   ;; -- Widgets
 
-   (for [{:db/keys [id] :as card} (db/all-cards)]
+   (for [{:db/keys [id] :as e} (db/root-widgets)]
      [:div.flex.mb-6.shadow
       {:key id}
 
@@ -166,18 +189,16 @@
         {:on-click #(db/retract-entity id)}
         [:i.zmdi.zmdi-close.text-gray-600]]]
 
-      (Card card)])
+      (Widget e)])
 
 
    ;; -- Debug
 
    [:div.fixed.bottom-0.right-0.mr-4.mb-4
     [:div.rounded-full.h-8.w-8.flex.items-center.justify-center.text-2xl.hover:bg-green-200
-     {:on-click #(d/transact! db/conn [#:card {:uuid (str (random-uuid))
-                                               :snippets
-                                               [#:snippet {:uuid (str (random-uuid))
-                                                           :type :snippet.type/code
-                                                           :code (with-out-str (pprint/pprint (db/all-cards)))}]}])}
+     {:on-click #(d/transact! db/conn [#:widget {:uuid (str (random-uuid))
+                                                 :type :widget.type/code
+                                                 :code (with-out-str (pprint/pprint (db/all-widgets)))}])}
      [:i.zmdi.zmdi-bug.text-green-500]]]])
 
 

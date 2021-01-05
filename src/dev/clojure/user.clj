@@ -5,7 +5,8 @@
 
             [literate.db :as db]
             [literate.server :as server]
-            [literate.core :as l]
+            [literate.core :as literate]
+            [literate.widget :as widget]
 
             [rum.server-render]
             [datascript.core :as d]))
@@ -27,56 +28,78 @@
 
   (reset)
 
-  (l/markdown "**Welcome to Literate**\n\nEval some forms to get started!")
+  (literate/view
+    (widget/vega-lite
+      {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
+       :description "A simple bar chart with embedded data."
+       :data {:values
+              [{:a "A" :b 28}
+               {:a "B" :b 55}
+               {:a "C" :b 43}
+               {:a "D" :b 91}
+               {:a "E" :b 81}
+               {:a "F" :b 53}
+               {:a "G" :b 19}
+               {:a "H" :b 87}
+               {:a "I" :b 52}]}
+       :mark "bar"
+       :encoding {:x {:field "a"
+                      :type "ordinal"}
+                  :y {:field "b"
+                      :type "quantitative"}}}))
 
-  (l/html (rum.server-render/render-static-markup [:div.bg-white.p-2
-                                                   [:h1.text-6xl "Hello from Hiccup"]
-                                                   [:span "Text"]]))
 
-  (l/hiccup [:div.bg-white.p-2.font-thin
-             [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]
 
-             [:p.font-semibold "Literate is a graphical user interface extension for your Clojure REPL."]
+  (literate/markdown "**Welcome to Literate**\n\nEval some forms to get started!")
 
-             [:p.mt-4 "This interface that you're looking at it's called a " [:span.font-bold "Snippet"]
-              ", and you can create one from a Clojure REPL."]
+  (literate/html (rum.server-render/render-static-markup [:div.bg-white.p-2
+                                                          [:h1.text-6xl "Hello from Hiccup"]
+                                                          [:span "Text"]]))
 
-             [:p.mt-2.mb1 "There's a few different types of Snippets that are supported:"]
+  (literate/hiccup [:div.bg-white.p-2.font-thin
+                    [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]
 
-             [:ul.list-disc.list-inside.ml-2
-              [:li "Code"]
-              [:li "Markdown"]
-              [:li "Hiccup"]
-              [:li "Vega Lite"]]])
+                    [:p.font-semibold "Literate is a graphical user interface extension for your Clojure REPL."]
 
-  (l/code (slurp (io/resource "literate/core.clj")))
+                    [:p.mt-4 "This interface that you're looking at it's called a " [:span.font-bold "Snippet"]
+                     ", and you can create one from a Clojure REPL."]
 
-  (l/code (mapv inc (range 10)))
+                    [:p.mt-2.mb1 "There's a few different types of Snippets that are supported:"]
 
-  (l/vega-lite {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-                :description "A simple bar chart with embedded data."
-                :data {:values
-                       [{:a "A" :b 28}
-                        {:a "B" :b 55}
-                        {:a "C" :b 43}
-                        {:a "D" :b 91}
-                        {:a "E" :b 81}
-                        {:a "F" :b 53}
-                        {:a "G" :b 19}
-                        {:a "H" :b 87}
-                        {:a "I" :b 52}]}
-                :mark "bar"
-                :encoding {:x {:field "a"
-                               :type "ordinal"}
-                           :y {:field "b"
-                               :type "quantitative"}}})
+                    [:ul.list-disc.list-inside.ml-2
+                     [:li "Code"]
+                     [:li "Markdown"]
+                     [:li "Hiccup"]
+                     [:li "Vega Lite"]]])
 
-  (l/transact
-    [(l/card
+  (literate/code (slurp (io/resource "literate/core.clj")))
+
+  (literate/code (mapv inc (range 10)))
+
+  (literate/vega-lite {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
+                       :description "A simple bar chart with embedded data."
+                       :data {:values
+                              [{:a "A" :b 28}
+                               {:a "B" :b 55}
+                               {:a "C" :b 43}
+                               {:a "D" :b 91}
+                               {:a "E" :b 81}
+                               {:a "F" :b 53}
+                               {:a "G" :b 19}
+                               {:a "H" :b 87}
+                               {:a "I" :b 52}]}
+                       :mark "bar"
+                       :encoding {:x {:field "a"
+                                      :type "ordinal"}
+                                  :y {:field "b"
+                                      :type "quantitative"}}})
+
+  (literate/transact
+    [(literate/card
 
        ;; -- Hiccup
 
-       (l/hiccup-snippet
+       (literate/hiccup-snippet
          [:div.bg-white.p-2.font-thin
           [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]
 
@@ -97,10 +120,10 @@
 
        ;; -- Vega Lite
 
-       (l/hiccup-snippet
+       (literate/hiccup-snippet
          [:span.p-2.text-lg "Vega Lite Snippet"])
 
-       (l/vega-lite-snippet
+       (literate/vega-lite-snippet
          {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
           :description "A simple bar chart with embedded data."
           :data {:url "https://vega.github.io/editor/data/stocks.csv"}
@@ -113,36 +136,36 @@
 
        ;; -- Code
 
-       (l/hiccup-snippet
+       (literate/hiccup-snippet
          [:span.p-2.text-lg "Code Snippet"])
 
-       (l/code-snippet (slurp (io/resource "literate/core.clj")))
+       (literate/code-snippet (slurp (io/resource "literate/core.clj")))
 
        ;; -- Leaflet
 
-       (l/hiccup-snippet
+       (literate/hiccup-snippet
          [:span.p-2.text-lg "Leaflet Snippet"])
 
-       (l/leaflet-snippet {:style {:height "400px"}
-                           :center [51.505 -0.09]
-                           :zoom 10}))])
+       (literate/leaflet-snippet {:style {:height "400px"}
+                                  :center [51.505 -0.09]
+                                  :zoom 10}))])
 
 
   (def hiccup-snippet-1
-    (l/hiccup-snippet [:span "Foo"]))
+    (literate/hiccup-snippet [:span "Foo"]))
 
   (def hiccup-snippet-2
-    (l/hiccup-snippet [:span "Foo"]))
+    (literate/hiccup-snippet [:span "Foo"]))
 
-  (def card-1 (l/card hiccup-snippet-1))
+  (def card-1 (literate/card hiccup-snippet-1))
 
-  (def card-2 (l/card hiccup-snippet-1
-                      hiccup-snippet-2))
+  (def card-2 (literate/card hiccup-snippet-1
+                             hiccup-snippet-2))
 
-  (l/transact [card-1 card-2])
+  (literate/transact [card-1 card-2])
 
   ;; -- Update `hiccup-snippet-1` - notice that both cards update.
-  (l/transact [(assoc hiccup-snippet-1 :snippet/html (rum.server-render/render-static-markup [:span "Bar"]))])
+  (literate/transact [(assoc hiccup-snippet-1 :snippet/html (rum.server-render/render-static-markup [:span "Bar"]))])
 
 
   ;; -- Leaflet
@@ -153,23 +176,22 @@
   (def center (vec (reverse (get-in geojson ["features" 0 "geometry" "coordinates"]))))
 
   (def leaflet-snippet
-    (l/leaflet-snippet
+    (literate/leaflet-snippet
       {:style {:height "600px"}
        :center center
        :zoom 10
        :geojson (update geojson "features" #(take 10 %))}))
 
   (def leaflet-card
-    (l/card leaflet-snippet))
+    (literate/card leaflet-snippet))
 
-  (l/transact [leaflet-card])
+  (literate/transact [leaflet-card])
 
   ;; -- Update entity & transact.
 
   (def leaflet-snippet'
     (merge leaflet-snippet {:snippet/geojson (update geojson "features" #(take 5 %))}))
 
-  (l/transact [leaflet-snippet'])
-
+  (literate/transact [leaflet-snippet'])
 
   )
