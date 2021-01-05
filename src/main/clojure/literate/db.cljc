@@ -11,6 +11,10 @@
                               {:db/valueType :db.type/ref
                                :db/cardinality :db.cardinality/one}
 
+                              :widget/children
+                              {:db/valueType :db.type/ref
+                               :db/cardinality :db.cardinality/many}
+
                               :card/uuid
                               {:db/unique :db.unique/identity}
 
@@ -20,13 +24,6 @@
 
 (defn retract-entity [id]
   (d/transact! conn [[:db.fn/retractEntity id]]))
-
-(defn all-cards []
-  (d/q '[:find [(pull ?e [:db/id :card/uuid {:card/snippets [*]}]) ...]
-         :in $
-         :where
-         [?e :card/uuid]]
-       @conn))
 
 (defn all-widgets
   "Finds all Widgets."
@@ -40,7 +37,7 @@
 (defn root-widgets
   "Finds all Widgets which doesn't have a parent."
   []
-  (d/q '[:find [(pull ?e [:*]) ...]
+  (d/q '[:find [(pull ?e [:* {:widget/children [*]}]) ...]
          :in $
          :where
          [?e :widget/uuid]

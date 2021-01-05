@@ -1,6 +1,14 @@
 (ns literate.widget
   (:import (java.util UUID)))
 
+(defn row
+  "Returns a Row layout entity."
+  [{:keys [gap]} & children]
+  {:db/id -1
+   :widget/uuid (str (UUID/randomUUID))
+   :widget/type :widget.type/row
+   :widget/children (map #(assoc % :widget/parent -1) children)})
+
 (defn vega-lite
   "Returns a Vega Lite Widget entity."
   [vega-lite-spec]

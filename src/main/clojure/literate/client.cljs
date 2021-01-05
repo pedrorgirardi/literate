@@ -116,28 +116,43 @@
    {:style
     {:height (or (get-in snippet [:widget/style :height]) "320px")}}])
 
+(declare Widget)
+
+(defc Row
+  [e]
+  [:div.flex.flex-1.space-x-2
+   (for [child (:widget/children e)]
+     [:div.flex-1 (Widget child)])])
+
 (defc Widget [e]
-  (let [{widget-type :widget/type} e]
-    (case widget-type
-      :widget.type/vega-lite
-      (VegaLite e)
+  (let [{widget-uuid :widget/uuid
+         widget-type :widget/type} e
 
-      :widget.type/code
-      (Code e)
+        component (case widget-type
+                    :widget.type/row
+                    (Row e)
 
-      :snippet.type/markdown
-      (Markdown e)
+                    :widget.type/vega-lite
+                    (VegaLite e)
 
-      :snippet.type/hiccup
-      (Html e)
+                    :widget.type/code
+                    (Code e)
 
-      :snippet.type/html
-      (Html e)
+                    :snippet.type/markdown
+                    (Markdown e)
 
-      :widget.type/leaflet
-      (Leaflet e)
+                    :snippet.type/hiccup
+                    (Html e)
 
-      [:div [:span "Unknown Widget type " [:code (str widget-type)]]])))
+                    :snippet.type/html
+                    (Html e)
+
+                    :widget.type/leaflet
+                    (Leaflet e)
+
+                    [:div [:span "Unknown Widget type " [:code (str widget-type)]]])]
+
+    (rum/with-key component widget-uuid)))
 
 
 ;; ---
@@ -155,7 +170,7 @@
 
    ;; -- Widgets
 
-   (for [{:db/keys [id] :as e} (db/root-widgets)]
+   (for [{:db/keys [id] :as e} (db/root-widgets) :let [_ (js/console.log "Root Widget" e)]]
      [:div.flex.mb-6.shadow
       {:key id}
 
