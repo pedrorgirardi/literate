@@ -62,7 +62,7 @@
 
 (defc Leaflet < {:did-mount
                  (fn [state]
-                   (let [[{:snippet/keys [center zoom]}] (:rum/args state)
+                   (let [[{:snippet/keys [center zoom geojson]}] (:rum/args state)
 
                          M (-> leaflet
                                (.map (rum/dom-node state))
@@ -72,7 +72,12 @@
                          tile-options #js {:attribution "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"}]
 
                      (-> (.tileLayer leaflet tile-url-template tile-options)
-                         (.addTo M)))
+                         (.addTo M))
+
+                     ;; GeoJSON (optional)
+                     (when geojson
+                       (-> (.geoJSON leaflet (clj->js geojson))
+                           (.addTo M))))
 
                    state)}
   [snippet]

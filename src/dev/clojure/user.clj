@@ -1,6 +1,7 @@
 (ns user
   (:require [clojure.tools.namespace.repl :refer [refresh]]
             [clojure.java.io :as io]
+            [clojure.data.json :as json]
 
             [literate.db :as db]
             [literate.server :as server]
@@ -162,8 +163,14 @@
 
 
   ;; -- Leaflet
-  (l/leaflet {:style {:height "400px"}
-              :center [51.505 -0.09]
-              :zoom 10})
+  (def geojson-sample (json/read (io/reader "src/dev/resources/points.geojson")))
+
+  (let [[lat lng] (get-in geojson-sample ["features" 0 "geometry" "coordinates"])
+        geojson (update geojson-sample "features" #(take 10 %))]
+    (l/leaflet
+      {:style {:height "600px"}
+       :center [lng lat]
+       :zoom 10
+       :geojson geojson}))
 
   )
