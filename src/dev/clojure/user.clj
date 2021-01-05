@@ -71,15 +71,6 @@
                            :y {:field "b"
                                :type "quantitative"}}})
 
-  (l/vega-lite {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-                :data {:url "https://vega.github.io/editor/data/movies.json"}
-                :mark "bar"
-                :encoding {:x {:field "IMDB_Rating"
-                               :type "quantitative"
-                               :bin true}
-                           :y {:aggregate "count"
-                               :type "quantitative"}}})
-
   (l/transact
     [(l/card
 
