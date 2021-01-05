@@ -98,15 +98,15 @@
 
                      ;; Remove old GeoJSON layer.
                      (when geojson-layer
+                       (js/console.log "Remove GeoJSON layer" geojson-layer)
                        (.removeLayer M geojson-layer))
 
                      ;; Add GeoJSON layer.
                      (when geojson-layer'
+                       (js/console.log "Add (new) GeoJSON layer" geojson-layer')
                        (.addTo geojson-layer' M))
 
-                     (js/console.log :did-update state)
-
-                     (assoc state geojson-layer ::geojson-layer)))}
+                     (assoc state ::geojson-layer geojson-layer')))}
   [snippet]
   [:div
    {:style

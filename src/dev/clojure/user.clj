@@ -146,30 +146,30 @@
 
 
   ;; -- Leaflet
-  (def geojson-sample (json/read (io/reader "src/dev/resources/points.geojson")))
+  (def geojson (json/read (io/reader "src/dev/resources/points.geojson")))
 
-  (let [[lng lat] (get-in geojson-sample ["features" 0 "geometry" "coordinates"])
-        geojson (update geojson-sample "features" #(take 10 %))]
-    (l/leaflet
+  (def sample (update geojson "features" #(take 10 %)))
+
+  (def center (vec (reverse (get-in geojson ["features" 0 "geometry" "coordinates"]))))
+
+  (def leaflet-snippet
+    (l/leaflet-snippet
       {:style {:height "600px"}
-       :center [lat lng]
+       :center center
        :zoom 10
-       :geojson geojson}))
+       :geojson (update geojson "features" #(take 10 %))}))
 
+  (def leaflet-card
+    (l/card leaflet-snippet))
 
-  (let [[lng lat] (get-in geojson-sample ["features" 0 "geometry" "coordinates"])
-        geojson (update geojson-sample "features" #(take 10 %))]
+  (l/transact [leaflet-card])
 
-    (def leaflet-snippet-1
-      (l/leaflet-snippet {:style {:height "600px"}
-                          :center [lat lng]
-                          :zoom 10
-                          :geojson geojson}))
+  ;; -- Update entity & transact.
 
-    (def leaflet-card-1 (l/card leaflet-snippet-1))
+  (def leaflet-snippet'
+    (merge leaflet-snippet {:snippet/geojson (update geojson "features" #(take 5 %))}))
 
-    (l/transact [leaflet-card-1]))
-
+  (l/transact [leaflet-snippet'])
 
 
   )
