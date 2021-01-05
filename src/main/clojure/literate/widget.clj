@@ -1,4 +1,5 @@
 (ns literate.widget
+  (:require [rum.server-render])
   (:import (java.util UUID)))
 
 (defn row
@@ -44,3 +45,24 @@
 
          (when geojson
            {:widget/geojson geojson})))
+
+(defn markdown
+  "Returns a Markdown Widget entity."
+  [markdown]
+  #:widget {:uuid (str (UUID/randomUUID))
+            :type :widget.type/markdown
+            :markdown markdown})
+
+(defn html
+  "Returns an Html Widget entity."
+  [html]
+  #:widget {:uuid (str (UUID/randomUUID))
+            :type :widget.type/html
+            :html html})
+
+(defn hiccup
+  "Returns a Hiccup Widget entity."
+  [hiccup]
+  #:widget {:uuid (str (UUID/randomUUID))
+            :type :widget.type/hiccup
+            :html (rum.server-render/render-static-markup hiccup)})

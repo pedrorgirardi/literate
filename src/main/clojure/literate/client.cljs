@@ -56,15 +56,15 @@
 
 (defc Markdown
   [e]
-  [:div.bg-white.px-2.py-1.font-thin
+  [:div.flex-1.bg-white.px-3.py-1.font-thin
    {:dangerouslySetInnerHTML
-    {:__html (marked (:snippet/markdown e))}}])
+    {:__html (marked (:widget/markdown e))}}])
 
 (defc Html
   [e]
-  [:div
+  [:div.flex-1
    {:dangerouslySetInnerHTML
-    {:__html (:snippet/html e)}}])
+    {:__html (:widget/html e)}}])
 
 (defc Leaflet < {:did-mount
                  (fn [state]
@@ -111,10 +111,10 @@
                        (.addTo geojson-layer' M))
 
                      (assoc state ::geojson-layer geojson-layer')))}
-  [snippet]
+  [e]
   [:div.flex-1
    {:style
-    {:height (or (get-in snippet [:widget/style :height]) "320px")}}])
+    {:height (or (get-in e [:widget/style :height]) "320px")}}])
 
 (declare Widget)
 
@@ -151,19 +151,19 @@
                     :widget.type/code
                     (Code e)
 
-                    :snippet.type/markdown
+                    :widget.type/markdown
                     (Markdown e)
 
-                    :snippet.type/hiccup
+                    :widget.type/hiccup
                     (Html e)
 
-                    :snippet.type/html
+                    :widget.type/html
                     (Html e)
 
                     :widget.type/leaflet
                     (Leaflet e)
 
-                    [:div [:span "Unknown Widget type " [:code (str widget-type)]]])]
+                    [:div.p-2 [:span "Unknown Widget type " [:code (str widget-type)]]])]
 
     (rum/with-key component widget-uuid)))
 
@@ -183,7 +183,7 @@
 
    ;; -- Widgets
 
-   (for [{:db/keys [id] :as e} (db/root-widgets) :let [_ (js/console.log "Root Widget" e)]]
+   (for [{:db/keys [id] :as e} (db/root-widgets)]
      [:div.flex.mb-6.shadow
       {:key id}
 
