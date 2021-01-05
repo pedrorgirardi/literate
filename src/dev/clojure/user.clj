@@ -173,4 +173,20 @@
        :zoom 10
        :geojson geojson}))
 
+
+  (let [[lng lat] (get-in geojson-sample ["features" 0 "geometry" "coordinates"])
+        geojson (update geojson-sample "features" #(take 10 %))]
+
+    (def leaflet-snippet-1
+      (l/leaflet-snippet {:style {:height "600px"}
+                          :center [lat lng]
+                          :zoom 10
+                          :geojson geojson}))
+
+    (def leaflet-card-1 (l/card leaflet-snippet-1))
+
+    (l/transact [leaflet-card-1]))
+
+
+
   )

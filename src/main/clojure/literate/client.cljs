@@ -77,7 +77,13 @@
                      ;; GeoJSON (optional)
                      (when geojson
                        (-> (.geoJSON leaflet (clj->js geojson))
-                           (.addTo M))))
+                           (.addTo M)))
+
+                     (assoc state ::M M)))
+
+                 :did-update
+                 (fn [{::keys [M] :as state}]
+                   (js/console.log "Leaflet" M)
 
                    state)}
   [snippet]
