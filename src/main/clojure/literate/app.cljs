@@ -1,4 +1,4 @@
-(ns literate.client
+(ns literate.app
   (:require [cljs.spec.alpha :as s]
             [cljs.pprint :as pprint]
 
@@ -36,18 +36,18 @@
 
 (defc Code < {:did-mount
               (fn [state]
-                (let [{:snippet/keys [code]} (first (:rum/args state))]
+                (let [{:widget/keys [code]} (first (:rum/args state))]
                   (codemirror (rum/dom-node state) #js {"value" code
                                                         "mode" "clojure"
                                                         "lineNumbers" false}))
 
                 state)}
   [_]
-  [:div])
+  [:div.flex-1])
 
 (defc VegaLite < {:did-mount
                   (fn [state]
-                    (let [{:snippet/keys [vega-lite-spec]} (first (:rum/args state))]
+                    (let [{:widget/keys [vega-lite-spec]} (first (:rum/args state))]
                       (vega-embed (rum/dom-node state) (clj->js vega-lite-spec)))
 
                     state)}
@@ -56,19 +56,19 @@
 
 (defc Markdown
   [e]
-  [:div.bg-white.px-2.py-1.font-thin
+  [:div.flex-1.bg-white.px-3.py-1.font-thin
    {:dangerouslySetInnerHTML
-    {:__html (marked (:snippet/markdown e))}}])
+    {:__html (marked (:widget/markdown e))}}])
 
 (defc Html
   [e]
-  [:div
+  [:div.flex-1
    {:dangerouslySetInnerHTML
-    {:__html (:snippet/html e)}}])
+    {:__html (:widget/html e)}}])
 
 (defc Leaflet < {:did-mount
                  (fn [state]
-                   (let [[{:snippet/keys [center zoom geojson]}] (:rum/args state)
+                   (let [[{:widget/keys [center zoom geojson]}] (:rum/args state)
 
                          M (-> leaflet
                                (.map (rum/dom-node state))
@@ -97,7 +97,7 @@
                           geojson-layer ::geojson-layer
                           args :rum/args} state
 
-                         {:snippet/keys [center zoom geojson]} (first args)
+                         {:widget/keys [center zoom geojson]} (first args)
 
                          geojson-layer' (when geojson
                                           (.geoJSON leaflet (clj->js geojson)))]
@@ -111,35 +111,61 @@
                        (.addTo geojson-layer' M))
 
                      (assoc state ::geojson-layer geojson-layer')))}
-  [snippet]
-  [:div
+  [e]
+  [:div.flex-1
    {:style
-    {:height (or (get-in snippet [:snippet/style :height]) "320px")}}])
+    {:height (or (get-in e [:widget/style :height]) "320px")}}])
 
-(defc Card [{:card/keys [snippets]}]
-  [:div.w-full.flex.flex-col.space-y-6
-   (for [{:snippet/keys [uuid type] :as snippet} snippets]
-     [:div {:key uuid}
-      (case type
-        :snippet.type/code
-        (Code snippet)
+(declare Widget)
 
-        :snippet.type/markdown
-        (Markdown snippet)
+(defc Row
+  [e]
+  [:div.flex.flex-1.space-x-2
+   (for [child (:widget/children e)]
+     [:div.flex-1
+      {:key (:widget/uuid child)}
+      (Widget child)])])
 
-        :snippet.type/vega-lite
-        (VegaLite snippet)
+(defc Column
+  [e]
+  [:div.flex.flex-col.flex-1.space-y-2
+   (for [child (:widget/children e)]
+     [:div.flex-1
+      {:key (:widget/uuid child)}
+      (Widget child)])])
 
-        :snippet.type/hiccup
-        (Html snippet)
+(defc Widget [e]
+  (let [{widget-uuid :widget/uuid
+         widget-type :widget/type} e
 
-        :snippet.type/html
-        (Html snippet)
+        component (case widget-type
+                    :widget.type/row
+                    (Row e)
 
-        :snippet.type/leaflet
-        (Leaflet snippet)
+                    :widget.type/column
+                    (Column e)
 
-        [:div [:span "Unknown Snippet type " [:code (str type)]]])])])
+                    :widget.type/vega-lite
+                    (VegaLite e)
+
+                    :widget.type/code
+                    (Code e)
+
+                    :widget.type/markdown
+                    (Markdown e)
+
+                    :widget.type/hiccup
+                    (Html e)
+
+                    :widget.type/html
+                    (Html e)
+
+                    :widget.type/leaflet
+                    (Leaflet e)
+
+                    [:div.p-2 [:span "Unknown Widget type " [:code (str widget-type)]]])]
+
+    (rum/with-key component widget-uuid)))
 
 
 ;; ---
@@ -155,9 +181,9 @@
     "Literate"]
 
 
-   ;; -- Cards
+   ;; -- Widgets
 
-   (for [{:db/keys [id] :as card} (db/all-cards)]
+   (for [{:db/keys [id] :as e} (db/root-widgets)]
      [:div.flex.mb-6.shadow
       {:key id}
 
@@ -166,18 +192,16 @@
         {:on-click #(db/retract-entity id)}
         [:i.zmdi.zmdi-close.text-gray-600]]]
 
-      (Card card)])
+      (Widget e)])
 
 
    ;; -- Debug
 
    [:div.fixed.bottom-0.right-0.mr-4.mb-4
     [:div.rounded-full.h-8.w-8.flex.items-center.justify-center.text-2xl.hover:bg-green-200
-     {:on-click #(d/transact! db/conn [#:card {:uuid (str (random-uuid))
-                                               :snippets
-                                               [#:snippet {:uuid (str (random-uuid))
-                                                           :type :snippet.type/code
-                                                           :code (with-out-str (pprint/pprint (db/all-cards)))}]}])}
+     {:on-click #(d/transact! db/conn [#:widget {:uuid (str (random-uuid))
+                                                 :type :widget.type/code
+                                                 :code (with-out-str (pprint/pprint (db/all-widgets)))}])}
      [:i.zmdi.zmdi-bug.text-green-500]]]])
 
 

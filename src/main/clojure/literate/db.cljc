@@ -4,6 +4,17 @@
 (defonce conn (d/create-conn {:snippet/uuid
                               {:db/unique :db.unique/identity}
 
+                              :widget/uuid
+                              {:db/unique :db.unique/identity}
+
+                              :widget/parent
+                              {:db/valueType :db.type/ref
+                               :db/cardinality :db.cardinality/one}
+
+                              :widget/children
+                              {:db/valueType :db.type/ref
+                               :db/cardinality :db.cardinality/many}
+
                               :card/uuid
                               {:db/unique :db.unique/identity}
 
@@ -14,9 +25,21 @@
 (defn retract-entity [id]
   (d/transact! conn [[:db.fn/retractEntity id]]))
 
-(defn all-cards []
-  (d/q '[:find [(pull ?e [:db/id :card/uuid {:card/snippets [*]}]) ...]
+(defn all-widgets
+  "Finds all Widgets."
+  []
+  (d/q '[:find [(pull ?e [:*]) ...]
          :in $
          :where
-         [?e :card/uuid]]
+         [?e :widget/uuid]]
+       @conn))
+
+(defn root-widgets
+  "Finds all Widgets which doesn't have a parent."
+  []
+  (d/q '[:find [(pull ?e [:* {:widget/children [*]}]) ...]
+         :in $
+         :where
+         [?e :widget/uuid]
+         [(missing? $ ?e :widget/parent)]]
        @conn))
