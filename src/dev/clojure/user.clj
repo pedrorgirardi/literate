@@ -48,6 +48,9 @@
                   :y {:field "b"
                       :type "quantitative"}}}))
 
+  (literate/view
+    (widget/code (slurp (io/resource "literate/core.clj"))))
+
 
 
   (literate/markdown "**Welcome to Literate**\n\nEval some forms to get started!")
@@ -71,8 +74,6 @@
                      [:li "Markdown"]
                      [:li "Hiccup"]
                      [:li "Vega Lite"]]])
-
-  (literate/code (slurp (io/resource "literate/core.clj")))
 
   (literate/code (mapv inc (range 10)))
 

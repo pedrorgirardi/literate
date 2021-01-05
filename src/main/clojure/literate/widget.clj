@@ -7,3 +7,10 @@
   #:widget {:uuid (str (UUID/randomUUID))
             :type :widget.type/vega-lite
             :vega-lite-spec vega-lite-spec})
+
+(defn code
+  "Returns a Code Widget entity."
+  [form]
+  #:widget {:uuid (str (UUID/randomUUID))
+            :type :widget.type/code
+            :code (str form)})
