@@ -1,7 +1,7 @@
 # Literate
 
 Literate is a graphical user interface extension for your Clojure REPL.
-          
+
 ![Image of Yaktocat](https://github.com/pedrorgirardi/literate/raw/master/doc/screen-shot.png)
 
 ## Installation
@@ -19,8 +19,10 @@ Literate is a graphical user interface extension for your Clojure REPL.
 (def stop-server (server/run-server {:port 8080}))
 
 (require '[literate.core :as literate])
+(require '[literate.widget :as widget])
 
-(literate/vega-lite {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
+(literate/view
+  (widget/vega-lite {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
                      :description "A simple bar chart with embedded data."
                      :data {:values
                             [{:a "A" :b 28}
@@ -36,19 +38,23 @@ Literate is a graphical user interface extension for your Clojure REPL.
                      :encoding {:x {:field "a"
                                     :type "ordinal"}
                                 :y {:field "b"
-                                    :type "quantitative"}}})
+                                    :type "quantitative"}}}))
 
-(literate/hiccup [:span "Hiccup Snippet"])
+(literate/view
+  (widget/hiccup [:span "Hiccup Snippet"]))
 ```
 
 ## Development
+
 ### Client
+
 ```
 npm install
 npm run watch
 ```
 
 ### Server
+
 ```clojure
 (require '[literate.server :as server])
 (server/run-server {:port 8090})
