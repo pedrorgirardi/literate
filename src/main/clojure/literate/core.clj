@@ -51,6 +51,20 @@
              :type :snippet.type/hiccup
              :html (rum.server-render/render-static-markup hiccup)})
 
+(defn leaflet-snippet
+  "Returns a Leaflet Snippet entity."
+  [{:keys [style center zoom geojson]}]
+  (merge #:snippet {:uuid (str (UUID/randomUUID))
+                    :type :snippet.type/leaflet
+                    :center (or center [51.505 -0.09])
+                    :zoom (or zoom 10)}
+
+         (when style
+           {:snippet/style style})
+
+         (when geojson
+           {:snippet/geojson geojson})))
+
 (defn code
   "Transacts a Card containing a single Code Snippet."
   [code]
@@ -75,3 +89,8 @@
   "Transacts a Card containing a single Hiccup Snippet."
   [hiccup]
   (transact [(card (hiccup-snippet hiccup))]))
+
+(defn leaflet
+  "Transacts a Card containing a single Leaflet Snippet."
+  [{:keys [center zoom] :as m}]
+  (transact [(card (leaflet-snippet m))]))

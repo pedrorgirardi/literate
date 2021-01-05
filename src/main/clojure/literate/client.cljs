@@ -11,6 +11,7 @@
 
             ["marked" :as marked]
             ["vega-embed" :as vega-embed]
+            ["leaflet" :as leaflet]
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]))
 
@@ -59,9 +60,59 @@
   [html]
   [:div {:dangerouslySetInnerHTML {:__html html}}])
 
+(defc Leaflet < {:did-mount
+                 (fn [state]
+                   (let [[{:snippet/keys [center zoom geojson]}] (:rum/args state)
+
+                         M (-> leaflet
+                               (.map (rum/dom-node state))
+                               (.setView (clj->js center) zoom))
+
+                         tile-url-template "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                         tile-options #js {:attribution "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"}
+                         tile-layer (.tileLayer leaflet tile-url-template tile-options)
+
+                         ;; GeoJSON (optional)
+                         geojson-layer (when geojson
+                                         (.geoJSON leaflet (clj->js geojson)))]
+
+                     (.addTo tile-layer M)
+
+                     (when geojson-layer
+                       (.addTo geojson-layer M))
+
+                     (assoc state ::M M
+                                  ::tile-layer tile-layer
+                                  ::geojson-layer geojson-layer)))
+
+                 :did-update
+                 (fn [state]
+                   (let [{M ::M
+                          geojson-layer ::geojson-layer
+                          args :rum/args} state
+
+                         {:snippet/keys [center zoom geojson]} (first args)
+
+                         geojson-layer' (when geojson
+                                          (.geoJSON leaflet (clj->js geojson)))]
+
+                     ;; Remove old GeoJSON layer.
+                     (when geojson-layer
+                       (.removeLayer M geojson-layer))
+
+                     ;; Add GeoJSON layer.
+                     (when geojson-layer'
+                       (.addTo geojson-layer' M))
+
+                     (assoc state ::geojson-layer geojson-layer')))}
+  [snippet]
+  [:div
+   {:style
+    {:height (or (get-in snippet [:snippet/style :height]) "320px")}}])
+
 (defc Card [{:card/keys [snippets]}]
   [:div.w-full.flex.flex-col.space-y-6
-   (for [{:snippet/keys [uuid type code markdown vega-lite-spec html]} snippets]
+   (for [{:snippet/keys [uuid type code markdown vega-lite-spec html] :as snippet} snippets]
      [:div {:key uuid}
       (case type
         :snippet.type/code
@@ -78,6 +129,9 @@
 
         :snippet.type/html
         (Html html)
+
+        :snippet.type/leaflet
+        (Leaflet snippet)
 
         [:div [:span "Unknown Snippet type " [:code (str type)]]])])])
 

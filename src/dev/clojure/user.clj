@@ -1,6 +1,7 @@
 (ns user
   (:require [clojure.tools.namespace.repl :refer [refresh]]
             [clojure.java.io :as io]
+            [clojure.data.json :as json]
 
             [literate.db :as db]
             [literate.server :as server]
@@ -70,17 +71,11 @@
                            :y {:field "b"
                                :type "quantitative"}}})
 
-  (l/vega-lite {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-                :data {:url "https://vega.github.io/editor/data/movies.json"}
-                :mark "bar"
-                :encoding {:x {:field "IMDB_Rating"
-                               :type "quantitative"
-                               :bin true}
-                           :y {:aggregate "count"
-                               :type "quantitative"}}})
-
   (l/transact
     [(l/card
+
+       ;; -- Hiccup
+
        (l/hiccup-snippet
          [:div.bg-white.p-2.font-thin
           [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]
@@ -97,7 +92,10 @@
            [:li "Code"]
            [:li "Markdown"]
            [:li "Hiccup"]
-           [:li "Vega Lite"]]])
+           [:li "Vega Lite"]
+           [:li "Leaflet"]]])
+
+       ;; -- Vega Lite
 
        (l/hiccup-snippet
          [:span.p-2.text-lg "Vega Lite Snippet"])
@@ -105,26 +103,29 @@
        (l/vega-lite-snippet
          {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
           :description "A simple bar chart with embedded data."
-          :data {:values
-                 [{:a "A" :b 28}
-                  {:a "B" :b 55}
-                  {:a "C" :b 43}
-                  {:a "D" :b 91}
-                  {:a "E" :b 81}
-                  {:a "F" :b 53}
-                  {:a "G" :b 19}
-                  {:a "H" :b 87}
-                  {:a "I" :b 52}]}
-          :mark "bar"
-          :encoding {:x {:field "a"
-                         :type "ordinal"}
-                     :y {:field "b"
+          :data {:url "https://vega.github.io/editor/data/stocks.csv"}
+          :transform [{"filter" "datum.symbol==='GOOG'"}],
+          :mark "line"
+          :encoding {:x {:field "date"
+                         :type "temporal"}
+                     :y {:field "price"
                          :type "quantitative"}}})
+
+       ;; -- Code
 
        (l/hiccup-snippet
          [:span.p-2.text-lg "Code Snippet"])
 
-       (l/code-snippet (slurp (io/resource "literate/core.clj"))))])
+       (l/code-snippet (slurp (io/resource "literate/core.clj")))
+
+       ;; -- Leaflet
+
+       (l/hiccup-snippet
+         [:span.p-2.text-lg "Leaflet Snippet"])
+
+       (l/leaflet-snippet {:style {:height "400px"}
+                           :center [51.505 -0.09]
+                           :zoom 10}))])
 
 
   (def hiccup-snippet-1
@@ -142,5 +143,33 @@
 
   ;; -- Update `hiccup-snippet-1` - notice that both cards update.
   (l/transact [(assoc hiccup-snippet-1 :snippet/html (rum.server-render/render-static-markup [:span "Bar"]))])
+
+
+  ;; -- Leaflet
+  (def geojson (json/read (io/reader "src/dev/resources/points.geojson")))
+
+  (def sample (update geojson "features" #(take 10 %)))
+
+  (def center (vec (reverse (get-in geojson ["features" 0 "geometry" "coordinates"]))))
+
+  (def leaflet-snippet
+    (l/leaflet-snippet
+      {:style {:height "600px"}
+       :center center
+       :zoom 10
+       :geojson (update geojson "features" #(take 10 %))}))
+
+  (def leaflet-card
+    (l/card leaflet-snippet))
+
+  (l/transact [leaflet-card])
+
+  ;; -- Update entity & transact.
+
+  (def leaflet-snippet'
+    (merge leaflet-snippet {:snippet/geojson (update geojson "features" #(take 5 %))}))
+
+  (l/transact [leaflet-snippet'])
+
 
   )
