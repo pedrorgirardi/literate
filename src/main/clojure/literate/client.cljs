@@ -34,31 +34,37 @@
 ;; ---
 
 
-(defc Code < {:did-mount (fn [state]
-                           (let [[code] (:rum/args state)]
-                             (codemirror (rum/dom-node state) #js {"value" code
-                                                                   "mode" "clojure"
-                                                                   "lineNumbers" false}))
+(defc Code < {:did-mount
+              (fn [state]
+                (let [{:snippet/keys [code]} (first (:rum/args state))]
+                  (codemirror (rum/dom-node state) #js {"value" code
+                                                        "mode" "clojure"
+                                                        "lineNumbers" false}))
 
-                           state)}
-  [code]
+                state)}
+  [_]
   [:div])
 
-(defc VegaLite < {:did-mount (fn [state]
-                               (let [[vega-lite-spec] (:rum/args state)]
-                                 (vega-embed (rum/dom-node state) (clj->js vega-lite-spec)))
+(defc VegaLite < {:did-mount
+                  (fn [state]
+                    (let [{:snippet/keys [vega-lite-spec]} (first (:rum/args state))]
+                      (vega-embed (rum/dom-node state) (clj->js vega-lite-spec)))
 
-                               state)}
-  [vega-lite-spec]
+                    state)}
+  [_]
   [:div])
 
 (defc Markdown
-  [markdown]
-  [:div.bg-white.px-2.py-1.font-thin {:dangerouslySetInnerHTML {:__html (marked markdown)}}])
+  [e]
+  [:div.bg-white.px-2.py-1.font-thin
+   {:dangerouslySetInnerHTML
+    {:__html (marked (:snippet/markdown e))}}])
 
 (defc Html
-  [html]
-  [:div {:dangerouslySetInnerHTML {:__html html}}])
+  [e]
+  [:div
+   {:dangerouslySetInnerHTML
+    {:__html (:snippet/html e)}}])
 
 (defc Leaflet < {:did-mount
                  (fn [state]
@@ -112,23 +118,23 @@
 
 (defc Card [{:card/keys [snippets]}]
   [:div.w-full.flex.flex-col.space-y-6
-   (for [{:snippet/keys [uuid type code markdown vega-lite-spec html] :as snippet} snippets]
+   (for [{:snippet/keys [uuid type] :as snippet} snippets]
      [:div {:key uuid}
       (case type
         :snippet.type/code
-        (Code code)
+        (Code snippet)
 
         :snippet.type/markdown
-        (Markdown markdown)
+        (Markdown snippet)
 
         :snippet.type/vega-lite
-        (VegaLite vega-lite-spec)
+        (VegaLite snippet)
 
         :snippet.type/hiccup
-        (Html html)
+        (Html snippet)
 
         :snippet.type/html
-        (Html html)
+        (Html snippet)
 
         :snippet.type/leaflet
         (Leaflet snippet)
