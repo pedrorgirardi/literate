@@ -69,23 +69,31 @@
                                (.setView (clj->js center) zoom))
 
                          tile-url-template "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                         tile-options #js {:attribution "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"}]
+                         tile-options #js {:attribution "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"}
+                         tile-layer (.tileLayer leaflet tile-url-template tile-options)
 
-                     (-> (.tileLayer leaflet tile-url-template tile-options)
-                         (.addTo M))
+                         ;; GeoJSON (optional)
+                         geojson-layer (when geojson
+                                         (.geoJSON leaflet (clj->js geojson)))]
 
-                     ;; GeoJSON (optional)
-                     (when geojson
-                       (-> (.geoJSON leaflet (clj->js geojson))
-                           (.addTo M)))
+                     (.addTo tile-layer M)
 
-                     (assoc state ::M M)))
+                     (when geojson-layer
+                       (.addTo geojson-layer M))
+
+                     (assoc state ::M M
+                                  ::tile-layer tile-layer
+                                  ::geojson-layer geojson-layer)))
 
                  :did-update
-                 (fn [{::keys [M] :as state}]
-                   (js/console.log "Leaflet" M)
+                 (fn [state]
+                   (let [{M ::M
+                          geojson-layer ::geojson-layer
+                          args :rum/args} state]
 
-                   state)}
+                     (js/console.log :did-update state)
+
+                     state))}
   [snippet]
   [:div
    {:style
