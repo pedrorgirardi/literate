@@ -1,4 +1,4 @@
-(ns literate.client
+(ns literate.app
   (:require [cljs.spec.alpha :as s]
             [cljs.pprint :as pprint]
 

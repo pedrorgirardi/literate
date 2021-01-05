@@ -2,7 +2,7 @@
 
 (comment
 
-  (require '[literate.client :as l])
+  (require '[literate.app :as l])
 
   @literate/state-ref
   (reset! state-ref "Hello")
