@@ -68,7 +68,7 @@
 
 (defc Leaflet < {:did-mount
                  (fn [state]
-                   (let [[{:snippet/keys [center zoom geojson]}] (:rum/args state)
+                   (let [[{:widget/keys [center zoom geojson]}] (:rum/args state)
 
                          M (-> leaflet
                                (.map (rum/dom-node state))
@@ -97,7 +97,7 @@
                           geojson-layer ::geojson-layer
                           args :rum/args} state
 
-                         {:snippet/keys [center zoom geojson]} (first args)
+                         {:widget/keys [center zoom geojson]} (first args)
 
                          geojson-layer' (when geojson
                                           (.geoJSON leaflet (clj->js geojson)))]
@@ -112,34 +112,9 @@
 
                      (assoc state ::geojson-layer geojson-layer')))}
   [snippet]
-  [:div
+  [:div.flex-1
    {:style
-    {:height (or (get-in snippet [:snippet/style :height]) "320px")}}])
-
-(defc Card [{:card/keys [snippets]}]
-  [:div.w-full.flex.flex-col.space-y-6
-   (for [{:snippet/keys [uuid type] :as snippet} snippets]
-     [:div {:key uuid}
-      (case type
-        :snippet.type/code
-        (Code snippet)
-
-        :snippet.type/markdown
-        (Markdown snippet)
-
-        :snippet.type/vega-lite
-        (VegaLite snippet)
-
-        :snippet.type/hiccup
-        (Html snippet)
-
-        :snippet.type/html
-        (Html snippet)
-
-        :snippet.type/leaflet
-        (Leaflet snippet)
-
-        [:div [:span "Unknown Snippet type " [:code (str type)]]])])])
+    {:height (or (get-in snippet [:widget/style :height]) "320px")}}])
 
 (defc Widget [e]
   (let [{widget-type :widget/type} e]
@@ -159,7 +134,7 @@
       :snippet.type/html
       (Html e)
 
-      :snippet.type/leaflet
+      :widget.type/leaflet
       (Leaflet e)
 
       [:div [:span "Unknown Widget type " [:code (str widget-type)]]])))

@@ -28,6 +28,9 @@
 
   (reset)
 
+
+  ;; -- Vega Lite.
+
   (literate/view
     (widget/vega-lite
       {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
@@ -48,16 +51,48 @@
                   :y {:field "b"
                       :type "quantitative"}}}))
 
+  ;; -- Code.
+
   (literate/view
     (widget/code (slurp (io/resource "literate/core.clj"))))
 
 
+  ;; -- Leaflet.
+
+  (literate/view
+    (widget/leaflet {}))
+
+  (def geojson (json/read (io/reader "src/dev/resources/points.geojson")))
+
+  (def sample (update geojson "features" #(take 10 %)))
+
+  (def center (vec (reverse (get-in geojson ["features" 0 "geometry" "coordinates"]))))
+
+  (def leaflet-widget
+    (widget/leaflet
+      {:style {:height "600px"}
+       :center center
+       :zoom 10
+       :geojson (update geojson "features" #(take 10 %))}))
+
+  (literate/view leaflet-widget)
+
+  (literate/view
+    (merge leaflet-widget {:widget/geojson (update geojson "features" #(take 10 %))}))
+
+
+  ;; -- Markdown.
 
   (literate/markdown "**Welcome to Literate**\n\nEval some forms to get started!")
+
+
+  ;; -- HTML.
 
   (literate/html (rum.server-render/render-static-markup [:div.bg-white.p-2
                                                           [:h1.text-6xl "Hello from Hiccup"]
                                                           [:span "Text"]]))
+
+  ;; -- Hiccup.
 
   (literate/hiccup [:div.bg-white.p-2.font-thin
                     [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]

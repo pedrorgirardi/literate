@@ -14,3 +14,17 @@
   #:widget {:uuid (str (UUID/randomUUID))
             :type :widget.type/code
             :code (str form)})
+
+(defn leaflet
+  "Returns a Leaflet Widget entity."
+  [{:keys [style center zoom geojson]}]
+  (merge #:widget {:uuid (str (UUID/randomUUID))
+                   :type :widget.type/leaflet
+                   :center (or center [51.505 -0.09])
+                   :zoom (or zoom 10)}
+
+         (when style
+           {:widget/style style})
+
+         (when geojson
+           {:widget/geojson geojson})))
