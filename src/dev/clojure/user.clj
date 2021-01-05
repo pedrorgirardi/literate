@@ -95,26 +95,6 @@
          [:h1.text-6xl "Hello from Hiccup"]
          [:span "Text"]])))
 
-  ;; -- Hiccup.
-
-  (literate/view
-    (widget/hiccup
-      [:div.bg-white.p-3.font-thin
-       [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]
-
-       [:p.font-semibold "Literate is a graphical user interface extension for your Clojure REPL."]
-
-       [:p.mt-4 "This interface that you're looking at it's called a " [:span.font-bold "Snippet"]
-        ", and you can create one from a Clojure REPL."]
-
-       [:p.mt-2.mb1 "There's a few different types of Snippets that are supported:"]
-
-       [:ul.list-disc.list-inside.ml-2
-        [:li "Code"]
-        [:li "Markdown"]
-        [:li "Hiccup"]
-        [:li "Vega Lite"]]]))
-
 
   ;; -- Row.
 
@@ -156,24 +136,30 @@
 
   (literate/view
     (widget/column
+      {}
       (widget/hiccup
-        [:div.bg-white.p-2.font-thin
-         [:h1.text-3xl {:style {:font-family "Cinzel"}} "Welcome to Literate"]
+        [:div.flex.flex-col.space-y-3.bg-white.p-3.font-light
+         [:h1.text-3xl
+          {:style {:font-family "Cinzel"}}
+          "Welcome to Literate"]
 
-         [:p.font-semibold "Literate is a graphical user interface extension for your Clojure REPL."]
+         [:p.font-semibold
+          "Literate is a graphical user interface extension for your Clojure REPL."]
 
-         [:p.mt-4 "This interface is a " [:span.font-bold "Card"]
-          ", and it contains a set of " [:span.font-bold "Snippets"] ". "
-          "You can create Snippets and Cards from your Clojure REPL."]
+         [:p.mt-4
+          "This interface that you're looking at it's called a " [:span.font-bold "Widget"]
+          ", and you can create one from a Clojure REPL."]
 
-         [:p.mt-2.mb1 "There's a few different types of Snippets that are supported:"]
+         [:p.mt-2.mb1 "There are a few different types of Widgets that are supported:"]
 
          [:ul.list-disc.list-inside.ml-2
           [:li "Code"]
           [:li "Markdown"]
           [:li "Hiccup"]
           [:li "Vega Lite"]
-          [:li "Leaflet"]]])
+          [:li "Leaflet"]
+          [:li "Column layout"]
+          [:li "Row layout"]]])
 
       (widget/hiccup
         [:span.p-2.text-lg "Vega Lite Snippet"])
