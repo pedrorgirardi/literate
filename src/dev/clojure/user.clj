@@ -165,11 +165,11 @@
   ;; -- Leaflet
   (def geojson-sample (json/read (io/reader "src/dev/resources/points.geojson")))
 
-  (let [[lat lng] (get-in geojson-sample ["features" 0 "geometry" "coordinates"])
+  (let [[lng lat] (get-in geojson-sample ["features" 0 "geometry" "coordinates"])
         geojson (update geojson-sample "features" #(take 10 %))]
     (l/leaflet
       {:style {:height "600px"}
-       :center [lng lat]
+       :center [lat lng]
        :zoom 10
        :geojson geojson}))
 
