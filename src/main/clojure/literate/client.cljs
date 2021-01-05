@@ -89,11 +89,24 @@
                  (fn [state]
                    (let [{M ::M
                           geojson-layer ::geojson-layer
-                          args :rum/args} state]
+                          args :rum/args} state
+
+                         {:snippet/keys [center zoom geojson]} (first args)
+
+                         geojson-layer' (when geojson
+                                          (.geoJSON leaflet (clj->js geojson)))]
+
+                     ;; Remove old GeoJSON layer.
+                     (when geojson-layer
+                       (.removeLayer M geojson-layer))
+
+                     ;; Add GeoJSON layer.
+                     (when geojson-layer'
+                       (.addTo geojson-layer' M))
 
                      (js/console.log :did-update state)
 
-                     state))}
+                     (assoc state geojson-layer ::geojson-layer)))}
   [snippet]
   [:div
    {:style
