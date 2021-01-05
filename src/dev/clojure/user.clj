@@ -46,6 +46,24 @@
                         :type "quantitative"}}})))
 
 
+  ;; -- Column.
+
+  (literate/view
+    (widget/column
+      {}
+      (widget/leaflet {})
+      (widget/vega-lite
+        {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
+         :description "A simple bar chart with embedded data."
+         :data {:url "https://vega.github.io/editor/data/stocks.csv"}
+         :transform [{"filter" "datum.symbol==='GOOG'"}],
+         :mark "line"
+         :encoding {:x {:field "date"
+                        :type "temporal"}
+                    :y {:field "price"
+                        :type "quantitative"}}})))
+
+
   ;; -- Vega Lite.
 
   (literate/view

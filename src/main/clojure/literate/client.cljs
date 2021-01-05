@@ -122,7 +122,17 @@
   [e]
   [:div.flex.flex-1.space-x-2
    (for [child (:widget/children e)]
-     [:div.flex-1 (Widget child)])])
+     [:div.flex-1
+      {:key (:widget/uuid child)}
+      (Widget child)])])
+
+(defc Column
+  [e]
+  [:div.flex.flex-col.flex-1.space-y-2
+   (for [child (:widget/children e)]
+     [:div.flex-1
+      {:key (:widget/uuid child)}
+      (Widget child)])])
 
 (defc Widget [e]
   (let [{widget-uuid :widget/uuid
@@ -131,6 +141,9 @@
         component (case widget-type
                     :widget.type/row
                     (Row e)
+
+                    :widget.type/column
+                    (Column e)
 
                     :widget.type/vega-lite
                     (VegaLite e)
