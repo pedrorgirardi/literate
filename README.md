@@ -1,6 +1,6 @@
 # Literate
 
-Literate is a graphical user interface extension for your Clojure REPL.
+Literate is a Clojure & ClojureScript application which you can use to visualize data.
 
 ![Literate](https://github.com/pedrorgirardi/literate/raw/master/doc/screenshot.png)
 
