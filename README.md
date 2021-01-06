@@ -2,7 +2,7 @@
 
 Literate is a graphical user interface extension for your Clojure REPL.
 
-![Image of Yaktocat](https://github.com/pedrorgirardi/literate/raw/master/doc/screen-shot.png)
+![Literate](https://github.com/pedrorgirardi/literate/raw/master/doc/screenshot.png)
 
 ## Installation
 
