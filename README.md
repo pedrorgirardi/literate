@@ -99,7 +99,9 @@ The Widget API is embarrassingly dummy; whenever you call a Widget function, you
                           :encoding {:x {:field "a", :type "ordinal"}, :y {:field "b", :type "quantitative"}}}}
 ```
 
-Literate ClojureScript app is a (DataScript) database of Widgets. Everything you see in the app is stored in DataScript, and it's a Widget entity. No special case. Every Widget entity has an attribute to describe its type (I'm sorry for the overloaded use of this word.), and for each known type, there is a Widget renderer.
+Literate ClojureScript app is a (DataScript) database of Widgets. Everything you see in the app is stored in DataScript, and it's a Widget entity. No special case. 
+
+Every Widget entity has an attribute to describe its type (I'm sorry for the overloaded use of this word.), and for each known type, there is a Widget renderer.
 
 
 ## Installation
