@@ -1,10 +1,7 @@
 (ns literate.db
   (:require [datascript.core :as d]))
 
-(defonce conn (d/create-conn {:snippet/uuid
-                              {:db/unique :db.unique/identity}
-
-                              :widget/uuid
+(defonce conn (d/create-conn {:widget/uuid
                               {:db/unique :db.unique/identity}
 
                               :widget/parent
@@ -12,13 +9,6 @@
                                :db/cardinality :db.cardinality/one}
 
                               :widget/children
-                              {:db/valueType :db.type/ref
-                               :db/cardinality :db.cardinality/many}
-
-                              :card/uuid
-                              {:db/unique :db.unique/identity}
-
-                              :card/snippets
                               {:db/valueType :db.type/ref
                                :db/cardinality :db.cardinality/many}}))
 
