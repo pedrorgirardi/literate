@@ -12,7 +12,10 @@ straightforward.
 
 Our example is a collection of maps; it's easy to think about this data in a table, let's say, like this one:
 
-| A | B | |:--|:--| | X | 1 | | Y | 3 |
+| A | B |
+|:--|:--|
+| X | 1 |
+| Y | 3 |
 
 In Literate, what you could do is view this same data but in a Vega-Lite Bar chart, for instance. And this is
 accomplished by Widgets, a Vega-Lite Widget in particular:
