@@ -6,7 +6,6 @@
             [literate.db :as db]
             [literate.server :as server]
             [literate.core :as literate]
-            [literate.widget :as widget]
 
             [rum.server-render]
             [datascript.core :as d]))
@@ -31,7 +30,7 @@
   ;; -- Vega Lite.
 
   (literate/view
-    (widget/vega-lite
+    (literate/vega-lite
       {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
        :description "A simple bar chart with embedded data."
        :data {:values
@@ -53,13 +52,13 @@
   ;; -- Code.
 
   (literate/view
-    (widget/code (slurp (io/resource "literate/widget.clj"))))
+    (literate/code (slurp (io/resource "literate/core.clj"))))
 
 
   ;; -- Leaflet.
 
   (literate/view
-    (widget/leaflet {}))
+    (literate/leaflet {}))
 
   (def geojson (json/read (io/reader "src/dev/resources/points.geojson")))
 
@@ -68,7 +67,7 @@
   (def center (vec (reverse (get-in geojson ["features" 0 "geometry" "coordinates"]))))
 
   (def leaflet-widget
-    (widget/leaflet
+    (literate/leaflet
       {:style {:height "600px"}
        :center center
        :zoom 10
@@ -77,19 +76,19 @@
   (literate/view leaflet-widget)
 
   (literate/view
-    (merge leaflet-widget {:widget/geojson (update geojson "features" #(take 10 %))}))
+    (merge leaflet-widget {:widget/geojson (update geojson "features" #(take 1 %))}))
 
 
   ;; -- Markdown.
 
   (literate/view
-    (widget/markdown "**Welcome to Literate**\n\nEval some forms to get started!"))
+    (literate/markdown "**Welcome to Literate**\n\nEval some forms to get started!"))
 
 
   ;; -- HTML.
 
   (literate/view
-    (widget/html
+    (literate/html
       (rum.server-render/render-static-markup
         [:div.bg-white.p-3
          [:h1.text-6xl "Hello from Hiccup"]
@@ -99,10 +98,10 @@
   ;; -- Row.
 
   (literate/view
-    (widget/row
+    (literate/row
       {}
-      (widget/leaflet {})
-      (widget/vega-lite
+      (literate/leaflet {})
+      (literate/vega-lite
         {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
          :description "A simple bar chart with embedded data."
          :data {:url "https://vega.github.io/editor/data/stocks.csv"}
@@ -117,10 +116,10 @@
   ;; -- Column.
 
   (literate/view
-    (widget/column
+    (literate/column
       {}
-      (widget/leaflet {})
-      (widget/vega-lite
+      (literate/leaflet {})
+      (literate/vega-lite
         {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
          :description "A simple bar chart with embedded data."
          :data {:url "https://vega.github.io/editor/data/stocks.csv"}
@@ -135,9 +134,9 @@
   ;; -- Welcome.
 
   (literate/view
-    (widget/column
+    (literate/column
       {}
-      (widget/hiccup
+      (literate/hiccup
         [:div.flex.flex-col.space-y-3.bg-white.p-3.font-light
          [:h1.text-3xl
           {:style {:font-family "Cinzel"}}
@@ -161,10 +160,10 @@
           [:li "Column layout"]
           [:li "Row layout"]]])
 
-      (widget/hiccup
+      (literate/hiccup
         [:span.p-2.text-lg "Vega Lite Widget"])
 
-      (widget/vega-lite
+      (literate/vega-lite
         {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
          :description "A simple bar chart with embedded data."
          :data {:url "https://vega.github.io/editor/data/stocks.csv"}
@@ -175,16 +174,16 @@
                     :y {:field "price"
                         :type "quantitative"}}})
 
-      (widget/hiccup
+      (literate/hiccup
         [:span.p-2.text-lg "Code Widget"])
 
-      (widget/code (slurp (io/resource "literate/core.clj")))
+      (literate/code (slurp (io/resource "literate/core.clj")))
 
-      (widget/hiccup
+      (literate/hiccup
         [:span.p-2.text-lg "Leaflet Widget"])
 
-      (widget/leaflet {:style {:height "400px"}
-                       :center [51.505 -0.09]
-                       :zoom 10})))
+      (literate/leaflet {:style {:height "400px"}
+                         :center [51.505 -0.09]
+                         :zoom 10})))
 
   )
