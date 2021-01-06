@@ -13,7 +13,7 @@
               connected-uids
               ajax-post-fn
               ajax-get-or-ws-handshake-fn]}
-      (sente/make-channel-socket! (get-sch-adapter) {})]
+      (sente/make-channel-socket-server! (get-sch-adapter) {:csrf-token-fn nil})]
 
   (def ring-ajax-post ajax-post-fn)
   (def ring-ajax-get-or-ws-handshake ajax-get-or-ws-handshake-fn)
@@ -32,8 +32,6 @@
     (page/include-css "css/leaflet.css")
 
     [:body.bg-gray-100
-     [:div#sente-csrf-token {:data-csrf-token (:anti-forgery-token req)}]
-
      [:div#app.container.mx-auto.h-screen]
 
      (page/include-js "js/main.js")]))
@@ -53,5 +51,6 @@
 
    `options` are the same as org.httpkit.server/run-server."
   [& [options]]
-  (http-kit/run-server (wrap-defaults app site-defaults) options))
+  (let [config (assoc-in site-defaults [:security :anti-forgery] false)]
+    (http-kit/run-server (wrap-defaults app config) options)))
 

@@ -15,14 +15,8 @@
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]))
 
-(let [token (when-let [el (.getElementById js/document "sente-csrf-token")]
-              (.getAttribute el "data-csrf-token"))
-
-      {:keys [chsk
-              ch-recv
-              send-fn
-              state]}
-      (sente/make-channel-socket! "/chsk" token {:type :auto})]
+(let [{:keys [chsk ch-recv send-fn state]}
+      (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
   (def chsk chsk)
   (def ch-chsk ch-recv)
   (def chsk-send! send-fn)
