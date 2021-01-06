@@ -54,7 +54,53 @@ For spatial data, you could view it in a Vega-Lite Widget too (Vega is capable o
 
 ![Leaflet Widget](https://github.com/pedrorgirardi/literate/raw/master/doc/leaflet_widget.png)
 
-You see, it's tricky to define a type of data because it can take many different shapes and forms. But the idea is the same: Widgets take data in and present it visually.
+You see, it's tricky to define 'type' of data because it can take many different shapes and forms. But the idea is the same: Widgets take data in and present it visually.
+
+## How it works
+
+The Widget API is embarrassingly dummy; whenever you call a Widget function, you are merely creating an entity:
+
+```clojure
+(widget/vega-lite
+  {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
+   :description "A simple bar chart with embedded data."
+   :data {:values
+          [{:a "A" :b 28}
+           {:a "B" :b 55}
+           {:a "C" :b 43}
+           {:a "D" :b 91}
+           {:a "E" :b 81}
+           {:a "F" :b 53}
+           {:a "G" :b 19}
+           {:a "H" :b 87}
+           {:a "I" :b 52}]}
+   :mark "bar"
+   :encoding {:x {:field "a"
+                  :type "ordinal"}
+              :y {:field "b"
+                  :type "quantitative"}}})
+
+;; ==>
+
+#:widget{:uuid "7385f5da-f835-49b5-8d8c-005f92b77d11",
+         :type :widget.type/vega-lite,
+         :vega-lite-spec {"$schema" "https://vega.github.io/schema/vega-lite/v4.json",
+                          :description "A simple bar chart with embedded data.",
+                          :data {:values [{:a "A", :b 28}
+                                          {:a "B", :b 55}
+                                          {:a "C", :b 43}
+                                          {:a "D", :b 91}
+                                          {:a "E", :b 81}
+                                          {:a "F", :b 53}
+                                          {:a "G", :b 19}
+                                          {:a "H", :b 87}
+                                          {:a "I", :b 52}]},
+                          :mark "bar",
+                          :encoding {:x {:field "a", :type "ordinal"}, :y {:field "b", :type "quantitative"}}}}
+```
+
+Literate ClojureScript app is a (DataScript) database of Widgets. Everything you see in the app is stored in DataScript, and it's a Widget entity. No special case. Every Widget entity has an attribute to describe its type (I'm sorry for the overloaded use of this word.), and for each known type, there is a Widget renderer.
+
 
 ## Installation
 
