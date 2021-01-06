@@ -12,4 +12,8 @@
    :modules {:main {:init-fn literate.app/init}}
    :devtools {:after-load literate.app/init}
    :output-dir "resources/public/js"
-   :asset-path "/js"}}}
+   :asset-path "/js"
+   :compiler-options
+   {:cross-chunk-method-motion false
+    :language-in :es6
+    :output-feature-set :es6}}}}
