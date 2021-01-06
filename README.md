@@ -17,7 +17,26 @@ Our example is a collection of maps; it's easy to think about this data in a tab
 
 In Literate, what you could do is view this same data but in a Vega-Lite Bar chart, for instance. And this is accomplished by Widgets, a Vega-Lite Widget in particular:
 
-![Vega-Lite Widget API](https://github.com/pedrorgirardi/literate/raw/master/doc/vega_lite_widget_api.png)
+```clojure
+(widget/vega-lite
+  {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
+   :description "A simple bar chart with embedded data."
+   :data {:values
+          [{:a "A" :b 28}
+           {:a "B" :b 55}
+           {:a "C" :b 43}
+           {:a "D" :b 91}
+           {:a "E" :b 81}
+           {:a "F" :b 53}
+           {:a "G" :b 19}
+           {:a "H" :b 87}
+           {:a "I" :b 52}]}
+   :mark "bar"
+   :encoding {:x {:field "a"
+                  :type "ordinal"}
+              :y {:field "b"
+                  :type "quantitative"}}})
+```
 
 ![Vega-Lite Widget](https://github.com/pedrorgirardi/literate/raw/master/doc/vega_lite_widget.png)
 
@@ -25,7 +44,13 @@ We are not too bad at making sense of tabular data. Still, if you happen to work
 
 For spatial data, you could view it in a Vega-Lite Widget too (Vega is capable of many great things), but there's also the Leaflet Widget:
 
-![Leaflet Widget API](https://github.com/pedrorgirardi/literate/raw/master/doc/leaflet_widget_api.png)
+```clojure
+(widget/leaflet
+  {:style {:height "600px"}
+   :center center
+   :zoom 10
+   :geojson geojson})
+```
 
 ![Leaflet Widget](https://github.com/pedrorgirardi/literate/raw/master/doc/leaflet_widget.png)
 
