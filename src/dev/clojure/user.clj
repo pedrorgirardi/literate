@@ -144,7 +144,7 @@
           "Welcome to Literate"]
 
          [:p.font-semibold
-          "Literate is a graphical user interface extension for your Clojure REPL."]
+          "Literate is a Clojure & ClojureScript application which you can use to visualize data."]
 
          [:p.mt-4
           "This interface that you're looking at it's called a " [:span.font-bold "Widget"]
@@ -162,7 +162,7 @@
           [:li "Row layout"]]])
 
       (widget/hiccup
-        [:span.p-2.text-lg "Vega Lite Snippet"])
+        [:span.p-2.text-lg "Vega Lite Widget"])
 
       (widget/vega-lite
         {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
@@ -176,12 +176,12 @@
                         :type "quantitative"}}})
 
       (widget/hiccup
-        [:span.p-2.text-lg "Code Snippet"])
+        [:span.p-2.text-lg "Code Widget"])
 
       (widget/code (slurp (io/resource "literate/core.clj")))
 
       (widget/hiccup
-        [:span.p-2.text-lg "Leaflet Snippet"])
+        [:span.p-2.text-lg "Leaflet Widget"])
 
       (widget/leaflet {:style {:height "400px"}
                        :center [51.505 -0.09]
