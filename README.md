@@ -4,6 +4,8 @@ Literate is a Clojure & ClojureScript application which you can use to visualize
 
 ![Literate](https://github.com/pedrorgirardi/literate/raw/master/doc/screenshot.png)
 
+Literate is essentially a collection of Widgets, and a Widget is a visual component, or renderer, for a particular type of data.
+
 ## Installation
 
 ```clojure
