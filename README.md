@@ -113,8 +113,8 @@ Every Widget entity has an attribute to describe its type (I'm sorry for the ove
 ## Installation
 
 ```clojure
-{literate {:git/url "https://github.com/pedrorgirardi/literate.git"
-           :sha "34ace4589966cbd69c497acddc4d2fb94252bcc4"}}
+{pedrorgirardi/literate {:git/url "https://github.com/pedrorgirardi/literate.git"
+                         :sha "34ace4589966cbd69c497acddc4d2fb94252bcc4"}}
 ```
 
 ## Usage
