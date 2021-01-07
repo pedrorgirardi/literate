@@ -79,3 +79,6 @@
   #:widget {:uuid (str (UUID/randomUUID))
             :type :widget.type/hiccup
             :html (rum.server-render/render-static-markup hiccup)})
+
+(defn -main [& args]
+  (server/run-server {:port 8080}))
