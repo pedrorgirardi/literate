@@ -37,10 +37,22 @@
      (page/include-js "js/main.js")]))
 
 (defroutes app
+  ;; -- App.
   (GET "/" req (index req))
+
+  ;; -- WebSocket.
   (GET "/chsk" req (ring-ajax-get-or-ws-handshake req))
   (POST "/chsk" req (ring-ajax-post req))
+
+  ;; -- Client API.
+  (POST "/api/v1/transact" req #(let [data nil]
+                                  (when (seq data)
+                                    (doseq [uid (:any @server/connected-uids)]
+                                      (chsk-send! uid [:literate/!transact data])))))
+
+  ;; -- Public resources.
   (route/resources "/")
+
   (route/not-found "<h1>Page not found</h1>"))
 
 (defn run-server
