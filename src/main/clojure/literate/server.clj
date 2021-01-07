@@ -5,7 +5,9 @@
             [compojure.route :as route]
             [hiccup.page :as page]
             [taoensso.sente :as sente]
-            [taoensso.sente.server-adapters.http-kit :refer [get-sch-adapter]]))
+            [taoensso.sente.server-adapters.http-kit :refer [get-sch-adapter]]
+            [cognitect.transit :as transit])
+  (:import (java.io ByteArrayOutputStream InputStream)))
 
 
 (let [{:keys [ch-recv
@@ -36,6 +38,19 @@
 
      (page/include-js "js/main.js")]))
 
+(defn transit-encode
+  "Encode `x` in Transit-JSON.
+
+   Returns a Transit JSON-encoded string."
+  [x]
+  (let [out (ByteArrayOutputStream. 4096)
+        writer (transit/writer out :json)]
+    (transit/write writer x)
+    (.toString out)))
+
+(defn transit-decode [^InputStream x]
+  (transit/read (transit/reader x :json)))
+
 (defroutes app
   ;; -- App.
   (GET "/" req (index req))
@@ -45,10 +60,18 @@
   (POST "/chsk" req (ring-ajax-post req))
 
   ;; -- Client API.
-  (POST "/api/v1/transact" req #(let [data nil]
-                                  (when (seq data)
-                                    (doseq [uid (:any @server/connected-uids)]
-                                      (chsk-send! uid [:literate/!transact data])))))
+  (POST "/api/v1/transact" req #(let [data (transit-decode (:body req))]
+                                  (if (seq data)
+                                    (do
+                                      (doseq [uid (:any @server/connected-uids)]
+                                        (chsk-send! uid [:literate/!transact data]))
+
+                                      {:status 201
+                                       :headers {"Content-Type" "application/transit+json"}
+                                       :body (transit-encode {})})
+                                    {:status 400
+                                     :headers {"Content-Type" "application/transit+json"}
+                                     :body (transit-encode {})})))
 
   ;; -- Public resources.
   (route/resources "/")
