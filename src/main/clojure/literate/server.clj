@@ -60,18 +60,22 @@
   (POST "/chsk" req (ring-ajax-post req))
 
   ;; -- Client API.
-  (POST "/api/v1/transact" req #(let [data (transit-decode (:body req))]
-                                  (if (seq data)
-                                    (do
-                                      (doseq [uid (:any @server/connected-uids)]
-                                        (chsk-send! uid [:literate/!transact data]))
+  (POST "/api/v1/transact" req
+    (try
+      (let [data (transit-decode (:body req))]
+        (if (seq data)
+          (do
+            (doseq [uid (:any @connected-uids)]
+              (chsk-send! uid [:literate/!transact data]))
 
-                                      {:status 201
-                                       :headers {"Content-Type" "application/transit+json"}
-                                       :body (transit-encode {})})
-                                    {:status 400
-                                     :headers {"Content-Type" "application/transit+json"}
-                                     :body (transit-encode {})})))
+            {:status 201
+             :headers {"Content-Type" "application/transit+json"}
+             :body (transit-encode true)})
+          (throw (ex-info "Invalid data." {}))))
+      (catch Exception ex
+        {:status 400
+         :headers {"Content-Type" "application/transit+json"}
+         :body (transit-encode {:error {:message (ex-message ex)}})})))
 
   ;; -- Public resources.
   (route/resources "/")
