@@ -114,7 +114,7 @@ Every Widget entity has an attribute to describe its type (I'm sorry for the ove
 
 ```clojure
 {pedrorgirardi/literate {:git/url "https://github.com/pedrorgirardi/literate.git"
-                         :sha "34ace4589966cbd69c497acddc4d2fb94252bcc4"}}
+                         :sha "6249ed81d624fe24bfd19e1ec33270b85611f5b3"}}
 ```
 
 ## Usage
