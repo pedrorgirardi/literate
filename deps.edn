@@ -10,18 +10,23 @@
   hiccup/hiccup {:mvn/version "1.0.5"}
   rum/rum {:mvn/version "0.12.3" :exclusions [cljsjs/react cljsjs/react-dom]}
   datascript/datascript {:mvn/version "1.0.3"}
-  com.taoensso/sente {:mvn/version "1.16.0"}}
+  com.taoensso/sente {:mvn/version "1.16.0"}
+  com.cognitect/transit-clj {:mvn/version "1.0.324"}}
 
  :aliases
  {:dev
   {:extra-paths ["src/dev/clojure" "src/dev/resources"]
-   :extra-deps {org.clojure/tools.namespace {:mvn/version "1.1.0"}
-                org.clojure/data.json {:mvn/version "1.0.0"}}}
-   
+   :extra-deps
+   {org.clojure/tools.namespace {:mvn/version "1.1.0"}
+    org.clojure/data.json {:mvn/version "1.0.0"}
+    pedrorgirardi/literate.client {:git/url "https://github.com/pedrorgirardi/literate.client"
+                                   :sha "c7833831ce5269cf2a33a46a3c39dd804a9bf3ab"}}}
+
 
   :app
-  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.11"}
-                binaryage/devtools {:mvn/version "1.0.2"}}}
+  {:extra-deps
+   {thheller/shadow-cljs {:mvn/version "2.11.11"}
+    binaryage/devtools {:mvn/version "1.0.2"}}}
 
 
   :test

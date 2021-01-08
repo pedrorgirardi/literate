@@ -3,12 +3,11 @@
             [clojure.java.io :as io]
             [clojure.data.json :as json]
 
-            [literate.db :as db]
             [literate.server :as server]
-            [literate.core :as literate]
+            [literate.client.core :as literate]
 
             [rum.server-render]
-            [datascript.core :as d]))
+            [org.httpkit.client :as http]))
 
 (def stop-server
   (fn []
@@ -26,6 +25,11 @@
 (comment
 
   (reset)
+
+  ;; -- Client API.
+
+  (http/post "http://localhost:8080/api/v1/transact" {:body (server/transit-encode [(literate/code "Hello")])})
+
 
   ;; -- Vega Lite.
 

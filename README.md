@@ -124,7 +124,7 @@ Every Widget entity has an attribute to describe its type (I'm sorry for the ove
 
 (def stop-server (server/run-server {:port 8080}))
 
-(require '[literate.core :as literate])
+(require '[literate.client.core :as literate])
 
 (literate/view
   (literate/vega-lite {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
