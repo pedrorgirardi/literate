@@ -106,47 +106,77 @@ The Widget API is embarrassingly dummy; whenever you call a Widget function, you
                           :encoding {:x {:field "a", :type "ordinal"}, :y {:field "b", :type "quantitative"}}}}
 ```
 
-Literate ClojureScript app is a (DataScript) database of Widgets. Everything you see in the app is stored in DataScript, and it's a Widget entity. No special case. 
+Literate ClojureScript app is a (DataScript) database of Widgets. Everything you see in the app is stored in DataScript,
+and it's a Widget entity. No special case.
 
-Every Widget entity has an attribute to describe its type (I'm sorry for the overloaded use of this word.), and for each known type, there is a Widget renderer.
-
-## Installation
-
-```clojure
-{pedrorgirardi/literate {:git/url "https://github.com/pedrorgirardi/literate.git"
-                         :sha "6249ed81d624fe24bfd19e1ec33270b85611f5b3"}}
-```
+Every Widget entity has an attribute to describe its type (I'm sorry for the overloaded use of this word.), and for each
+known type, there is a Widget renderer.
 
 ## Usage
 
+### Setup aliases
+
+Add `literate` and `literate.client` aliases to you user or project `deps.edn`:
+
 ```clojure
-(require '[literate.server :as server])
+{:aliases
+ {:literate
+  {:replace-deps {pedrorgirardi/literate {:git/url "https://github.com/pedrorgirardi/literate"
+                                          :sha "66d09a3e9ab9f0c5c6c838f909fb6dd77da40c19"}}
+   :main-opts ["-m" "literate.core" "--port" "8118"]}
 
-(def stop-server (server/run-server {:port 8080}))
+  :literate.client
+  {:extra-deps {pedrorgirardi/literate.client {:git/url "https://github.com/pedrorgirardi/literate.client"
+                                               :sha "0136b091c621f261d038c28ab5451d1073464a46"}}}}}
+```
 
+You can add the `literate.client` library to an existing alias if you prefer, e.g. `dev,` but I recommend setting
+a `literate` alias as shown above so you can start Literate on a separate process and isolate from your
+project's classpath.
+
+### Run
+
+```shell
+clojure -M:literate
+```
+
+You should see the output:
+
+```
+Welcome to Literate
+Starting server...
+Up and running on port: 8118
+Happy coding!
+```
+
+### REPL
+
+All set and ready to go:
+
+```clojure
 (require '[literate.client.core :as literate])
 
-(literate/view
-  (literate/vega-lite {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-                       :description "A simple bar chart with embedded data."
-                       :data {:values
-                              [{:a "A" :b 28}
-                               {:a "B" :b 55}
-                               {:a "C" :b 43}
-                               {:a "D" :b 91}
-                               {:a "E" :b 81}
-                               {:a "F" :b 53}
-                               {:a "G" :b 19}
-                               {:a "H" :b 87}
-                               {:a "I" :b 52}]}
-                       :mark "bar"
-                       :encoding {:x {:field "a"
-                                      :type "ordinal"}
-                                  :y {:field "b"
-                                      :type "quantitative"}}}))
+(def l (partial literate/view {:url "http://localhost:8118"}))
 
-(literate/view
-  (literate/hiccup [:span "Hiccup Snippet"]))
+(l (literate/vega-lite {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
+                        :description "A simple bar chart with embedded data."
+                        :data {:values
+                               [{:a "A" :b 28}
+                                {:a "B" :b 55}
+                                {:a "C" :b 43}
+                                {:a "D" :b 91}
+                                {:a "E" :b 81}
+                                {:a "F" :b 53}
+                                {:a "G" :b 19}
+                                {:a "H" :b 87}
+                                {:a "I" :b 52}]}
+                        :mark "bar"
+                        :encoding {:x {:field "a"
+                                       :type "ordinal"}
+                                   :y {:field "b"
+                                       :type "quantitative"}}}))
+
+(l (literate/hiccup [:span "Hiccup Snippet"]))
 ```
 
 ## Development

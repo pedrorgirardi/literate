@@ -28,7 +28,7 @@
 
   ;; -- Client API.
 
-  (http/post "http://localhost:8080/api/v1/transact" {:body (server/transit-encode [(literate/code "Hello")])})
+  (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(literate/code "Hello")])})
 
 
   (def l (partial literate/view {:url "http://localhost:8118"}))
