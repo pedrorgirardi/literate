@@ -26,7 +26,7 @@
 
   :app
   {:extra-deps
-   {thheller/shadow-cljs {:mvn/version "2.11.11"}
+   {thheller/shadow-cljs {:mvn/version "2.11.13"}
     binaryage/devtools {:mvn/version "1.0.2"}}}
 
 
