@@ -41,7 +41,8 @@
        {}
        {:widget/uuid (str (UUID/randomUUID))
         :widget/type :widget.type/identicon
-        :widget.identicon/hash-or-value "Literate"}
+        :widget.identicon/hash-or-value "Literate"
+        :widget.identicon/size 120}
        (literate/hiccup [:span "Identicon"])))
 
 
