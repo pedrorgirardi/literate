@@ -37,7 +37,7 @@
 
                 state)}
   [_]
-  [:div.flex-1])
+  [:div.w-full])
 
 (defc VegaLite < {:did-mount
                   (fn [state]
