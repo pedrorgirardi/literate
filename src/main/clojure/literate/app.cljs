@@ -9,6 +9,7 @@
             [rum.core :as rum :refer [defc]]
             [datascript.core :as d]
 
+            ["jdenticon" :as jdenticon]
             ["marked" :as marked]
             ["vega-embed" :as vega-embed]
             ["leaflet" :as leaflet]
@@ -59,6 +60,13 @@
   [:div.flex-1
    {:dangerouslySetInnerHTML
     {:__html (:widget/html e)}}])
+
+(defc Identicon
+  [e]
+  [:div
+   {:dangerouslySetInnerHTML
+    {:__html (jdenticon/toSvg (:widget.identicon/hash-or-value e)
+                              (:widget.identicon/size e 30))}}])
 
 (defc Leaflet < {:did-mount
                  (fn [state]
@@ -156,6 +164,9 @@
 
                     :widget.type/leaflet
                     (Leaflet e)
+
+                    :widget.type/identicon
+                    (Identicon e)
 
                     [:div.p-2 [:span "Unknown Widget type " [:code (str widget-type)]]])]
 

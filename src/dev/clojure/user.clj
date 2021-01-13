@@ -7,7 +7,8 @@
             [literate.client.core :as literate]
 
             [rum.server-render]
-            [org.httpkit.client :as http]))
+            [org.httpkit.client :as http])
+  (:import (java.util UUID)))
 
 (def stop-server
   (fn []
@@ -22,6 +23,8 @@
 
   (refresh :after `start-server))
 
+(def l (partial literate/view {:url "http://localhost:8118"}))
+
 (comment
 
   (reset)
@@ -31,7 +34,15 @@
   (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(literate/code "Hello")])})
 
 
-  (def l (partial literate/view {:url "http://localhost:8118"}))
+
+  ;; -- Identicon.
+
+  (l (literate/column
+       {}
+       {:widget/uuid (str (UUID/randomUUID))
+        :widget/type :widget.type/identicon
+        :widget.identicon/hash-or-value "Literate"}
+       (literate/hiccup [:span "Identicon"])))
 
 
   ;; -- Vega Lite.

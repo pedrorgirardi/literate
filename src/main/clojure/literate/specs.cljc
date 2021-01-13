@@ -8,7 +8,8 @@
                       :widget.type/vega-lite
                       :widget.type/hiccup
                       :widget.type/html
-                      :widget.type/leaflet})
+                      :widget.type/leaflet
+                      :widget.type/identicon})
 
 (s/def :literate/widget (s/keys :req [:widget/uuid
                                       :widget/type]))

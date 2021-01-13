@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "codemirror": "^5.59.1",
+    "jdenticon": "^3.1.0",
     "leaflet": "^1.7.1",
     "marked": "^1.2.7",
     "react": "^16.12.0",
