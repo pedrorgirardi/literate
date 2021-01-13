@@ -123,7 +123,8 @@ Add `literate` and `literate.client` aliases to you user or project `deps.edn`:
 ```clojure
 {:aliases
  {:literate
-  {:replace-deps {pedrorgirardi/literate {:git/url "https://github.com/pedrorgirardi/literate"
+  {:replace-paths []
+   :replace-deps {pedrorgirardi/literate {:git/url "https://github.com/pedrorgirardi/literate"
                                           :sha "66d09a3e9ab9f0c5c6c838f909fb6dd77da40c19"}}
    :main-opts ["-m" "literate.core" "--port" "8118"]}
 
