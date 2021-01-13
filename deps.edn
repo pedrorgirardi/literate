@@ -15,7 +15,10 @@
   com.cognitect/transit-clj {:mvn/version "1.0.324"}}
 
  :aliases
- {:dev
+ {:main
+  {:main-opts ["-m" "literate.core" "--port" "8118"]}
+
+  :dev
   {:extra-paths ["src/dev/clojure" "src/dev/resources"]
    :extra-deps
    {org.clojure/tools.namespace {:mvn/version "1.1.0"}
