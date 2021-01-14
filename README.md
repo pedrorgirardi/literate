@@ -125,7 +125,7 @@ Add `literate` and `literate.client` aliases to you user or project `deps.edn`:
  {:literate
   {:replace-paths []
    :replace-deps {pedrorgirardi/literate {:git/url "https://github.com/pedrorgirardi/literate"
-                                          :sha "7f1fe48534ce1cb7a8e86df28a482425efb60c7e"}}
+                                          :sha "29d9263d6ffa6805873033c5e1405e5ebdde3081"}}
    :main-opts ["-m" "literate.core" "--port" "8118"]}
 
   :literate.client
