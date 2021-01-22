@@ -197,7 +197,8 @@
         {:on-click #(db/retract-entity id)}
         [:i.zmdi.zmdi-close.text-gray-600]]]
 
-      (Widget e)])
+      [:div.flex.flex-1.overflow-x-auto
+       (Widget e)]])
 
 
    ;; -- Debug
