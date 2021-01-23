@@ -188,7 +188,7 @@
 
    ;; -- Widgets
 
-   (for [{:db/keys [id] :as e} (db/root-widgets)]
+   (for [{:db/keys [id] :as e} (sort-by :db/id (db/root-widgets))]
      [:div.flex.flex-col.p-1.mb-6.hover:shadow.rounded
       {:key id}
 
