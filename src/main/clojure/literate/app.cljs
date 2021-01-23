@@ -189,13 +189,12 @@
    ;; -- Widgets
 
    (for [{:db/keys [id] :as e} (db/root-widgets)]
-     [:div.flex.mb-6.shadow
+     [:div.flex.flex-col.p-1.mb-6.hover:shadow.rounded
       {:key id}
 
-      [:div.bg-gray-200.px-2.py-1
-       [:div.rounded-full.hover:bg-gray-400.h-5.w-5.flex.items-center.justify-center
-        {:on-click #(db/retract-entity id)}
-        [:i.zmdi.zmdi-close.text-gray-600]]]
+      [:div.text-gray-600.rounded.bg-gray-200.h-5.w-5.flex.items-center.justify-center.mb-1
+       {:on-click #(db/retract-entity id)}
+       [:i.zmdi.zmdi-close]]
 
       [:div.flex.flex-1.overflow-x-auto
        (Widget e)]])

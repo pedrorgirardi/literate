@@ -147,7 +147,7 @@
   (l (literate/column
        {}
        (literate/hiccup
-         [:div.flex.flex-col.space-y-3.bg-white.p-3.font-light
+         [:div.flex.flex-col.space-y-3.p-3.font-light
           [:h1.text-3xl
            {:style {:font-family "Cinzel"}}
            "Welcome to Literate"]
