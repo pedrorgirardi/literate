@@ -192,7 +192,7 @@
      [:div.flex.flex-col.p-1.mb-6.hover:shadow.rounded
       {:key id}
 
-      [:div.text-gray-600.rounded.bg-gray-200.h-5.w-5.flex.items-center.justify-center.mb-1
+      [:div.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.cursor-pointer
        {:on-click #(db/retract-entity id)}
        [:i.zmdi.zmdi-close]]
 
