@@ -6,7 +6,7 @@
   org.clojure/tools.cli {:mvn/version "1.0.194"}
   ring/ring-core {:mvn/version "1.8.2"}
   ring/ring-defaults {:mvn/version "0.3.2"}
-  http-kit/http-kit {:mvn/version "2.5.0"}
+  http-kit/http-kit {:mvn/version "2.5.1"}
   compojure/compojure {:mvn/version "1.6.2"}
   hiccup/hiccup {:mvn/version "1.0.5"}
   rum/rum {:mvn/version "0.12.3" :exclusions [cljsjs/react cljsjs/react-dom]}
@@ -29,7 +29,7 @@
 
   :app
   {:extra-deps
-   {thheller/shadow-cljs {:mvn/version "2.11.13"}
+   {thheller/shadow-cljs {:mvn/version "2.11.15"}
     binaryage/devtools {:mvn/version "1.0.2"}}}
 
 
