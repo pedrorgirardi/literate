@@ -68,6 +68,14 @@
     {:__html (jdenticon/toSvg (:widget.identicon/hash-or-value e)
                               (:widget.identicon/size e 30))}}])
 
+(defn L-pointo-to-layer [_ latlng]
+  (.circleMarker leaflet latlng (clj->js {:radiu 8
+                                          :fillColor "#ff7800"
+                                          :color "#000"
+                                          :weight 1
+                                          :opacity 1
+                                          :fillOpacity 0.8})))
+
 (defc Leaflet < {:did-mount
                  (fn [state]
                    (let [[{:widget/keys [geojson]}] (:rum/args state)
@@ -80,7 +88,7 @@
                          tile-layer (.tileLayer leaflet tile-url-template tile-options)
 
                          geojson-layer (when geojson
-                                         (.geoJSON leaflet (clj->js geojson)))]
+                                         (.geoJSON leaflet (clj->js geojson) (clj->js {:pointToLayer L-pointo-to-layer})))]
 
                      (.addTo tile-layer M)
 
@@ -104,7 +112,7 @@
                          {:widget/keys [geojson]} (first args)
 
                          geojson-layer' (when geojson
-                                          (.geoJSON leaflet (clj->js geojson)))]
+                                          (.geoJSON leaflet (clj->js geojson) (clj->js {:pointToLayer L-pointo-to-layer})))]
 
                      ;; Remove old GeoJSON layer.
                      (when geojson-layer
