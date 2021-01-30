@@ -70,24 +70,26 @@
 
 (defc Leaflet < {:did-mount
                  (fn [state]
-                   (let [[{:widget/keys [center zoom geojson]}] (:rum/args state)
+                   (let [[{:widget/keys [geojson]}] (:rum/args state)
 
-                         M (-> leaflet
-                               (.map (rum/dom-node state))
-                               (.setView (clj->js center) zoom))
+                         M (.map leaflet (rum/dom-node state))
 
+                         ;; Used to load and display tile layers on the map.
                          tile-url-template "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                          tile-options #js {:attribution "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"}
                          tile-layer (.tileLayer leaflet tile-url-template tile-options)
 
-                         ;; GeoJSON (optional)
                          geojson-layer (when geojson
                                          (.geoJSON leaflet (clj->js geojson)))]
 
                      (.addTo tile-layer M)
 
-                     (when geojson-layer
-                       (.addTo geojson-layer M))
+                     (if geojson-layer
+                       (do
+                         (.addTo geojson-layer M)
+                         (.fitBounds M (.getBounds geojson-layer)))
+                       ;; Defaults.
+                       (.setView M (clj->js [51.505 -0.09]) 10))
 
                      (assoc state ::M M
                                   ::tile-layer tile-layer
@@ -99,7 +101,7 @@
                           geojson-layer ::geojson-layer
                           args :rum/args} state
 
-                         {:widget/keys [center zoom geojson]} (first args)
+                         {:widget/keys [geojson]} (first args)
 
                          geojson-layer' (when geojson
                                           (.geoJSON leaflet (clj->js geojson)))]

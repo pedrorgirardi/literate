@@ -80,13 +80,9 @@
 
   (def sample (update geojson "features" #(take 10 %)))
 
-  (def center (vec (reverse (get-in geojson ["features" 0 "geometry" "coordinates"]))))
-
   (def leaflet-widget
     (literate/leaflet
       {:style {:height "600px"}
-       :center center
-       :zoom 10
        :geojson (update geojson "features" #(take 10 %))}))
 
   (l leaflet-widget)
