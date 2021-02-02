@@ -16,7 +16,12 @@
             ["vega-embed" :as vega-embed]
             ["leaflet" :as leaflet]
             ["codemirror" :as codemirror]
-            ["codemirror/mode/clojure/clojure"]))
+            ["codemirror/mode/clojure/clojure"]
+
+            ["ol/Map" :default Map]
+            ["ol/View" :default View]
+            ["ol/source" :as ol-source]
+            ["ol/layer" :as ol-layer]))
 
 (let [{:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
@@ -63,6 +68,17 @@
    {:dangerouslySetInnerHTML
     {:__html (:widget/html e)}}])
 
+
+(defn Geoplot [e]
+  [:div.w-full
+   {:style {:height "500px"}
+    :ref
+    (fn [e]
+      (when e
+        (Map. (clj->js {:target e
+                        :layers [(ol-layer/Tile. {:source (ol-source/OSM.)})]
+                        :view (View. {:center [0 0]
+                                      :zoom 1})}))))}])
 
 (defn L-pointo-to-layer [_ latlng]
   (.circleMarker leaflet latlng (clj->js {:radiu 8
@@ -167,6 +183,9 @@
 
                     :widget.type/html
                     Html
+
+                    :widget.type/geoplot
+                    Geoplot
 
                     :widget.type/leaflet
                     Leaflet
