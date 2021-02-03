@@ -14,8 +14,8 @@
     "ol": "^6.5.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "vega": "^5.18.0",
-    "vega-embed": "^6.15.0",
+    "vega": "^5.19.1",
+    "vega-embed": "^6.15.1",
     "vega-lite": "^4.17.0"
   },
   "devDependencies": {
