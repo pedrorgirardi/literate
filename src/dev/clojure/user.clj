@@ -40,7 +40,8 @@
   (l {:widget/uuid (str (UUID/randomUUID))
       :widget/type :widget.type/geoplot
       :widget.geoplot/height "800px"
-      :widget.geoplot/center [2952104.0199, -3277504.823]
+      :widget.geoplot/center [13.502 -39.155]
+      :widget.geoplot/center-wsg84? true
       :widget.geoplot/wkt "POLYGON((10.689 -25.092, 34.595 -20.170, 38.814 -35.639, 13.502 -39.155, 10.689 -25.092))"})
 
 

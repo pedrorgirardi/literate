@@ -20,7 +20,9 @@
             ["ol/View" :default View]
             ["ol/format/WKT" :default WKT]
             ["ol/source" :as ol-source]
-            ["ol/layer" :as ol-layer]))
+            ["ol/layer" :as ol-layer]
+            ["ol/proj" :as ol-proj]
+            [clojure.string :as str]))
 
 (let [{:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
@@ -71,6 +73,7 @@
 (defn Geoplot [{geoplot-height :widget.geoplot/height
                 geoplot-wkt :widget.geoplot/wkt
                 geoplot-center :widget.geoplot/center
+                geoplot-center-wsg84? :widget.geoplot/center-wsg84?
                 geoplot-zoom :widget.geoplot/zoom}]
   [:div.w-full
    {:style {:height (or geoplot-height "500px")}
@@ -81,6 +84,13 @@
                                                             "featureProjection" "EPSG:3857"})
 
               geoplot-center-js (some-> geoplot-center clj->js)
+
+              ;; Provide the coordinates projected into Web Mercator - if center is in WSG84.
+              geoplot-center-js (if geoplot-center-wsg84?
+                                  (doto (some-> geoplot-center-js ol-proj/fromLonLat)
+                                    (#(js/console.log (str "Center projection: " (str/join " " geoplot-center) " (WGS84) to " % " (EPSG:3857)"))))
+                                  geoplot-center-js)
+
               geoplot-center-js (or geoplot-center-js #js [0 0])]
 
           (Map. #js {:target e
