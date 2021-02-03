@@ -1,20 +1,26 @@
 (ns literate.app
   (:require [cljs.spec.alpha :as s]
             [cljs.pprint :as pprint]
+            [clojure.string :as str]
 
             [literate.db :as db]
             [literate.specs]
 
-            [taoensso.sente :as sente :refer (cb-success?)]
-            [rum.core :as rum :refer [defc]]
+            [taoensso.sente :as sente]
             [datascript.core :as d]
+            [reagent.dom :as dom]
 
-            ["jdenticon" :as jdenticon]
             ["marked" :as marked]
             ["vega-embed" :as vega-embed]
-            ["leaflet" :as leaflet]
             ["codemirror" :as codemirror]
-            ["codemirror/mode/clojure/clojure"]))
+            ["codemirror/mode/clojure/clojure"]
+
+            ["ol/Map" :default Map]
+            ["ol/View" :default View]
+            ["ol/format/WKT" :default WKT]
+            ["ol/source" :as ol-source]
+            ["ol/layer" :as ol-layer]
+            ["ol/proj" :as ol-proj]))
 
 (let [{:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
@@ -29,164 +35,122 @@
 ;; ---
 
 
-(defc Code < {:did-mount
-              (fn [state]
-                (let [{:widget/keys [code]} (first (:rum/args state))]
-                  (codemirror (rum/dom-node state) #js {"value" code
-                                                        "mode" "clojure"
-                                                        "lineNumbers" false}))
+(defn Code [{:widget/keys [code]}]
+  [:div.w-full
+   {:ref
+    (fn [e]
+      (when e
+        (codemirror e #js {"value" code
+                           "mode" "clojure"
+                           "lineNumbers" false})))}])
 
-                state)}
-  [_]
-  [:div.w-full])
+(defn VegaLite [{:widget/keys [vega-lite-spec]}]
+  [:div
+   {:ref
+    (fn [e]
+      (when e
+        (vega-embed e (clj->js vega-lite-spec))))}])
 
-(defc VegaLite < {:did-mount
-                  (fn [state]
-                    (let [{:widget/keys [vega-lite-spec]} (first (:rum/args state))]
-                      (vega-embed (rum/dom-node state) (clj->js vega-lite-spec)))
-
-                    state)}
-  [_]
-  [:div])
-
-(defc Markdown
+(defn Markdown
   [e]
   [:div.flex-1.bg-white.px-3.py-1.font-thin
    {:dangerouslySetInnerHTML
     {:__html (marked (:widget/markdown e))}}])
 
-(defc Html
+(defn Html
   [e]
   [:div.flex-1
    {:dangerouslySetInnerHTML
     {:__html (:widget/html e)}}])
 
-(defc Identicon
-  [e]
-  [:div
-   {:dangerouslySetInnerHTML
-    {:__html (jdenticon/toSvg (:widget.identicon/hash-or-value e)
-                              (:widget.identicon/size e 30))}}])
 
-(defn L-pointo-to-layer [_ latlng]
-  (.circleMarker leaflet latlng (clj->js {:radiu 8
-                                          :fillColor "#ff7800"
-                                          :color "#000"
-                                          :weight 1
-                                          :opacity 1
-                                          :fillOpacity 0.8})))
+(defn Geoplot [{geoplot-height :widget.geoplot/height
+                geoplot-wkt :widget.geoplot/wkt
+                geoplot-center :widget.geoplot/center
+                geoplot-center-wsg84? :widget.geoplot/center-wsg84?
+                geoplot-zoom :widget.geoplot/zoom}]
+  [:div.w-full
+   {:style {:height (or geoplot-height "500px")}
+    :ref
+    (fn [e]
+      (when e
+        (let [feature (.readFeature (WKT.) geoplot-wkt #js {"dataProjection" "EPSG:4326"
+                                                            "featureProjection" "EPSG:3857"})
 
-(defc Leaflet < {:did-mount
-                 (fn [state]
-                   (let [[{:widget/keys [geojson]}] (:rum/args state)
+              geoplot-center-js (some-> geoplot-center clj->js)
 
-                         M (.map leaflet (rum/dom-node state))
+              ;; Provide the coordinates projected into Web Mercator - if center is in WSG84.
+              geoplot-center-js (if geoplot-center-wsg84?
+                                  (doto (some-> geoplot-center-js ol-proj/fromLonLat)
+                                    (#(js/console.log (str "Center projection: " (str/join " " geoplot-center) " (WGS84) to " % " (EPSG:3857)"))))
+                                  geoplot-center-js)
 
-                         ;; Used to load and display tile layers on the map.
-                         tile-url-template "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                         tile-options #js {:attribution "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"}
-                         tile-layer (.tileLayer leaflet tile-url-template tile-options)
+              geoplot-center-js (or geoplot-center-js #js [0 0])]
 
-                         geojson-layer (when geojson
-                                         (.geoJSON leaflet (clj->js geojson) (clj->js {:pointToLayer L-pointo-to-layer})))]
+          (Map. #js {:target e
 
-                     (.addTo tile-layer M)
+                     :layers
+                     #js [(ol-layer/Tile. #js {:source (ol-source/OSM.)})
 
-                     (if geojson-layer
-                       (do
-                         (.addTo geojson-layer M)
-                         (.fitBounds M (.getBounds geojson-layer)))
-                       ;; Defaults.
-                       (.setView M (clj->js [51.505 -0.09]) 10))
+                          (ol-layer/Vector. #js {:source (ol-source/Vector. #js {"features" #js [feature]})})]
 
-                     (assoc state ::M M
-                                  ::tile-layer tile-layer
-                                  ::geojson-layer geojson-layer)))
-
-                 :did-update
-                 (fn [state]
-                   (let [{M ::M
-                          geojson-layer ::geojson-layer
-                          args :rum/args} state
-
-                         {:widget/keys [geojson]} (first args)
-
-                         geojson-layer' (when geojson
-                                          (.geoJSON leaflet (clj->js geojson) (clj->js {:pointToLayer L-pointo-to-layer})))]
-
-                     ;; Remove old GeoJSON layer.
-                     (when geojson-layer
-                       (.removeLayer M geojson-layer))
-
-                     ;; Add GeoJSON layer.
-                     (when geojson-layer'
-                       (.addTo geojson-layer' M))
-
-                     (assoc state ::geojson-layer geojson-layer')))}
-  [e]
-  [:div.flex-1
-   {:style
-    {:height (or (get-in e [:widget/style :height]) "320px")}}])
+                     :view (View. #js {:center geoplot-center-js
+                                       :zoom (or geoplot-zoom 4)})}))))}])
 
 (declare Widget)
 
-(defc Row
-  [e]
+(defn Row [e]
   [:div.flex.flex-1.space-x-2
    (for [child (:widget/children e)]
      [:div.flex-1
       {:key (:widget/uuid child)}
-      (Widget child)])])
+      [Widget child]])])
 
-(defc Column
-  [e]
+(defn Column [e]
   [:div.flex.flex-col.flex-1.space-y-2
    (for [child (:widget/children e)]
      [:div.flex-1
       {:key (:widget/uuid child)}
-      (Widget child)])])
+      [Widget child]])])
 
-(defc Widget [e]
+(defn Widget [e]
   (let [{widget-uuid :widget/uuid
          widget-type :widget/type} e
 
-        component (case widget-type
+        Component (case widget-type
+                    :widget.type/html
+                    Html
+
                     :widget.type/row
-                    (Row e)
+                    Row
 
                     :widget.type/column
-                    (Column e)
+                    Column
 
                     :widget.type/vega-lite
-                    (VegaLite e)
+                    VegaLite
 
                     :widget.type/code
-                    (Code e)
+                    Code
 
                     :widget.type/markdown
-                    (Markdown e)
+                    Markdown
 
-                    :widget.type/hiccup
-                    (Html e)
-
-                    :widget.type/html
-                    (Html e)
-
-                    :widget.type/leaflet
-                    (Leaflet e)
-
-                    :widget.type/identicon
-                    (Identicon e)
+                    :widget.type/geoplot
+                    Geoplot
 
                     [:div.p-2 [:span "Unknown Widget type " [:code (str widget-type)]]])]
 
-    (rum/with-key component widget-uuid)))
+    (js/console.log "Render" (name widget-type))
+
+    ^{:key widget-uuid}
+    [Component e]))
 
 
 ;; ---
 
 
-(defc App []
+(defn App [widgets]
   [:div.flex.flex-col
 
    ;; -- Header
@@ -198,8 +162,8 @@
 
    ;; -- Widgets
 
-   (for [{:db/keys [id] :as e} (sort-by :db/id (db/root-widgets))]
-     [:div.flex.flex-col.p-1.mb-6.hover:shadow
+   (for [{:db/keys [id] :as e} widgets]
+     [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-blue-500
       {:key id}
 
       [:div.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.cursor-pointer
@@ -230,7 +194,8 @@
       (d/transact! db/conn data))))
 
 (defn mount []
-  (rum/mount (App) (.getElementById js/document "app")))
+  (let [widgets (sort-by :db/id (db/root-widgets))]
+    (dom/render [App widgets] (.getElementById js/document "app"))))
 
 (defn ^:dev/before-load stop-sente-router []
   (@sente-router-ref))
