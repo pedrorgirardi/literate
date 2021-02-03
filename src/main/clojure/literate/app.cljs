@@ -8,13 +8,11 @@
             [taoensso.sente :as sente :refer (cb-success?)]
             [rum.core :as rum :refer [defc]]
             [datascript.core :as d]
-            [reagent.core :as reagent]
-            [reagent.dom :as reagent-dom]
+            [reagent.core :as r]
+            [reagent.dom :as dom]
 
-            ["jdenticon" :as jdenticon]
             ["marked" :as marked]
             ["vega-embed" :as vega-embed]
-            ["leaflet" :as leaflet]
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]
 
@@ -92,66 +90,6 @@
                      :view (View. #js {:center (clj->js geoplot-center)
                                        :zoom (or geoplot-zoom 4)})}))))}])
 
-(defn L-pointo-to-layer [_ latlng]
-  (.circleMarker leaflet latlng (clj->js {:radiu 8
-                                          :fillColor "#ff7800"
-                                          :color "#000"
-                                          :weight 1
-                                          :opacity 1
-                                          :fillOpacity 0.8})))
-
-(defc Leaflet < {:did-mount
-                 (fn [state]
-                   (let [[{:widget/keys [geojson]}] (:rum/args state)
-
-                         M (.map leaflet (rum/dom-node state))
-
-                         ;; Used to load and display tile layers on the map.
-                         tile-url-template "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                         tile-options #js {:attribution "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"}
-                         tile-layer (.tileLayer leaflet tile-url-template tile-options)
-
-                         geojson-layer (when geojson
-                                         (.geoJSON leaflet (clj->js geojson) (clj->js {:pointToLayer L-pointo-to-layer})))]
-
-                     (.addTo tile-layer M)
-
-                     (if geojson-layer
-                       (do
-                         (.addTo geojson-layer M)
-                         (.fitBounds M (.getBounds geojson-layer)))
-                       ;; Defaults.
-                       (.setView M (clj->js [51.505 -0.09]) 10))
-
-                     (assoc state ::M M
-                                  ::tile-layer tile-layer
-                                  ::geojson-layer geojson-layer)))
-
-                 :did-update
-                 (fn [state]
-                   (let [{M ::M
-                          geojson-layer ::geojson-layer
-                          args :rum/args} state
-
-                         {:widget/keys [geojson]} (first args)
-
-                         geojson-layer' (when geojson
-                                          (.geoJSON leaflet (clj->js geojson) (clj->js {:pointToLayer L-pointo-to-layer})))]
-
-                     ;; Remove old GeoJSON layer.
-                     (when geojson-layer
-                       (.removeLayer M geojson-layer))
-
-                     ;; Add GeoJSON layer.
-                     (when geojson-layer'
-                       (.addTo geojson-layer' M))
-
-                     (assoc state ::geojson-layer geojson-layer')))}
-  [e]
-  [:div.flex-1
-   {:style
-    {:height (or (get-in e [:widget/style :height]) "320px")}}])
-
 (declare Widget)
 
 (defc Row
@@ -175,6 +113,9 @@
          widget-type :widget/type} e
 
         Component (case widget-type
+                    :widget.type/html
+                    Html
+
                     :widget.type/row
                     Row
 
@@ -190,19 +131,12 @@
                     :widget.type/markdown
                     Markdown
 
-                    :widget.type/hiccup
-                    Html
-
-                    :widget.type/html
-                    Html
-
                     :widget.type/geoplot
                     Geoplot
 
-                    :widget.type/leaflet
-                    Leaflet
-
                     [:div.p-2 [:span "Unknown Widget type " [:code (str widget-type)]]])]
+
+    (js/console.log "Render" (name widget-type))
 
     ^{:key widget-uuid}
     [Component e]))
@@ -256,7 +190,7 @@
 
 (defn mount []
   (let [widgets (sort-by :db/id (db/root-widgets))]
-    (reagent-dom/render [App widgets] (.getElementById js/document "app"))))
+    (dom/render [App widgets] (.getElementById js/document "app"))))
 
 (defn ^:dev/before-load stop-sente-router []
   (@sente-router-ref))
