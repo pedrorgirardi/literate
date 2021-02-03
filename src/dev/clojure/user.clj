@@ -38,7 +38,10 @@
   ;; -- Geoplot.
 
   (l {:widget/uuid (str (UUID/randomUUID))
-      :widget/type :widget.type/geoplot})
+      :widget/type :widget.type/geoplot
+      :widget.geoplot/height "800px"
+      :widget.geoplot/center [2952104.0199, -3277504.823]
+      :widget.geoplot/wkt "POLYGON((10.689 -25.092, 34.595 -20.170, 38.814 -35.639, 13.502 -39.155, 10.689 -25.092))"})
 
 
   ;; -- Vega Lite.

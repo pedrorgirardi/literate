@@ -20,6 +20,7 @@
 
             ["ol/Map" :default Map]
             ["ol/View" :default View]
+            ["ol/format/WKT" :default WKT]
             ["ol/source" :as ol-source]
             ["ol/layer" :as ol-layer]))
 
@@ -69,16 +70,27 @@
     {:__html (:widget/html e)}}])
 
 
-(defn Geoplot [e]
+(defn Geoplot [{geoplot-height :widget.geoplot/height
+                geoplot-wkt :widget.geoplot/wkt
+                geoplot-center :widget.geoplot/center
+                geoplot-zoom :widget.geoplot/zoom}]
   [:div.w-full
-   {:style {:height "500px"}
+   {:style {:height (or geoplot-height "500px")}
     :ref
     (fn [e]
       (when e
-        (Map. (clj->js {:target e
-                        :layers [(ol-layer/Tile. {:source (ol-source/OSM.)})]
-                        :view (View. {:center [0 0]
-                                      :zoom 1})}))))}])
+        (let [feature (.readFeature (WKT.) geoplot-wkt #js {"dataProjection" "EPSG:4326"
+                                                            "featureProjection" "EPSG:3857"})]
+
+          (Map. #js {:target e
+
+                     :layers
+                     #js [(ol-layer/Tile. #js {:source (ol-source/OSM.)})
+
+                          (ol-layer/Vector. #js {:source (ol-source/Vector. #js {"features" #js [feature]})})]
+
+                     :view (View. #js {:center (clj->js geoplot-center)
+                                       :zoom (or geoplot-zoom 4)})}))))}])
 
 (defn L-pointo-to-layer [_ latlng]
   (.circleMarker leaflet latlng (clj->js {:radiu 8
