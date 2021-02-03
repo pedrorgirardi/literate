@@ -78,7 +78,10 @@
     (fn [e]
       (when e
         (let [feature (.readFeature (WKT.) geoplot-wkt #js {"dataProjection" "EPSG:4326"
-                                                            "featureProjection" "EPSG:3857"})]
+                                                            "featureProjection" "EPSG:3857"})
+
+              geoplot-center-js (some-> geoplot-center clj->js)
+              geoplot-center-js (or geoplot-center-js #js [0 0])]
 
           (Map. #js {:target e
 
@@ -87,7 +90,7 @@
 
                           (ol-layer/Vector. #js {:source (ol-source/Vector. #js {"features" #js [feature]})})]
 
-                     :view (View. #js {:center (clj->js geoplot-center)
+                     :view (View. #js {:center geoplot-center-js
                                        :zoom (or geoplot-zoom 4)})}))))}])
 
 (declare Widget)
