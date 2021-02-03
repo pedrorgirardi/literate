@@ -1,14 +1,13 @@
 (ns literate.app
   (:require [cljs.spec.alpha :as s]
             [cljs.pprint :as pprint]
+            [clojure.string :as str]
 
             [literate.db :as db]
             [literate.specs]
 
-            [taoensso.sente :as sente :refer (cb-success?)]
-            [rum.core :as rum :refer [defc]]
+            [taoensso.sente :as sente]
             [datascript.core :as d]
-            [reagent.core :as r]
             [reagent.dom :as dom]
 
             ["marked" :as marked]
@@ -21,8 +20,7 @@
             ["ol/format/WKT" :default WKT]
             ["ol/source" :as ol-source]
             ["ol/layer" :as ol-layer]
-            ["ol/proj" :as ol-proj]
-            [clojure.string :as str]))
+            ["ol/proj" :as ol-proj]))
 
 (let [{:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
@@ -37,25 +35,21 @@
 ;; ---
 
 
-(defc Code < {:did-mount
-              (fn [state]
-                (let [{:widget/keys [code]} (first (:rum/args state))]
-                  (codemirror (rum/dom-node state) #js {"value" code
-                                                        "mode" "clojure"
-                                                        "lineNumbers" false}))
+(defn Code [{:widget/keys [code]}]
+  [:div.w-full
+   {:ref
+    (fn [e]
+      (when e
+        (codemirror e #js {"value" code
+                           "mode" "clojure"
+                           "lineNumbers" false})))}])
 
-                state)}
-  [_]
-  [:div.w-full])
-
-(defc VegaLite < {:did-mount
-                  (fn [state]
-                    (let [{:widget/keys [vega-lite-spec]} (first (:rum/args state))]
-                      (vega-embed (rum/dom-node state) (clj->js vega-lite-spec)))
-
-                    state)}
-  [_]
-  [:div])
+(defn VegaLite [{:widget/keys [vega-lite-spec]}]
+  [:div
+   {:ref
+    (fn [e]
+      (when e
+        (vega-embed e (clj->js vega-lite-spec))))}])
 
 (defn Markdown
   [e]
@@ -105,21 +99,19 @@
 
 (declare Widget)
 
-(defc Row
-  [e]
+(defn Row [e]
   [:div.flex.flex-1.space-x-2
    (for [child (:widget/children e)]
      [:div.flex-1
       {:key (:widget/uuid child)}
-      (Widget child)])])
+      [Widget child]])])
 
-(defc Column
-  [e]
+(defn Column [e]
   [:div.flex.flex-col.flex-1.space-y-2
    (for [child (:widget/children e)]
      [:div.flex-1
       {:key (:widget/uuid child)}
-      (Widget child)])])
+      [Widget child]])])
 
 (defn Widget [e]
   (let [{widget-uuid :widget/uuid

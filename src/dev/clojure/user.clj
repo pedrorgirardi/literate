@@ -39,7 +39,7 @@
 
   (l {:widget/uuid (str (UUID/randomUUID))
       :widget/type :widget.type/geoplot
-      :widget.geoplot/height "800px"
+      :widget.geoplot/height "600px"
       :widget.geoplot/center [13.502 -39.155]
       :widget.geoplot/center-wsg84? true
       :widget.geoplot/wkt "POLYGON((10.689 -25.092, 34.595 -20.170, 38.814 -35.639, 13.502 -39.155, 10.689 -25.092))"})
@@ -71,24 +71,6 @@
   (l (literate/code (slurp (io/resource "literate/core.clj"))))
 
 
-  ;; -- Leaflet.
-
-  (l (literate/leaflet {}))
-
-  (def geojson (json/read (io/reader "src/dev/resources/points.geojson")))
-
-  (def sample (update geojson "features" #(take 10 %)))
-
-  (def leaflet-widget
-    (literate/leaflet
-      {:style {:height "600px"}
-       :geojson (update geojson "features" #(take 10 %))}))
-
-  (l leaflet-widget)
-
-  (l (merge leaflet-widget {:widget/geojson (update geojson "features" #(take 1 %))}))
-
-
   ;; -- Markdown.
 
   (l (literate/markdown "**Welcome to Literate**\n\nEval some forms to get started!"))
@@ -101,40 +83,6 @@
          [:div.bg-white.p-3
           [:h1.text-6xl "Hello from Hiccup"]
           [:span "Text"]])))
-
-
-  ;; -- Row.
-
-  (l (literate/row
-       {}
-       (literate/leaflet {})
-       (literate/vega-lite
-         {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-          :description "A simple bar chart with embedded data."
-          :data {:url "https://vega.github.io/editor/data/stocks.csv"}
-          :transform [{"filter" "datum.symbol==='GOOG'"}],
-          :mark "line"
-          :encoding {:x {:field "date"
-                         :type "temporal"}
-                     :y {:field "price"
-                         :type "quantitative"}}})))
-
-
-  ;; -- Column.
-
-  (l (literate/column
-       {}
-       (literate/leaflet {})
-       (literate/vega-lite
-         {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-          :description "A simple bar chart with embedded data."
-          :data {:url "https://vega.github.io/editor/data/stocks.csv"}
-          :transform [{"filter" "datum.symbol==='GOOG'"}],
-          :mark "line"
-          :encoding {:x {:field "date"
-                         :type "temporal"}
-                     :y {:field "price"
-                         :type "quantitative"}}})))
 
 
   ;; -- Welcome.
@@ -185,10 +133,6 @@
        (literate/code (slurp (io/resource "literate/core.clj")))
 
        (literate/hiccup
-         [:span.p-2.text-lg "Leaflet Widget"])
-
-       (literate/leaflet {:style {:height "400px"}
-                          :center [51.505 -0.09]
-                          :zoom 10})))
+         [:span.p-2.text-lg "Leaflet Widget"])))
 
   )
