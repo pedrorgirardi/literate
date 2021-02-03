@@ -7,7 +7,7 @@
     "watch": "npx shadow-cljs watch :main"
   },
   "dependencies": {
-    "codemirror": "^5.59.1",
+    "codemirror": "^5.59.2",
     "jdenticon": "^3.1.0",
     "leaflet": "^1.7.1",
     "marked": "^1.2.7",
