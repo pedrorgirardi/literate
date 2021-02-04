@@ -20,7 +20,9 @@
             ["ol/format/WKT" :default WKT]
             ["ol/source" :as ol-source]
             ["ol/layer" :as ol-layer]
-            ["ol/proj" :as ol-proj]))
+            ["ol/proj" :as ol-proj]
+            ["ol/color" :as ol-color]
+            ["ol/style" :as ol-style]))
 
 (let [{:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
@@ -66,6 +68,7 @@
 
 (defn Geoplot [{geoplot-height :widget.geoplot/height
                 geoplot-wkt :widget.geoplot/wkt
+                geoplot-style :widget.geoplot/style
                 geoplot-center :widget.geoplot/center
                 geoplot-center-wsg84? :widget.geoplot/center-wsg84?
                 geoplot-zoom :widget.geoplot/zoom}]
@@ -85,14 +88,35 @@
                                     (#(js/console.log (str "Center projection: " (str/join " " geoplot-center) " (WGS84) to " % " (EPSG:3857)"))))
                                   geoplot-center-js)
 
-              geoplot-center-js (or geoplot-center-js #js [0 0])]
+              geoplot-center-js (or geoplot-center-js #js [0 0])
+
+              style (when geoplot-style
+                      (ol-style/Style.
+                        (clj->js
+                          (merge {}
+                                 ;; Fill color.
+                                 (when-let [color (get-in geoplot-style [:fill :color])]
+                                   {:fill (ol-style/Fill. #js {:color (ol-color/asString color)})})
+
+                                 ;; Stroke color.
+                                 (when-let [color (get-in geoplot-style [:stroke :color])]
+                                   {:stroke (ol-style/Stroke. #js {:color (ol-color/asString color)})})))))
+
+              wkt-source (ol-source/Vector. #js {"features" #js [feature]})
+
+              wkt-layer (ol-layer/Vector.
+                          (clj->js (merge {:source wkt-source}
+                                          (when style
+                                            {:style style}))))]
+
+          (js/console.log 'style style)
 
           (Map. #js {:target e
 
                      :layers
                      #js [(ol-layer/Tile. #js {:source (ol-source/OSM.)})
 
-                          (ol-layer/Vector. #js {:source (ol-source/Vector. #js {"features" #js [feature]})})]
+                          wkt-layer]
 
                      :view (View. #js {:center geoplot-center-js
                                        :zoom (or geoplot-zoom 4)})}))))}])

@@ -42,7 +42,10 @@
       :widget.geoplot/height "600px"
       :widget.geoplot/center [13.502 -39.155]
       :widget.geoplot/center-wsg84? true
-      :widget.geoplot/wkt "POLYGON((10.689 -25.092, 34.595 -20.170, 38.814 -35.639, 13.502 -39.155, 10.689 -25.092))"})
+      :widget.geoplot/wkt "POLYGON((10.689 -25.092, 34.595 -20.170, 38.814 -35.639, 13.502 -39.155, 10.689 -25.092))"
+      :widget.geoplot/style
+      {:fill {:color "rgba(252, 165, 165, 0.2)"}
+       :stroke {:color "rgba(239, 68, 68, 1)"}}})
 
 
   ;; -- Vega Lite.
