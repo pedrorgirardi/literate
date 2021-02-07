@@ -63,7 +63,7 @@
   [e]
   [:div.flex-1
    {:dangerouslySetInnerHTML
-    {:__html (:widget/html e)}}])
+    {:__html (:widget.html/src e)}}])
 
 
 (defn Geoplot [{geoplot-height :widget.geoplot/height

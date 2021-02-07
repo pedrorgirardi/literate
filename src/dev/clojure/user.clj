@@ -84,8 +84,16 @@
   (l (literate/html
        (rum.server-render/render-static-markup
          [:div.bg-white.p-3
-          [:h1.text-6xl "Hello from Hiccup"]
+          [:h1.text-6xl "Hello, world!"]
           [:span "Text"]])))
+
+
+  ;; -- Hiccup.
+
+  (l (literate/hiccup
+       [:div.bg-white.p-3
+        [:h1.text-6xl "Hello, world!"]
+        [:span "Text"]]))
 
 
   ;; -- Welcome.
@@ -133,9 +141,6 @@
        (literate/hiccup
          [:span.p-2.text-lg "Code Widget"])
 
-       (literate/code (slurp (io/resource "literate/core.clj")))
-
-       (literate/hiccup
-         [:span.p-2.text-lg "Leaflet Widget"])))
+       (literate/code (slurp (io/resource "literate/core.clj")))))
 
   )
