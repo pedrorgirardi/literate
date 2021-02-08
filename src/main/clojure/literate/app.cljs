@@ -66,8 +66,40 @@
     {:__html (:widget.html/src e)}}])
 
 
+(defn geoplot-feature-js [feature]
+  (let [{:geoplot.feature/keys [wkt
+                                data-projection
+                                feature-projection
+                                style]} feature]
+    (cond
+      wkt
+      (let [options (merge {}
+                           (when data-projection
+                             {"dataProjection" data-projection})
+
+                           (when feature-projection
+                             {"featureProjection" feature-projection}))
+
+            feature (.readFeature (WKT.) wkt (clj->js options))]
+
+        (when style
+          (.setStyle feature (ol-style/Style.
+                               (clj->js
+                                 (merge {}
+                                        ;; Fill color.
+                                        (when-let [color (get-in style [:geoplot.style/fill :geoplot/color])]
+                                          {:fill (ol-style/Fill. #js {:color (ol-color/asString color)})})
+
+                                        ;; Stroke color
+                                        (when-let [color (get-in style [:geoplot.style/stroke :geoplot/color])]
+                                          {:stroke (ol-style/Stroke. #js {:color (ol-color/asString color)})}))))))
+
+        feature)
+
+      :else
+      nil)))
+
 (defn Geoplot [{geoplot-height :widget.geoplot/height
-                geoplot-wkt :widget.geoplot/wkt
                 geoplot-style :widget.geoplot/style
                 geoplot-center :widget.geoplot/center
                 geoplot-center-wsg84? :widget.geoplot/center-wsg84?
@@ -78,10 +110,7 @@
     :ref
     (fn [e]
       (when e
-        (let [feature (.readFeature (WKT.) geoplot-wkt #js {"dataProjection" "EPSG:4326"
-                                                            "featureProjection" "EPSG:3857"})
-
-              geoplot-center-js (some-> geoplot-center clj->js)
+        (let [geoplot-center-js (some-> geoplot-center clj->js)
 
               ;; Provide the coordinates projected into Web Mercator - if center is in WSG84.
               geoplot-center-js (if geoplot-center-wsg84?
@@ -103,19 +132,19 @@
                                  (when-let [color (get-in geoplot-style [:stroke :color])]
                                    {:stroke (ol-style/Stroke. #js {:color (ol-color/asString color)})})))))
 
-              wkt-source (ol-source/Vector. #js {"features" #js [feature]})
+              source (ol-source/Vector. (clj->js {"features" (mapv geoplot-feature-js geoplot-features)}))
 
-              wkt-layer (ol-layer/Vector.
-                          (clj->js (merge {:source wkt-source}
-                                          (when style
-                                            {:style style}))))]
+              layer (ol-layer/Vector.
+                      (clj->js (merge {:source source}
+                                      (when style
+                                        {:style style}))))]
 
           (Map. #js {:target e
 
                      :layers
                      #js [(ol-layer/Tile. #js {:source (ol-source/OSM.)})
 
-                          wkt-layer]
+                          layer]
 
                      :view (View. #js {:center geoplot-center-js
                                        :zoom (or geoplot-zoom 4)})}))))}])
