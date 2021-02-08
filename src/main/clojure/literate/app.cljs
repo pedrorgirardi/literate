@@ -71,7 +71,8 @@
                 geoplot-style :widget.geoplot/style
                 geoplot-center :widget.geoplot/center
                 geoplot-center-wsg84? :widget.geoplot/center-wsg84?
-                geoplot-zoom :widget.geoplot/zoom}]
+                geoplot-zoom :widget.geoplot/zoom
+                geoplot-features :widget.geoplot/features}]
   [:div.w-full
    {:style {:height (or geoplot-height "500px")}
     :ref
