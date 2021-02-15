@@ -42,10 +42,21 @@
       :widget.geoplot/height "600px"
       :widget.geoplot/center [13.502 -39.155]
       :widget.geoplot/center-wsg84? true
-      :widget.geoplot/wkt "POLYGON((10.689 -25.092, 34.595 -20.170, 38.814 -35.639, 13.502 -39.155, 10.689 -25.092))"
-      :widget.geoplot/style
-      {:fill {:color "rgba(252, 165, 165, 0.2)"}
-       :stroke {:color "rgba(239, 68, 68, 1)"}}})
+      :widget.geoplot/features
+      [{:geoplot.feature/wkt "POLYGON((10.689 -25.092, 34.595 -20.170, 38.814 -35.639, 13.502 -39.155, 10.689 -25.092))"
+        :geoplot.feature/data-projection "EPSG:4326"
+        :geoplot.feature/feature-projection "EPSG:3857"
+        :geoplot.feature/style
+        {:geoplot.style/fill {:geoplot/color "rgba(252, 165, 165, 0.2)"}
+         :geoplot.style/stroke {:geoplot/color "rgba(239, 68, 68, 1)"}}}
+
+       {:geoplot.feature/wkt "POLYGON((8.689 -23.092, 32.595 -18.170, 36.814 -33.639, 11.502 -37.155, 8.689 -23.092))"
+        :geoplot.feature/data-projection "EPSG:4326"
+        :geoplot.feature/feature-projection "EPSG:3857"}
+
+       {:geoplot.feature/wkt "POINT(8.689 -23.092)"
+        :geoplot.feature/data-projection "EPSG:4326"
+        :geoplot.feature/feature-projection "EPSG:3857"}]})
 
 
   ;; -- Vega Lite.
