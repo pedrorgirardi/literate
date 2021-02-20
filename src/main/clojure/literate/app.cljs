@@ -14,6 +14,7 @@
             ["vega-embed" :as vega-embed]
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]
+            ["codemirror/mode/gfm/gfm"]
 
             ["ol/Map" :default Map]
             ["ol/View" :default View]
@@ -37,14 +38,19 @@
 ;; ---
 
 
-(defn Code [{:widget/keys [code]}]
-  [:div.w-full
+(defn Codemirror [{:widget.codemirror/keys [height
+                                            width
+                                            value
+                                            mode
+                                            lineNumbers]}]
+  [:div
    {:ref
     (fn [e]
       (when e
-        (codemirror e #js {"value" code
-                           "mode" "clojure"
-                           "lineNumbers" false})))}])
+        (let [cm (codemirror e #js {"value" value
+                                    "mode" mode
+                                    "lineNumbers" lineNumbers})]
+          (.setSize cm width height))))}])
 
 (defn VegaLite [{:widget/keys [vega-lite-spec]}]
   [:div
@@ -182,8 +188,8 @@
                     :widget.type/vega-lite
                     VegaLite
 
-                    :widget.type/code
-                    Code
+                    :widget.type/codemirror
+                    Codemirror
 
                     :widget.type/markdown
                     Markdown
@@ -235,9 +241,12 @@
 
    [:div.fixed.bottom-0.right-0.mr-4.mb-4
     [:div.rounded-full.h-8.w-8.flex.items-center.justify-center.text-2xl.hover:bg-green-200
-     {:on-click #(d/transact! db/conn [#:widget {:uuid (str (random-uuid))
-                                                 :type :widget.type/code
-                                                 :code (with-out-str (pprint/pprint (db/all-widgets)))}])}
+     {:on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
+                                        :widget/type :widget.type/codemirror
+                                        :widget.code/mode "clojure"
+                                        :widget.code/height "auto"
+                                        :widget.code/line-numbers? true
+                                        :widget.code/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
      [:i.zmdi.zmdi-bug.text-green-500]]]])
 
 

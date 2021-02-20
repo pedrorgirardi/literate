@@ -3,7 +3,7 @@
 
 (s/def :widget/uuid string?)
 
-(s/def :widget/type #{:widget.type/code
+(s/def :widget/type #{:widget.type/codemirror
                       :widget.type/markdown
                       :widget.type/vega-lite
                       :widget.type/html})
