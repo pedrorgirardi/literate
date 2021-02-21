@@ -80,9 +80,9 @@
                    :y {:field "b"
                        :type "quantitative"}}}))
 
-  ;; -- Code.
+  ;; -- Codemirror.
 
-  (l (literate/code (slurp (io/resource "literate/core.clj"))))
+  (l (literate/codemirror (slurp (io/resource "literate/core.clj")) {:lineNumbers true}))
 
 
   ;; -- Markdown.

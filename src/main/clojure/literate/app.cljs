@@ -8,6 +8,7 @@
 
             [taoensso.sente :as sente]
             [datascript.core :as d]
+            [reagent.core :as r]
             [reagent.dom :as dom]
 
             ["marked" :as marked]
@@ -37,20 +38,30 @@
 
 ;; ---
 
+(defn reagent-class-component [render rmount]
+  (r/create-class
+    {:reagent-render
+     render
+
+     :component-did-mount
+     (fn [this]
+       (rmount this (dom/dom-node this)))}))
+
 
 (defn Codemirror [{:widget.codemirror/keys [height
                                             width
                                             value
                                             mode
                                             lineNumbers]}]
-  [:div
-   {:ref
-    (fn [e]
-      (when e
-        (let [cm (codemirror e #js {"value" value
-                                    "mode" mode
-                                    "lineNumbers" lineNumbers})]
-          (.setSize cm width height))))}])
+  (reagent-class-component
+    (fn [_]
+      [:div])
+
+    (fn [_ node]
+      (doto (codemirror node #js {"value" value
+                                  "mode" mode
+                                  "lineNumbers" lineNumbers})
+        (.setSize width height)))))
 
 (defn VegaLite [{:widget/keys [vega-lite-spec]}]
   [:div
