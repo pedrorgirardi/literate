@@ -5,7 +5,7 @@
 
 (s/def :widget/type #{:widget.type/codemirror
                       :widget.type/markdown
-                      :widget.type/vega-lite
+                      :widget.type/vega-embed
                       :widget.type/html})
 
 (s/def :literate/widget (s/keys :req [:widget/uuid

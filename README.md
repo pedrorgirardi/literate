@@ -92,7 +92,7 @@ The Widget API is embarrassingly dummy; whenever you call a Widget function, you
 ;; ==>
 
 #:widget{:uuid "7385f5da-f835-49b5-8d8c-005f92b77d11",
-         :type :widget.type/vega-lite,
+         :type :widget.type/vega-embed,
          :vega-lite-spec {"$schema" "https://vega.github.io/schema/vega-lite/v4.json",
                           :description "A simple bar chart with embedded data.",
                           :data {:values [{:a "A", :b 28}

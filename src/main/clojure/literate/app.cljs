@@ -63,12 +63,13 @@
                                   "lineNumbers" lineNumbers})
         (.setSize width height)))))
 
-(defn VegaLite [{:widget/keys [vega-lite-spec]}]
-  [:div
-   {:ref
-    (fn [e]
-      (when e
-        (vega-embed e (clj->js vega-lite-spec))))}])
+(defn VegaEmbed [{:widget.vega-embed/keys [spec]}]
+  (reagent-class-component
+    (fn [_]
+      [:div])
+
+    (fn [_ node]
+      (vega-embed node (clj->js spec)))))
 
 (defn Markdown
   [e]
@@ -196,8 +197,8 @@
                     :widget.type/column
                     Column
 
-                    :widget.type/vega-lite
-                    VegaLite
+                    :widget.type/vega-embed
+                    VegaEmbed
 
                     :widget.type/codemirror
                     Codemirror
@@ -254,10 +255,10 @@
     [:div.rounded-full.h-8.w-8.flex.items-center.justify-center.text-2xl.hover:bg-green-200
      {:on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
                                         :widget/type :widget.type/codemirror
-                                        :widget.code/mode "clojure"
-                                        :widget.code/height "auto"
-                                        :widget.code/line-numbers? true
-                                        :widget.code/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
+                                        :widget.codemirror/mode "clojure"
+                                        :widget.codemirror/height "auto"
+                                        :widget.codemirror/lineNumbers false
+                                        :widget.codemirror/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
      [:i.zmdi.zmdi-bug.text-green-500]]]])
 
 

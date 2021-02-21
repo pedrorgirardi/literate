@@ -62,8 +62,7 @@
   ;; -- Vega Lite.
 
   (l (literate/vega-lite
-       {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-        :description "A simple bar chart with embedded data."
+       {:description "A simple bar chart with embedded data."
         :data {:values
                [{:a "A" :b 28}
                 {:a "B" :b 55}
@@ -83,6 +82,8 @@
   ;; -- Codemirror.
 
   (l (literate/codemirror (slurp (io/resource "literate/core.clj")) {:lineNumbers true}))
+  (l (literate/codemirror "**Welcome to Literate**\n\nEval some forms to get started!" {:mode "gfm"
+                                                                                        :height "auto"}))
 
 
   ;; -- Markdown.
