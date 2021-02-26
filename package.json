@@ -14,8 +14,8 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "vega": "^5.19.1",
-    "vega-embed": "^6.15.1",
-    "vega-lite": "^4.17.0"
+    "vega-embed": "^6.15.2",
+    "vega-lite": "^5.0.0"
   },
   "devDependencies": {
     "shadow-cljs": "^2.11.18"

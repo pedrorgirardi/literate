@@ -31,7 +31,7 @@
 
   ;; -- Client API.
 
-  (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(literate/code "Hello")])})
+  (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(literate/codemirror "Hello")])})
 
 
 
@@ -151,8 +151,8 @@
                          :type "quantitative"}}})
 
        (literate/hiccup
-         [:span.p-2.text-lg "Code Widget"])
+         [:span.p-2.text-lg "Codemirror Widget"])
 
-       (literate/code (slurp (io/resource "literate/core.clj")))))
+       (literate/codemirror (slurp (io/resource "literate/core.clj")))))
 
   )
