@@ -43,7 +43,7 @@ accomplished by Widgets, a Vega-Lite Widget in particular:
                   :type "quantitative"}}})
 ```
 
-![Vega-Lite Widget](https://github.com/pedrorgirardi/literate/raw/master/doc/vega_lite_widget.png)
+![Vega-Lite Widget](https://github.com/pedrorgirardi/literate/raw/main/doc/vega_lite_widget.png)
 
 We are not too bad at making sense of tabular data. Still, if you happen to work with spatial data, it isn't easy to
 make sense without a graphical representation. It's similar to talking about geometry without drawing the shapes on a
@@ -60,7 +60,7 @@ the Leaflet Widget:
    :geojson geojson})
 ```
 
-![Leaflet Widget](https://github.com/pedrorgirardi/literate/raw/master/doc/leaflet_widget.png)
+![Leaflet Widget](https://github.com/pedrorgirardi/literate/raw/main/doc/leaflet_widget.png)
 
 You see, it's tricky to define 'type' of data because it can take many different shapes and forms. But the idea is the
 same: Widgets take data in and present it visually.
