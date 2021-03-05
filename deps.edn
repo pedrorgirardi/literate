@@ -24,14 +24,13 @@
    :extra-deps
    {org.clojure/tools.namespace {:mvn/version "1.1.0"}
     org.clojure/data.json {:mvn/version "1.0.0"}
-    pedrorgirardi/literate.client {:local/root "../literate.client"}}}
-
+    pedrorgirardi/literate.client {:git/url "https://github.com/pedrorgirardi/literate.client"
+                                   :sha "ebcfb9474258826139bc7e00f675db5dad43c26a"}}}
 
   :app
   {:extra-deps
    {thheller/shadow-cljs {:mvn/version "2.11.18"}
     binaryage/devtools {:mvn/version "1.0.2"}}}
-
 
   :test
   {:extra-paths ["src/test/clojure" "src/test/resources"]}}}
