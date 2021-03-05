@@ -1,7 +1,7 @@
 {:paths ["src/main/clojure" "src/main/resources" "resources"]
 
  :deps
- {org.clojure/clojure {:mvn/version "1.10.2"}
+ {org.clojure/clojure {:mvn/version "1.10.3"}
   org.clojure/core.async {:mvn/version "1.3.610"}
   org.clojure/tools.cli {:mvn/version "1.0.194"}
   ring/ring-core {:mvn/version "1.9.1"}
