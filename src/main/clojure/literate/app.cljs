@@ -234,7 +234,7 @@
 
    (if (seq widgets)
      (for [{:db/keys [id] :as e} widgets]
-       [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-blue-500
+       [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-blue-500.last:mb-36
         {:key id}
 
         [:div.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.cursor-pointer

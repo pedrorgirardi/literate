@@ -31,7 +31,7 @@
     (page/include-css "https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css")
     (page/include-css "css/codemirror.css")
     (page/include-css "ol.css")
-    (page/include-css "tailwind.min.css")
+    (page/include-css "styles.css")
 
     [:body.bg-gray-100
      [:div#app.container.mx-auto.h-screen]
