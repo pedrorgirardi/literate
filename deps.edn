@@ -9,7 +9,6 @@
   http-kit/http-kit {:mvn/version "2.5.3"}
   compojure/compojure {:mvn/version "1.6.2"}
   hiccup/hiccup {:mvn/version "1.0.5"}
-  rum/rum {:mvn/version "0.12.3" :exclusions [cljsjs/react cljsjs/react-dom]}
   reagent/reagent {:mvn/version "1.0.0" :exclusions [cljsjs/react cljsjs/react-dom]}
   datascript/datascript {:mvn/version "1.0.7"}
   com.taoensso/sente {:mvn/version "1.16.2"}

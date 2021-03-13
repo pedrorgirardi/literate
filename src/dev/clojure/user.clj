@@ -6,7 +6,7 @@
             [literate.server :as server]
             [literate.client.core :as literate]
 
-            [rum.server-render]
+            [hiccup.core :as hiccup]
             [org.httpkit.client :as http])
   (:import (java.util UUID)))
 
@@ -94,7 +94,7 @@
   ;; -- HTML.
 
   (l (literate/html
-       (rum.server-render/render-static-markup
+       (hiccup/html
          [:div.bg-white.p-3
           [:h1.text-6xl "Hello, world!"]
           [:span "Text"]])))
