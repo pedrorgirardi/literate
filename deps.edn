@@ -4,6 +4,10 @@
  {org.clojure/clojure {:mvn/version "1.10.3"}
   org.clojure/core.async {:mvn/version "1.3.610"}
   org.clojure/tools.cli {:mvn/version "1.0.206"}
+
+  com.cognitect/transit-clj {:mvn/version "1.0.324"}
+  com.cognitect/transit-cljs {:mvn/version "0.8.264"}
+
   ring/ring-core {:mvn/version "1.9.1"}
   ring/ring-defaults {:mvn/version "0.3.2"}
   http-kit/http-kit {:mvn/version "2.5.3"}
@@ -11,8 +15,7 @@
   hiccup/hiccup {:mvn/version "1.0.5"}
   reagent/reagent {:mvn/version "1.0.0" :exclusions [cljsjs/react cljsjs/react-dom]}
   datascript/datascript {:mvn/version "1.0.7"}
-  com.taoensso/sente {:mvn/version "1.16.2"}
-  com.cognitect/transit-clj {:mvn/version "1.0.324"}}
+  com.taoensso/sente {:mvn/version "1.16.2"}}
 
  :aliases
  {:main

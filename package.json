@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "codemirror": "^5.59.4",
+    "file-saver": "^2.0.5",
     "leaflet": "^1.7.1",
     "marked": "^2.0.1",
     "ol": "^6.5.0",

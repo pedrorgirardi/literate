@@ -3,13 +3,15 @@
             [cljs.pprint :as pprint]
             [clojure.string :as str]
 
-            [literate.db :as db]
-            [literate.specs]
+            [cognitect.transit :as t]
 
             [taoensso.sente :as sente]
             [datascript.core :as d]
             [reagent.core :as r]
             [reagent.dom :as dom]
+
+            [literate.db :as db]
+            [literate.specs]
 
             ["marked" :as marked]
             ["vega-embed" :as vega-embed]
@@ -243,10 +245,10 @@
        [:button
         {:class button-style
          :on-click #(js/console.log
-                      (map
-                        (fn [{:keys [e a v]}]
-                          [e a v])
-                        (d/datoms @db/conn :eavt)))}
+                      (t/write (t/writer :json) (map
+                                                  (fn [{:keys [e a v]}]
+                                                    [e a v])
+                                                  (d/datoms @db/conn :eavt))))}
         [:span
          {:class button-text-style}
          "Export"]]])]
