@@ -225,9 +225,31 @@
 
    ;; -- Header
 
-   [:span.text-lg.text-gray-700.py-6.px-1
-    {:style {:font-family "Cinzel"}}
-    "Literate"]
+   [:div.flex.justify-between.py-6.px-1
+    [:span.text-lg.text-gray-700
+     {:style {:font-family "Cinzel"}}
+     "Literate"]
+
+    (let [button-style "bg-gray-100 hover:bg-gray-300 active:bg-blue-600 rounded hover:shadow-md focus:outline-none transition duration-200 ease-in-out"
+          button-text-style "block font-mono text-sm text-gray-700 px-6 py-2"]
+      [:div.flex
+       [:button
+        {:class button-style
+         :on-click #()}
+        [:span
+         {:class button-text-style}
+         "Import"]]
+
+       [:button
+        {:class button-style
+         :on-click #(js/console.log
+                      (map
+                        (fn [{:keys [e a v]}]
+                          [e a v])
+                        (d/datoms @db/conn :eavt)))}
+        [:span
+         {:class button-text-style}
+         "Export"]]])]
 
 
    ;; -- Widgets
