@@ -18,6 +18,7 @@
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]
             ["codemirror/mode/gfm/gfm"]
+            ["file-saver" :as FileSaver]
 
             ["ol/Map" :default Map]
             ["ol/View" :default View]
@@ -244,11 +245,16 @@
 
        [:button
         {:class button-style
-         :on-click #(js/console.log
-                      (t/write (t/writer :json) (map
-                                                  (fn [{:keys [e a v]}]
-                                                    [e a v])
-                                                  (d/datoms @db/conn :eavt))))}
+         :on-click #(let [encoded (t/write
+                                    (t/writer :json)
+                                    (map
+                                      (fn [{:keys [e a v]}]
+                                        [e a v])
+                                      (d/datoms @db/conn :eavt)))
+
+                          blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
+
+                      (FileSaver/saveAs blob "widgets.json"))}
         [:span
          {:class button-text-style}
          "Export"]]])]
