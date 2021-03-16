@@ -29,12 +29,15 @@
             ["ol/color" :as ol-color]
             ["ol/style" :as ol-style]))
 
-(let [{:keys [chsk ch-recv send-fn state]}
-      (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
-  (def chsk chsk)
-  (def ch-chsk ch-recv)
-  (def chsk-send! send-fn)
-  (def chsk-state state))
+(goog-define ^boolean DEV true)
+
+(when DEV
+  (let [{:keys [chsk ch-recv send-fn state]}
+        (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
+    (def chsk chsk)
+    (def ch-chsk ch-recv)
+    (def chsk-send! send-fn)
+    (def chsk-state state)))
 
 (def sente-router-ref (atom (fn [] nil)))
 
@@ -309,9 +312,11 @@
   (@sente-router-ref))
 
 (defn ^:export init []
-  (js/console.log "Welcome to Literate")
+  (js/console.log "Welcome to Literate" (if DEV "(Dev build)" ""))
 
-  (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler))
+  ;; WebSocket is only available in 'dev mode' - that's when we're authoring the document.
+  (when DEV
+    (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler)))
 
   (d/listen! db/conn (fn [_]
                        (js/console.log "Will re-render...")
