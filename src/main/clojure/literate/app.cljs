@@ -265,7 +265,7 @@
        [:button
         {:class button-style
          :on-click #(let [encoded (t/write
-                                    (t/writer :json)
+                                    transit-json-writer
                                     (map
                                       (fn [{:keys [e a v]}]
                                         [e a v])
