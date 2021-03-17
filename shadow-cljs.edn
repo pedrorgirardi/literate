@@ -10,6 +10,7 @@
  {:main
   {:target :browser
    :modules {:main {:init-fn literate.app/init}}
+   :dev {:closure-defines {literate.app/WS true}}
    :devtools {:after-load literate.app/init}
    :output-dir "resources/public/js"
    :asset-path "/js"

@@ -29,12 +29,13 @@
             ["ol/color" :as ol-color]
             ["ol/style" :as ol-style]))
 
-(goog-define ^boolean DEV true)
+;; WebSocket is only available in 'dev mode' - that's when we're authoring the document.
+(goog-define ^boolean WS false)
 
 (def transit-json-reader (t/reader :json))
 (def transit-json-writer (t/writer :json))
 
-(when DEV
+(when WS
   (let [{:keys [chsk ch-recv send-fn state]}
         (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
     (def chsk chsk)
@@ -326,10 +327,9 @@
   (@sente-router-ref))
 
 (defn ^:export init []
-  (js/console.log "Welcome to Literate" (if DEV "(Dev build)" ""))
+  (js/console.log "Welcome to Literate" (if goog.DEBUG "(Dev build)" ""))
 
-  ;; WebSocket is only available in 'dev mode' - that's when we're authoring the document.
-  (when DEV
+  (when WS
     (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler)))
 
   (d/listen! db/conn (fn [_]
