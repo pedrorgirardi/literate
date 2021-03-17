@@ -255,7 +255,7 @@
 
    ;; -- Header
 
-   [:div.flex.justify-between.py-6.px-1
+   [:div.flex.justify-between.items-center.py-6.px-1
     [:span.text-lg.text-gray-700
      {:style {:font-family "Cinzel"}}
      "Literate"]
@@ -275,7 +275,7 @@
 
                     (FileSaver/saveAs blob "widgets.json"))}
       [:span
-       {:class "block font-mono text-sm text-gray-700 px-6 py-2"}
+       {:class "block text-sm text-gray-700 px-6 py-2"}
        "Export"]]]]
 
 
