@@ -3,19 +3,22 @@
             [cljs.pprint :as pprint]
             [clojure.string :as str]
 
-            [literate.db :as db]
-            [literate.specs]
+            [cognitect.transit :as t]
 
             [taoensso.sente :as sente]
             [datascript.core :as d]
             [reagent.core :as r]
             [reagent.dom :as dom]
 
+            [literate.db :as db]
+            [literate.specs]
+
             ["marked" :as marked]
             ["vega-embed" :as vega-embed]
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]
             ["codemirror/mode/gfm/gfm"]
+            ["file-saver" :as FileSaver]
 
             ["ol/Map" :default Map]
             ["ol/View" :default View]
@@ -26,12 +29,19 @@
             ["ol/color" :as ol-color]
             ["ol/style" :as ol-style]))
 
-(let [{:keys [chsk ch-recv send-fn state]}
-      (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
-  (def chsk chsk)
-  (def ch-chsk ch-recv)
-  (def chsk-send! send-fn)
-  (def chsk-state state))
+;; WebSocket is only available in 'dev mode' - that's when we're authoring the document.
+(goog-define ^boolean WS false)
+
+(def transit-json-reader (t/reader :json))
+(def transit-json-writer (t/writer :json))
+
+(when WS
+  (let [{:keys [chsk ch-recv send-fn state]}
+        (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
+    (def chsk chsk)
+    (def ch-chsk ch-recv)
+    (def chsk-send! send-fn)
+    (def chsk-state state)))
 
 (def sente-router-ref (atom (fn [] nil)))
 
@@ -219,15 +229,55 @@
 
 ;; ---
 
+(defn Import []
+  [:input
+   {:type "file"
+    :on-change
+    (fn [e]
+      (when-some [f (-> e .-target .-files first)]
+        (let [reader (js/FileReader.)]
+          (js/console.log "Import..." f)
+
+          (set! (.-onload reader) (fn [e]
+                                    (let [datoms (t/read transit-json-reader (-> e .-target .-result))
+                                          datoms (mapv
+                                                   (fn [datom]
+                                                     (apply d/datom datom))
+                                                   datoms)]
+                                      (d/reset-conn! db/conn (d/init-db datoms db/schema)))))
+
+          (set! (.-onerror reader) (fn [e]
+                                     (js/console.log (-> e .-target .-error))))
+
+          (.readAsText reader f))))}])
 
 (defn App [widgets]
   [:div.h-screen.flex.flex-col
 
    ;; -- Header
 
-   [:span.text-lg.text-gray-700.py-6.px-1
-    {:style {:font-family "Cinzel"}}
-    "Literate"]
+   [:div.flex.justify-between.items-center.py-6.px-1
+    [:span.text-lg.text-gray-700
+     {:style {:font-family "Cinzel"}}
+     "Literate"]
+
+    ;; -- Export
+    [:div.flex
+     [:button
+      {:class "bg-gray-100 hover:bg-gray-300 active:bg-blue-600 rounded hover:shadow-md focus:outline-none transition duration-200 ease-in-out"
+       :on-click #(let [encoded (t/write
+                                  transit-json-writer
+                                  (map
+                                    (fn [{:keys [e a v]}]
+                                      [e a v])
+                                    (d/datoms @db/conn :eavt)))
+
+                        blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
+
+                    (FileSaver/saveAs blob "widgets.json"))}
+      [:span
+       {:class "block text-sm text-gray-700 px-6 py-2"}
+       "Export"]]]]
 
 
    ;; -- Widgets
@@ -244,9 +294,7 @@
         [:div.flex.flex-1.overflow-x-auto
          (Widget e)]])
      [:div.flex.flex-col.flex-1.items-center.justify-center
-      [:span.text-lg.text-gray-400
-       {:style {:font-family "Cinzel"}}
-       "Widgets shall be displayed here."]])
+      [Import]])
 
 
    ;; -- Debug
@@ -279,9 +327,10 @@
   (@sente-router-ref))
 
 (defn ^:export init []
-  (js/console.log "Welcome to Literate")
+  (js/console.log "Welcome to Literate" (if goog.DEBUG "(Dev build)" ""))
 
-  (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler))
+  (when WS
+    (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler)))
 
   (d/listen! db/conn (fn [_]
                        (js/console.log "Will re-render...")

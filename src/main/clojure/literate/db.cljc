@@ -1,16 +1,19 @@
 (ns literate.db
   (:require [datascript.core :as d]))
 
-(defonce conn (d/create-conn {:widget/uuid
-                              {:db/unique :db.unique/identity}
+(def schema
+  {:widget/uuid
+   {:db/unique :db.unique/identity}
 
-                              :widget/parent
-                              {:db/valueType :db.type/ref
-                               :db/cardinality :db.cardinality/one}
+   :widget/parent
+   {:db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/one}
 
-                              :widget/children
-                              {:db/valueType :db.type/ref
-                               :db/cardinality :db.cardinality/many}}))
+   :widget/children
+   {:db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/many}})
+
+(defonce conn (d/create-conn schema))
 
 (defn retract-entity [id]
   (d/transact! conn [[:db.fn/retractEntity id]]))
