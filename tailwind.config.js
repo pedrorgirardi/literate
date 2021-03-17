@@ -12,7 +12,10 @@ module.exports = {
     defaultLineHeights: true,
     standardFontWeights: true
   },
-  purge: [],
+  purge: [
+    './src/**/*.clj',
+    './src/**/*.cljs'
+  ],
   theme: {
     extend: {
       colors: {
