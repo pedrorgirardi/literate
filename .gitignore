@@ -3,7 +3,6 @@ node_modules/
 .idea/
 .cpcache/
 .shadow-cljs/
-resources/public/js/cljs-runtime/
-resources/public/js/manifest.edn
+resources/public/js
 .nrepl-port
 .DS_Store

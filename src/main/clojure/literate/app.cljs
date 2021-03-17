@@ -89,7 +89,7 @@
 
 (defn Html
   [e]
-  [:div.flex-1
+  [:div
    {:dangerouslySetInnerHTML
     {:__html (:widget.html/src e)}}])
 
@@ -220,9 +220,6 @@
                     Geoplot
 
                     [:div.p-2 [:span "Unknown Widget type " [:code (str widget-type)]]])]
-
-    (js/console.log "Render" (name widget-type))
-
     ^{:key widget-uuid}
     [Component e]))
 
@@ -230,26 +227,34 @@
 ;; ---
 
 (defn Import []
-  [:input
-   {:type "file"
-    :on-change
-    (fn [e]
-      (when-some [f (-> e .-target .-files first)]
-        (let [reader (js/FileReader.)]
-          (js/console.log "Import..." f)
+  [:div
+   {:class "flex justify-center items-center w-1/2 h-1/3 border-4 border-dashed rounded"}
+   [:input
+    {:type "file"
+     :on-change
+     (fn [e]
+       (when-some [f (-> e .-target .-files first)]
+         (let [reader (js/FileReader.)]
+           (js/console.log "Import..." f)
 
-          (set! (.-onload reader) (fn [e]
-                                    (let [datoms (t/read transit-json-reader (-> e .-target .-result))
-                                          datoms (mapv
-                                                   (fn [datom]
-                                                     (apply d/datom datom))
-                                                   datoms)]
-                                      (d/reset-conn! db/conn (d/init-db datoms db/schema)))))
+           (set! (.-onload reader) (fn [e]
+                                     (let [datoms (t/read transit-json-reader (-> e .-target .-result))
+                                           datoms (mapv
+                                                    (fn [datom]
+                                                      (apply d/datom datom))
+                                                    datoms)]
+                                       (d/reset-conn! db/conn (d/init-db datoms db/schema)))))
 
-          (set! (.-onerror reader) (fn [e]
-                                     (js/console.log (-> e .-target .-error))))
+           (set! (.-onerror reader) (fn [e]
+                                      (js/console.log (-> e .-target .-error))))
 
-          (.readAsText reader f))))}])
+           (.readAsText reader f))))}]])
+
+
+(defn IconDocumentDownload [& [attrs]]
+  [:svg.w-6.h-6
+   (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
+   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"}]])
 
 (defn App [widgets]
   [:div.h-screen.flex.flex-col
@@ -264,7 +269,7 @@
     ;; -- Export
     [:div.flex
      [:button
-      {:class "bg-gray-100 hover:bg-gray-300 active:bg-blue-600 rounded hover:shadow-md focus:outline-none transition duration-200 ease-in-out"
+      {:class "inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
        :on-click #(let [encoded (t/write
                                   transit-json-writer
                                   (map
@@ -275,24 +280,24 @@
                         blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
 
                     (FileSaver/saveAs blob "widgets.json"))}
-      [:span
-       {:class "block text-sm text-gray-700 px-6 py-2"}
-       "Export"]]]]
+
+      [IconDocumentDownload {:class "mr-2"}]
+      "Download"]]]
 
 
    ;; -- Widgets
 
    (if (seq widgets)
-     (for [{:db/keys [id] :as e} widgets]
-       [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-blue-500.last:mb-36
-        {:key id}
+     [:div.flex.flex-col.items-start.overflow-auto
+      (for [{:db/keys [id] :as e} widgets]
+        [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-blue-500.last:mb-36
+         {:key id}
 
-        [:div.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.cursor-pointer
-         {:on-click #(db/retract-entity id)}
-         [:i.zmdi.zmdi-close]]
+         [:div.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.cursor-pointer
+          {:on-click #(db/retract-entity id)}
+          [:i.zmdi.zmdi-close]]
 
-        [:div.flex.flex-1.overflow-x-auto
-         (Widget e)]])
+         (Widget e)])]
      [:div.flex.flex-col.flex-1.items-center.justify-center
       [Import]])
 
@@ -327,14 +332,13 @@
   (@sente-router-ref))
 
 (defn ^:export init []
-  (js/console.log "Welcome to Literate" (if goog.DEBUG "(Dev build)" ""))
+  (js/console.log "Welcome to Literate" (if goog.DEBUG
+                                          "(Dev build)"
+                                          "(Release build)"))
 
   (when WS
     (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler)))
 
-  (d/listen! db/conn (fn [_]
-                       (js/console.log "Will re-render...")
-
-                       (mount)))
+  (d/listen! db/conn #(mount))
 
   (mount))
