@@ -256,6 +256,11 @@
            (.readAsText reader f))))}]])
 
 
+(defn IconClose [& [attrs]]
+  [:svg.w-6.h-6
+   (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
+   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M6 18L18 6M6 6l12 12"}]])
+
 (defn IconDocumentDownload [& [attrs]]
   [:svg.w-6.h-6
    (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
@@ -298,9 +303,9 @@
         [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-blue-500.last:mb-36
          {:key id}
 
-         [:div.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.cursor-pointer
+         [:button.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.focus:outline-none
           {:on-click #(db/retract-entity id)}
-          [:i.zmdi.zmdi-close]]
+          [IconClose]]
 
          (Widget e)])]
      [:div.flex.flex-col.flex-1.items-center.justify-center
