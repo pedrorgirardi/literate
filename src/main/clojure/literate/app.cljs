@@ -31,6 +31,9 @@
 
 (goog-define ^boolean DEV true)
 
+(def transit-json-reader (t/reader :json))
+(def transit-json-writer (t/writer :json))
+
 (when DEV
   (let [{:keys [chsk ch-recv send-fn state]}
         (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
@@ -239,12 +242,25 @@
     (let [button-style "bg-gray-100 hover:bg-gray-300 active:bg-blue-600 rounded hover:shadow-md focus:outline-none transition duration-200 ease-in-out"
           button-text-style "block font-mono text-sm text-gray-700 px-6 py-2"]
       [:div.flex
-       [:button
-        {:class button-style
-         :on-click #()}
-        [:span
-         {:class button-text-style}
-         "Import"]]
+       [:input
+        {:type "file"
+         :class button-style
+         :on-change
+         (fn [e]
+           (when-some [f (-> e .-target .-files first)]
+             (let [reader (js/FileReader.)]
+               (set! (.-onload reader) (fn [e]
+                                         (let [datoms (t/read transit-json-reader (-> e .-target .-result))
+                                               datoms (mapv
+                                                        (fn [datom]
+                                                          (apply d/datom datom))
+                                                        datoms)]
+                                           (d/reset-conn! db/conn (d/init-db datoms db/schema)))))
+
+               (set! (.-onerror reader) (fn [e]
+                                          (js/console.log (-> e .-target .-error))))
+
+               (.readAsText reader f))))}]
 
        [:button
         {:class button-style
