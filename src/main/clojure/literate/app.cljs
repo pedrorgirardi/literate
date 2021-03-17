@@ -228,6 +228,27 @@
 
 ;; ---
 
+(defn Import []
+  [:input
+   {:type "file"
+    :on-change
+    (fn [e]
+      (when-some [f (-> e .-target .-files first)]
+        (let [reader (js/FileReader.)]
+          (js/console.log "Import..." f)
+
+          (set! (.-onload reader) (fn [e]
+                                    (let [datoms (t/read transit-json-reader (-> e .-target .-result))
+                                          datoms (mapv
+                                                   (fn [datom]
+                                                     (apply d/datom datom))
+                                                   datoms)]
+                                      (d/reset-conn! db/conn (d/init-db datoms db/schema)))))
+
+          (set! (.-onerror reader) (fn [e]
+                                     (js/console.log (-> e .-target .-error))))
+
+          (.readAsText reader f))))}])
 
 (defn App [widgets]
   [:div.h-screen.flex.flex-col
@@ -239,44 +260,23 @@
      {:style {:font-family "Cinzel"}}
      "Literate"]
 
-    (let [button-style "bg-gray-100 hover:bg-gray-300 active:bg-blue-600 rounded hover:shadow-md focus:outline-none transition duration-200 ease-in-out"
-          button-text-style "block font-mono text-sm text-gray-700 px-6 py-2"]
-      [:div.flex
-       [:input
-        {:type "file"
-         :class button-style
-         :on-change
-         (fn [e]
-           (when-some [f (-> e .-target .-files first)]
-             (let [reader (js/FileReader.)]
-               (set! (.-onload reader) (fn [e]
-                                         (let [datoms (t/read transit-json-reader (-> e .-target .-result))
-                                               datoms (mapv
-                                                        (fn [datom]
-                                                          (apply d/datom datom))
-                                                        datoms)]
-                                           (d/reset-conn! db/conn (d/init-db datoms db/schema)))))
+    ;; -- Export
+    [:div.flex
+     [:button
+      {:class "bg-gray-100 hover:bg-gray-300 active:bg-blue-600 rounded hover:shadow-md focus:outline-none transition duration-200 ease-in-out"
+       :on-click #(let [encoded (t/write
+                                  transit-json-writer
+                                  (map
+                                    (fn [{:keys [e a v]}]
+                                      [e a v])
+                                    (d/datoms @db/conn :eavt)))
 
-               (set! (.-onerror reader) (fn [e]
-                                          (js/console.log (-> e .-target .-error))))
+                        blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
 
-               (.readAsText reader f))))}]
-
-       [:button
-        {:class button-style
-         :on-click #(let [encoded (t/write
-                                    transit-json-writer
-                                    (map
-                                      (fn [{:keys [e a v]}]
-                                        [e a v])
-                                      (d/datoms @db/conn :eavt)))
-
-                          blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
-
-                      (FileSaver/saveAs blob "widgets.json"))}
-        [:span
-         {:class button-text-style}
-         "Export"]]])]
+                    (FileSaver/saveAs blob "widgets.json"))}
+      [:span
+       {:class "block font-mono text-sm text-gray-700 px-6 py-2"}
+       "Export"]]]]
 
 
    ;; -- Widgets
@@ -293,9 +293,7 @@
         [:div.flex.flex-1.overflow-x-auto
          (Widget e)]])
      [:div.flex.flex-col.flex-1.items-center.justify-center
-      [:span.text-lg.text-gray-400
-       {:style {:font-family "Cinzel"}}
-       "Widgets shall be displayed here."]])
+      [Import]])
 
 
    ;; -- Debug
