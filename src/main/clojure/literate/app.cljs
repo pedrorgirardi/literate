@@ -220,9 +220,6 @@
                     Geoplot
 
                     [:div.p-2 [:span "Unknown Widget type " [:code (str widget-type)]]])]
-
-    (js/console.log "Render" (name widget-type))
-
     ^{:key widget-uuid}
     [Component e]))
 
@@ -230,26 +227,28 @@
 ;; ---
 
 (defn Import []
-  [:input
-   {:type "file"
-    :on-change
-    (fn [e]
-      (when-some [f (-> e .-target .-files first)]
-        (let [reader (js/FileReader.)]
-          (js/console.log "Import..." f)
+  [:div
+   {:class "flex justify-center items-center w-1/2 h-1/3 border-4 border-dashed rounded"}
+   [:input
+    {:type "file"
+     :on-change
+     (fn [e]
+       (when-some [f (-> e .-target .-files first)]
+         (let [reader (js/FileReader.)]
+           (js/console.log "Import..." f)
 
-          (set! (.-onload reader) (fn [e]
-                                    (let [datoms (t/read transit-json-reader (-> e .-target .-result))
-                                          datoms (mapv
-                                                   (fn [datom]
-                                                     (apply d/datom datom))
-                                                   datoms)]
-                                      (d/reset-conn! db/conn (d/init-db datoms db/schema)))))
+           (set! (.-onload reader) (fn [e]
+                                     (let [datoms (t/read transit-json-reader (-> e .-target .-result))
+                                           datoms (mapv
+                                                    (fn [datom]
+                                                      (apply d/datom datom))
+                                                    datoms)]
+                                       (d/reset-conn! db/conn (d/init-db datoms db/schema)))))
 
-          (set! (.-onerror reader) (fn [e]
-                                     (js/console.log (-> e .-target .-error))))
+           (set! (.-onerror reader) (fn [e]
+                                      (js/console.log (-> e .-target .-error))))
 
-          (.readAsText reader f))))}])
+           (.readAsText reader f))))}]])
 
 (defn App [widgets]
   [:div.h-screen.flex.flex-col
@@ -327,14 +326,13 @@
   (@sente-router-ref))
 
 (defn ^:export init []
-  (js/console.log "Welcome to Literate" (if goog.DEBUG "(Dev build)" ""))
+  (js/console.log "Welcome to Literate" (if goog.DEBUG
+                                          "(Dev build)"
+                                          "(Release build)"))
 
   (when WS
     (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler)))
 
-  (d/listen! db/conn (fn [_]
-                       (js/console.log "Will re-render...")
-
-                       (mount)))
+  (d/listen! db/conn #(mount))
 
   (mount))
