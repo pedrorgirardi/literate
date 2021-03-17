@@ -89,7 +89,7 @@
 
 (defn Html
   [e]
-  [:div.flex-1
+  [:div
    {:dangerouslySetInnerHTML
     {:__html (:widget.html/src e)}}])
 
@@ -282,16 +282,16 @@
    ;; -- Widgets
 
    (if (seq widgets)
-     (for [{:db/keys [id] :as e} widgets]
-       [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-blue-500.last:mb-36
-        {:key id}
+     [:div.flex.flex-col.items-start.overflow-auto
+      (for [{:db/keys [id] :as e} widgets]
+        [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-blue-500.last:mb-36
+         {:key id}
 
-        [:div.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.cursor-pointer
-         {:on-click #(db/retract-entity id)}
-         [:i.zmdi.zmdi-close]]
+         [:div.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.cursor-pointer
+          {:on-click #(db/retract-entity id)}
+          [:i.zmdi.zmdi-close]]
 
-        [:div.flex.flex-1.overflow-x-auto
-         (Widget e)]])
+         (Widget e)])]
      [:div.flex.flex-col.flex-1.items-center.justify-center
       [Import]])
 
