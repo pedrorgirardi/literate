@@ -134,52 +134,53 @@
                 geoplot-center-wsg84? :widget.geoplot/center-wsg84?
                 geoplot-zoom :widget.geoplot/zoom
                 geoplot-features :widget.geoplot/features}]
-  [:div
-   {:style
-    {:height (or geoplot-height "500px")
-     :width (or geoplot-width "1200px")}
 
-    :ref
-    (fn [e]
-      (when e
-        (let [geoplot-center-js (some-> geoplot-center clj->js)
+  (reagent-class-component
+    (fn [_]
+      [:div
+       {:style
+        {:height (or geoplot-height "500px")
+         :width (or geoplot-width "1200px")}}])
 
-              ;; Provide the coordinates projected into Web Mercator - if center is in WSG84.
-              geoplot-center-js (if geoplot-center-wsg84?
-                                  (doto (some-> geoplot-center-js ol-proj/fromLonLat)
-                                    (#(js/console.log (str "Center projection: " (str/join " " geoplot-center) " (WGS84) to " % " (EPSG:3857)"))))
-                                  geoplot-center-js)
+    (fn [_ node]
+      (let [geoplot-center-js (some-> geoplot-center clj->js)
 
-              geoplot-center-js (or geoplot-center-js #js [0 0])
+            ;; Provide the coordinates projected into Web Mercator - if center is in WSG84.
+            geoplot-center-js (if geoplot-center-wsg84?
+                                (doto (some-> geoplot-center-js ol-proj/fromLonLat)
+                                  (#(js/console.log (str "Center projection: " (str/join " " geoplot-center) " (WGS84) to " % " (EPSG:3857)"))))
+                                geoplot-center-js)
 
-              style (when geoplot-style
-                      (ol-style/Style.
-                        (clj->js
-                          (merge {}
-                                 ;; Fill color.
-                                 (when-let [color (get-in geoplot-style [:fill :color])]
-                                   {:fill (ol-style/Fill. #js {:color (ol-color/asString color)})})
+            geoplot-center-js (or geoplot-center-js #js [0 0])
 
-                                 ;; Stroke color.
-                                 (when-let [color (get-in geoplot-style [:stroke :color])]
-                                   {:stroke (ol-style/Stroke. #js {:color (ol-color/asString color)})})))))
+            style (when geoplot-style
+                    (ol-style/Style.
+                      (clj->js
+                        (merge {}
+                               ;; Fill color.
+                               (when-let [color (get-in geoplot-style [:fill :color])]
+                                 {:fill (ol-style/Fill. #js {:color (ol-color/asString color)})})
 
-              source (ol-source/Vector. (clj->js {"features" (mapv geoplot-feature-js geoplot-features)}))
+                               ;; Stroke color.
+                               (when-let [color (get-in geoplot-style [:stroke :color])]
+                                 {:stroke (ol-style/Stroke. #js {:color (ol-color/asString color)})})))))
 
-              layer (ol-layer/Vector.
-                      (clj->js (merge {:source source}
-                                      (when style
-                                        {:style style}))))]
+            source (ol-source/Vector. (clj->js {"features" (mapv geoplot-feature-js geoplot-features)}))
 
-          (Map. #js {:target e
+            layer (ol-layer/Vector.
+                    (clj->js (merge {:source source}
+                                    (when style
+                                      {:style style}))))]
 
-                     :layers
-                     #js [(ol-layer/Tile. #js {:source (ol-source/OSM.)})
+        (Map. #js {:target node
 
-                          layer]
+                   :layers
+                   #js [(ol-layer/Tile. #js {:source (ol-source/OSM.)})
 
-                     :view (View. #js {:center geoplot-center-js
-                                       :zoom (or geoplot-zoom 4)})}))))}])
+                        layer]
+
+                   :view (View. #js {:center geoplot-center-js
+                                     :zoom (or geoplot-zoom 4)})})))))
 
 (declare Widget)
 
