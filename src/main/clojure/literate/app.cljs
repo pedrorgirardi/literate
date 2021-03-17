@@ -128,13 +128,17 @@
       nil)))
 
 (defn Geoplot [{geoplot-height :widget.geoplot/height
+                geoplot-width :widget.geoplot/width
                 geoplot-style :widget.geoplot/style
                 geoplot-center :widget.geoplot/center
                 geoplot-center-wsg84? :widget.geoplot/center-wsg84?
                 geoplot-zoom :widget.geoplot/zoom
                 geoplot-features :widget.geoplot/features}]
-  [:div.w-full
-   {:style {:height (or geoplot-height "500px")}
+  [:div
+   {:style
+    {:height (or geoplot-height "500px")
+     :width (or geoplot-width "1200px")}
+
     :ref
     (fn [e]
       (when e
