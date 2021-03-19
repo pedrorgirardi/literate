@@ -48,6 +48,27 @@
 
 ;; ---
 
+
+(defn IconClose [& [attrs]]
+  [:svg.w-6.h-6
+   (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
+   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M6 18L18 6M6 6l12 12"}]])
+
+(defn IconDocumentDownload [& [attrs]]
+  [:svg.w-6.h-6
+   (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
+   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"}]])
+
+(defn IconDatabase [& [attrs]]
+  [:svg.w-6.h-6
+   (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
+   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"}]])
+
+
+;; ---
+
+
+
 (defn reagent-class-component [render rmount]
   (r/create-class
     {:reagent-render
@@ -255,17 +276,6 @@
 
            (.readAsText reader f))))}]])
 
-
-(defn IconClose [& [attrs]]
-  [:svg.w-6.h-6
-   (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
-   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M6 18L18 6M6 6l12 12"}]])
-
-(defn IconDocumentDownload [& [attrs]]
-  [:svg.w-6.h-6
-   (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
-   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"}]])
-
 (defn App [widgets]
   [:div.h-screen.flex.flex-col
 
@@ -276,23 +286,39 @@
      {:style {:font-family "Cinzel"}}
      "Literate"]
 
-    ;; -- Export
-    (when (seq widgets)
-      [:div.flex
-       [:button
-        {:class "inline-flex items-center px-3 py-2 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"
-         :on-click #(let [encoded (t/write
-                                    transit-json-writer
-                                    (map
-                                      (fn [{:keys [e a v]}]
-                                        [e a v])
-                                      (d/datoms @db/conn :eavt)))
+    [:div.flex.space-x-2
 
-                          blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
+     ;; -- Export
+     [:button
+      {:key "download"
+       :class [(if (empty? widgets)
+                 "text-gray-300 pointer-events-none"
+                 "text-gray-600")
+               "inline-flex items-center px-3 py-2 border hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"]
+       :on-click #(let [encoded (t/write
+                                  transit-json-writer
+                                  (map
+                                    (fn [{:keys [e a v]}]
+                                      [e a v])
+                                    (d/datoms @db/conn :eavt)))
 
-                      (FileSaver/saveAs blob "widgets.json"))}
+                        blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
 
-        [IconDocumentDownload]]])]
+                    (FileSaver/saveAs blob "widgets.json"))}
+
+      [IconDocumentDownload]]
+
+     ;; -- Database
+     [:button
+      {:key "database"
+       :class "inline-flex items-center px-3 py-2 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"
+       :on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
+                                         :widget/type :widget.type/codemirror
+                                         :widget.codemirror/mode "clojure"
+                                         :widget.codemirror/lineNumbers false
+                                         :widget.codemirror/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
+
+      [IconDatabase]]]]
 
 
    ;; -- Widgets
@@ -309,20 +335,7 @@
 
          (Widget e)])]
      [:div.flex.flex-col.flex-1.items-center.justify-center
-      [Import]])
-
-
-   ;; -- Debug
-
-   [:div.fixed.bottom-0.right-0.mr-4.mb-4
-    [:div.rounded-full.h-8.w-8.flex.items-center.justify-center.text-2xl.hover:bg-green-200
-     {:on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
-                                        :widget/type :widget.type/codemirror
-                                        :widget.codemirror/mode "clojure"
-                                        :widget.codemirror/height "auto"
-                                        :widget.codemirror/lineNumbers false
-                                        :widget.codemirror/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
-     [:i.zmdi.zmdi-bug.text-green-500]]]])
+      [Import]])])
 
 
 (defn handler [{:keys [?data] :as m}]
