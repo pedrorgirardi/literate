@@ -271,34 +271,34 @@
 
    ;; -- Header
 
-   [:div.flex.justify-between.items-center.py-6.px-1
+   [:div.flex.justify-between.items-center.px-10.py-2.border-b.h-14
     [:span.text-lg.text-gray-700
      {:style {:font-family "Cinzel"}}
      "Literate"]
 
     ;; -- Export
-    [:div.flex
-     [:button
-      {:class "inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-       :on-click #(let [encoded (t/write
-                                  transit-json-writer
-                                  (map
-                                    (fn [{:keys [e a v]}]
-                                      [e a v])
-                                    (d/datoms @db/conn :eavt)))
+    (when (seq widgets)
+      [:div.flex
+       [:button
+        {:class "inline-flex items-center px-3 py-2 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"
+         :on-click #(let [encoded (t/write
+                                    transit-json-writer
+                                    (map
+                                      (fn [{:keys [e a v]}]
+                                        [e a v])
+                                      (d/datoms @db/conn :eavt)))
 
-                        blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
+                          blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
 
-                    (FileSaver/saveAs blob "widgets.json"))}
+                      (FileSaver/saveAs blob "widgets.json"))}
 
-      [IconDocumentDownload {:class "mr-2"}]
-      "Download"]]]
+        [IconDocumentDownload]]])]
 
 
    ;; -- Widgets
 
    (if (seq widgets)
-     [:div.flex.flex-col.items-start.overflow-auto
+     [:div.flex.flex-col.items-start.overflow-auto.container.mx-auto.py-4
       (for [{:db/keys [id] :as e} widgets]
         [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-blue-500.last:mb-36
          {:key id}
