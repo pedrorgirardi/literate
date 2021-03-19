@@ -6,7 +6,8 @@
             [hiccup.page :as page]
             [taoensso.sente :as sente]
             [taoensso.sente.server-adapters.http-kit :refer [get-sch-adapter]]
-            [cognitect.transit :as transit])
+            [cognitect.transit :as transit]
+            [clojure.java.io :as io])
   (:import (java.io ByteArrayOutputStream InputStream)))
 
 
@@ -23,21 +24,6 @@
   (def chsk-send! send-fn)
   (def connected-uids connected-uids))
 
-(defn index [req]
-  (page/html5
-    [:title "Literate"]
-
-    (page/include-css "https://fonts.googleapis.com/css2?family=Cinzel&display=swap")
-    (page/include-css "https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css")
-    (page/include-css "css/codemirror.css")
-    (page/include-css "ol.css")
-    (page/include-css "styles.css")
-
-    [:body.bg-gray-100
-     [:div#app.container.mx-auto.h-screen]
-
-     (page/include-js "js/main.js")]))
-
 (defn transit-encode
   "Encode `x` in Transit-JSON.
 
@@ -53,7 +39,7 @@
 
 (defroutes app
   ;; -- App.
-  (GET "/" req (index req))
+  (GET "/" _ (io/resource "public/index.html"))
 
   ;; -- WebSocket.
   (GET "/chsk" req (ring-ajax-get-or-ws-handshake req))

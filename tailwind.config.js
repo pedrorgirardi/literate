@@ -23,7 +23,12 @@ module.exports = {
       },
       fontFamily: {
         sans: [
+          'Source Serif Pro',
           ...defaultTheme.fontFamily.sans,
+        ],
+        mono: [
+          'Fira Code',
+          ...defaultTheme.fontFamily.mono,
         ]
       }
     }
