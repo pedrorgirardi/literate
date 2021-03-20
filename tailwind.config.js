@@ -21,6 +21,9 @@ module.exports = {
       colors: {
         teal: colors.teal
       },
+      borderColor: {
+        teal: colors.teal
+      },
       fontFamily: {
         sans: [
           'Source Serif Pro',
