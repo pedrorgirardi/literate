@@ -118,8 +118,8 @@
            {:style {:font-family "Cinzel"}}
            "Welcome to Literate"]
 
-          [:p.font-semibold
-           "Literate is a Clojure & ClojureScript application which you can use to visualize data."]
+          [:p.text-xl
+           "Literate is a Clojure & ClojureScript application which you can use to create documents."]
 
           [:p.mt-4
            "This interface that you're looking at it's called a " [:span.font-bold "Widget"]
@@ -128,11 +128,11 @@
           [:p.mt-2.mb1 "There are a few different types of Widgets that are supported:"]
 
           [:ul.list-disc.list-inside.ml-2
-           [:li "Code"]
+           [:li "Codemirror"]
            [:li "Markdown"]
            [:li "Hiccup"]
-           [:li "Vega Lite"]
-           [:li "Leaflet"]
+           [:li "Vega"]
+           [:li "Interactive Map"]
            [:li "Column layout"]
            [:li "Row layout"]]])
 
