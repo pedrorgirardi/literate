@@ -3,7 +3,7 @@
 
 # Literate
 
-Literate is a Clojure & ClojureScript application which you can use to visualize data.
+Literate is a Clojure & ClojureScript application which you can use to create documents.
 
 ![Literate](https://github.com/pedrorgirardi/literate/raw/main/doc/screenshot.png)
 
