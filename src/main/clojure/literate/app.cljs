@@ -19,6 +19,7 @@
             ["codemirror/mode/clojure/clojure"]
             ["codemirror/mode/gfm/gfm"]
             ["file-saver" :as FileSaver]
+            ["react-tippy" :as tippy]
 
             ["ol/Map" :default Map]
             ["ol/View" :default View]
@@ -289,36 +290,40 @@
     [:div.flex.space-x-2
 
      ;; -- Export
-     [:button
-      {:key "download"
-       :class [(if (empty? widgets)
-                 "text-gray-300 pointer-events-none"
-                 "text-gray-600")
-               "inline-flex items-center px-3 py-2 border hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"]
-       :on-click #(let [encoded (t/write
-                                  transit-json-writer
-                                  (map
-                                    (fn [{:keys [e a v]}]
-                                      [e a v])
-                                    (d/datoms @db/conn :eavt)))
+     [:> tippy/Tooltip
+      {:title "Download document"}
+      [:button
+       {:key "download"
+        :class [(if (empty? widgets)
+                  "text-gray-300 pointer-events-none"
+                  "text-gray-600")
+                "inline-flex items-center px-3 py-2 border hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"]
+        :on-click #(let [encoded (t/write
+                                   transit-json-writer
+                                   (map
+                                     (fn [{:keys [e a v]}]
+                                       [e a v])
+                                     (d/datoms @db/conn :eavt)))
 
-                        blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
+                         blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
 
-                    (FileSaver/saveAs blob "widgets.json"))}
+                     (FileSaver/saveAs blob "widgets.json"))}
 
-      [IconDocumentDownload]]
+       [IconDocumentDownload]]]
 
      ;; -- Database
-     [:button
-      {:key "database"
-       :class "inline-flex items-center px-3 py-2 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"
-       :on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
-                                         :widget/type :widget.type/codemirror
-                                         :widget.codemirror/mode "clojure"
-                                         :widget.codemirror/lineNumbers false
-                                         :widget.codemirror/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
+     [:> tippy/Tooltip
+      {:title "View database"}
+      [:button
+       {:key "database"
+        :class "inline-flex items-center px-3 py-2 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"
+        :on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
+                                          :widget/type :widget.type/codemirror
+                                          :widget.codemirror/mode "clojure"
+                                          :widget.codemirror/lineNumbers false
+                                          :widget.codemirror/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
 
-      [IconDatabase]]]]
+       [IconDatabase]]]]]
 
 
    ;; -- Widgets
