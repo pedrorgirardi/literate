@@ -331,7 +331,7 @@
    (if (seq widgets)
      [:div.flex.flex-col.items-start.overflow-auto.container.mx-auto.py-4
       (for [{:db/keys [id] :as e} widgets]
-        [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-teal-500
+        [:div.flex.flex-col.p-1.mb-6.border-l-2.border-transparent.hover:border-teal-500.transition.duration-200.ease-in-out
          {:key id}
 
          [:button.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.focus:outline-none
