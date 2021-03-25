@@ -23,38 +23,32 @@
             ["ol/color" :as ol-color]
             ["ol/style" :as ol-style]))
 
-(defn reagent-class-component [render rmount]
-  (r/create-class
-    {:reagent-render
-     render
-
-     :component-did-mount
-     (fn [this]
-       (rmount this (dom/dom-node this)))}))
-
-
 (defn Codemirror [{:widget.codemirror/keys [height
                                             width
                                             value
                                             mode
                                             lineNumbers]}]
-  (reagent-class-component
-    (fn [_]
-      [:div])
+  (r/create-class
+    {:reagent-render
+     (fn [_]
+       [:div])
 
-    (fn [_ node]
-      (doto (codemirror node #js {"value" value
-                                  "mode" mode
-                                  "lineNumbers" lineNumbers})
-        (.setSize width height)))))
+     :component-did-mount
+     (fn [this]
+       (doto (codemirror (dom/dom-node this) #js {"value" value
+                                                  "mode" mode
+                                                  "lineNumbers" lineNumbers})
+         (.setSize width height)))}))
 
 (defn VegaEmbed [{:widget.vega-embed/keys [spec]}]
-  (reagent-class-component
-    (fn [_]
-      [:div])
+  (r/create-class
+    {:reagent-render
+     (fn [_]
+       [:div])
 
-    (fn [_ node]
-      (vega-embed node (clj->js spec)))))
+     :component-did-mount
+     (fn [this]
+       (vega-embed (dom/dom-node this) (clj->js spec)))}))
 
 (defn Markdown
   [e]
@@ -110,52 +104,54 @@
                 geoplot-zoom :widget.geoplot/zoom
                 geoplot-features :widget.geoplot/features}]
 
-  (reagent-class-component
-    (fn [_]
-      [:div
-       {:style
-        {:height (or geoplot-height "500px")
-         :width (or geoplot-width "1200px")}}])
+  (r/create-class
+    {:reagent-render
+     (fn [_]
+       [:div
+        {:style
+         {:height (or geoplot-height "500px")
+          :width (or geoplot-width "1200px")}}])
 
-    (fn [_ node]
-      (let [geoplot-center-js (some-> geoplot-center clj->js)
+     :component-did-mount
+     (fn [this]
+       (let [geoplot-center-js (some-> geoplot-center clj->js)
 
-            ;; Provide the coordinates projected into Web Mercator - if center is in WSG84.
-            geoplot-center-js (if geoplot-center-wsg84?
-                                (doto (some-> geoplot-center-js ol-proj/fromLonLat)
-                                  (#(js/console.log (str "Center projection: " (str/join " " geoplot-center) " (WGS84) to " % " (EPSG:3857)"))))
-                                geoplot-center-js)
+             ;; Provide the coordinates projected into Web Mercator - if center is in WSG84.
+             geoplot-center-js (if geoplot-center-wsg84?
+                                 (doto (some-> geoplot-center-js ol-proj/fromLonLat)
+                                   (#(js/console.log (str "Center projection: " (str/join " " geoplot-center) " (WGS84) to " % " (EPSG:3857)"))))
+                                 geoplot-center-js)
 
-            geoplot-center-js (or geoplot-center-js #js [0 0])
+             geoplot-center-js (or geoplot-center-js #js [0 0])
 
-            style (when geoplot-style
-                    (ol-style/Style.
-                      (clj->js
-                        (merge {}
-                               ;; Fill color.
-                               (when-let [color (get-in geoplot-style [:fill :color])]
-                                 {:fill (ol-style/Fill. #js {:color (ol-color/asString color)})})
+             style (when geoplot-style
+                     (ol-style/Style.
+                       (clj->js
+                         (merge {}
+                                ;; Fill color.
+                                (when-let [color (get-in geoplot-style [:fill :color])]
+                                  {:fill (ol-style/Fill. #js {:color (ol-color/asString color)})})
 
-                               ;; Stroke color.
-                               (when-let [color (get-in geoplot-style [:stroke :color])]
-                                 {:stroke (ol-style/Stroke. #js {:color (ol-color/asString color)})})))))
+                                ;; Stroke color.
+                                (when-let [color (get-in geoplot-style [:stroke :color])]
+                                  {:stroke (ol-style/Stroke. #js {:color (ol-color/asString color)})})))))
 
-            source (ol-source/Vector. (clj->js {"features" (mapv geoplot-feature-js geoplot-features)}))
+             source (ol-source/Vector. (clj->js {"features" (mapv geoplot-feature-js geoplot-features)}))
 
-            layer (ol-layer/Vector.
-                    (clj->js (merge {:source source}
-                                    (when style
-                                      {:style style}))))]
+             layer (ol-layer/Vector.
+                     (clj->js (merge {:source source}
+                                     (when style
+                                       {:style style}))))]
 
-        (Map. #js {:target node
+         (Map. #js {:target (dom/dom-node this)
 
-                   :layers
-                   #js [(ol-layer/Tile. #js {:source (ol-source/OSM.)})
+                    :layers
+                    #js [(ol-layer/Tile. #js {:source (ol-source/OSM.)})
 
-                        layer]
+                         layer]
 
-                   :view (View. #js {:center geoplot-center-js
-                                     :zoom (or geoplot-zoom 4)})})))))
+                    :view (View. #js {:center geoplot-center-js
+                                      :zoom (or geoplot-zoom 4)})})))}))
 
 (declare Widget)
 
