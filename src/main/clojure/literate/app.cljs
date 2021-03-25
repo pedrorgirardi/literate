@@ -51,7 +51,7 @@
 
 
 (defn IconClose [& [attrs]]
-  [:svg.w-6.h-6
+  [:svg
    (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
    [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M6 18L18 6M6 6l12 12"}]])
 
@@ -279,14 +279,16 @@
 
 (defn WidgetContainer [e]
   (r/with-let [mouse-over-ref? (r/atom false)]
-    [:div.flex.flex-col.p-2.mb-2.border-l-2.border-transparent.hover:border-teal-500.transition.duration-200.ease-in-out
+    [:div.flex.space-x-2.mb-2.border-l-2.border-transparent.hover:border-teal-500.transition.duration-200.ease-in-out
      {:on-mouse-enter #(reset! mouse-over-ref? true)
       :on-mouse-leave #(reset! mouse-over-ref? false)}
 
-     [:button.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.mb-1.focus:outline-none
-      {:class (when-not @mouse-over-ref? "invisible")
-       :on-click #(db/retract-entity (:db/id e))}
-      [IconClose]]
+     [:div.flex.flex-col
+      {:class (when @mouse-over-ref? "bg-teal-50")}
+      [:button.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.m-1.focus:outline-none
+       {:class (when-not @mouse-over-ref? "invisible")
+        :on-click #(db/retract-entity (:db/id e))}
+       [IconClose {:class "w-5 h-5"}]]]
 
      [Widget e]]))
 
@@ -342,7 +344,7 @@
    ;; -- Widgets
 
    (if (seq widgets)
-     [:div.flex.flex-col.items-start.overflow-auto.container.mx-auto.py-4
+     [:div.flex.flex-col.items-start.overflow-auto.container.mx-auto.py-2
       (for [e widgets]
         ^{:key (:db/id e)}
         [WidgetContainer e])]
