@@ -25,6 +25,14 @@
 
 (def l (partial literate/view {:url "http://localhost:8118"}))
 
+(defn l-table []
+  {:widget/uuid (str (UUID/randomUUID))
+   :widget/type :widget.type/table
+   :widget.table/height 500
+   :widget.table/width 500
+   :widget.table/item-size 70
+   :widget.table/rows (take 100 (repeat {:a 1}))})
+
 (comment
 
   (reset)
@@ -33,6 +41,8 @@
 
   (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(literate/codemirror "Hello")])})
 
+
+  (l (l-table))
 
 
   ;; -- Geoplot.

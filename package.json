@@ -15,6 +15,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-tippy": "^1.4.0",
+    "react-window": "^1.8.6",
     "vega": "^5.20.0",
     "vega-embed": "^6.16.0",
     "vega-lite": "^5.0.0"

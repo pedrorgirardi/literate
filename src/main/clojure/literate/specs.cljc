@@ -3,10 +3,14 @@
 
 (s/def :widget/uuid string?)
 
-(s/def :widget/type #{:widget.type/codemirror
-                      :widget.type/markdown
+(s/def :widget/type #{:widget.type/html
+                      :widget.type/row
+                      :widget.type/column
+                      :widget.type/table
                       :widget.type/vega-embed
-                      :widget.type/html})
+                      :widget.type/codemirror
+                      :widget.type/markdown
+                      :widget.type/geoplot})
 
 (s/def :literate/widget (s/keys :req [:widget/uuid
                                       :widget/type]))

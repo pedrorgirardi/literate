@@ -13,6 +13,7 @@
             ["codemirror/mode/gfm/gfm"]
             ["file-saver" :as FileSaver]
             ["react-tippy" :as tippy]
+            ["react-window" :as react-window]
 
             ["ol/Map" :default Map]
             ["ol/View" :default View]
@@ -22,6 +23,24 @@
             ["ol/proj" :as ol-proj]
             ["ol/color" :as ol-color]
             ["ol/style" :as ol-style]))
+
+(defn TableRow [{:keys [index style]}]
+  [:div
+   {:style (js->clj style)}
+   [:span index]])
+
+(defn Table [{:widget.table/keys [height
+                                  width
+                                  item-size
+                                  rows]}]
+  [:div.flex.flex-col
+   [:div [:span "Header"]]
+   [:> react-window/FixedSizeList
+    {:height height
+     :width width
+     :itemSize item-size
+     :itemCount (count rows)}
+    (r/reactify-component TableRow)]])
 
 (defn Codemirror [{:widget.codemirror/keys [height
                                             width
@@ -182,6 +201,9 @@
 
                     :widget.type/column
                     Column
+
+                    :widget.type/table
+                    Table
 
                     :widget.type/vega-embed
                     VegaEmbed
