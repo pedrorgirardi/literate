@@ -13,6 +13,7 @@
             ["codemirror/mode/gfm/gfm"]
             ["file-saver" :as FileSaver]
             ["react-tippy" :as tippy]
+            ["react-window" :as react-window]
 
             ["ol/Map" :default Map]
             ["ol/View" :default View]
@@ -22,6 +23,36 @@
             ["ol/proj" :as ol-proj]
             ["ol/color" :as ol-color]
             ["ol/style" :as ol-style]))
+
+(defn Table [{:widget.table/keys [height
+                                  width
+                                  row-height
+                                  columns
+                                  rows]}]
+  [:div.flex.flex-col.text-sm
+
+   ;; -- Header
+   [:div.flex.border-b.border-teal-500.pb-1.mb-1
+    (for [[_ column-label] columns]
+      ^{:key column-label}
+      [:div.flex-1
+       [:span.font-bold column-label]])]
+
+   ;; -- Body
+   [:> react-window/FixedSizeList
+    {:height height
+     :width width
+     :itemSize row-height
+     :itemCount (count rows)}
+    (r/reactify-component
+      (fn [{:keys [index style]}]
+        [:div.flex.hover:bg-teal-50
+         {:style (js->clj style)}
+         (let [row (nth rows index nil)]
+           (for [[column-key column-label] columns]
+             ^{:key column-label}
+             [:div.flex-1
+              [:span (get row column-key)]]))]))]])
 
 (defn Codemirror [{:widget.codemirror/keys [height
                                             width
@@ -182,6 +213,9 @@
 
                     :widget.type/column
                     Column
+
+                    :widget.type/table
+                    Table
 
                     :widget.type/vega-embed
                     VegaEmbed

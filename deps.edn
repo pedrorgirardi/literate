@@ -8,7 +8,7 @@
   com.cognitect/transit-clj {:mvn/version "1.0.324"}
   com.cognitect/transit-cljs {:mvn/version "0.8.264"}
 
-  ring/ring-core {:mvn/version "1.9.1"}
+  ring/ring-core {:mvn/version "1.9.2"}
   ring/ring-defaults {:mvn/version "0.3.2"}
   http-kit/http-kit {:mvn/version "2.5.3"}
   compojure/compojure {:mvn/version "1.6.2"}
@@ -25,9 +25,9 @@
   {:extra-paths ["src/dev/clojure" "src/dev/resources"]
    :extra-deps
    {org.clojure/tools.namespace {:mvn/version "1.1.0"}
-    org.clojure/data.json {:mvn/version "1.1.0"}
+    org.clojure/data.json {:mvn/version "2.0.1"}
     pedrorgirardi/literate.client {:git/url "https://github.com/pedrorgirardi/literate.client"
-                                   :sha "44a4e72bd2dbff91e89dd80eee841e1cda946b52"}}}
+                                   :sha "81eac81aecb6ebeb2d6a7de15ecfd844a902cc31"}}}
 
   :app
   {:extra-deps

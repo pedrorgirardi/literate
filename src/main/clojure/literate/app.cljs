@@ -96,7 +96,7 @@
 (defn WidgetContainer [e]
   (r/with-let [mouse-over-ref? (r/atom false)]
     [:div.flex.space-x-2.mb-2.border-l-2.border-transparent.hover:border-teal-500.transition.duration-200.ease-in-out
-     {:on-mouse-enter #(reset! mouse-over-ref? true)
+     {:on-mouse-over #(reset! mouse-over-ref? true)
       :on-mouse-leave #(reset! mouse-over-ref? false)}
 
      [:div.flex.flex-col
@@ -122,7 +122,8 @@
 
      ;; -- Export
      [:> tippy/Tooltip
-      {:title "Download document"}
+      {:title "Download document"
+       :size "small"}
       [:button
        {:key "download"
         :class [(if (empty? widgets)
@@ -144,7 +145,8 @@
 
      ;; -- Database
      [:> tippy/Tooltip
-      {:title "View database"}
+      {:title "View database"
+       :size "small"}
       [:button
        {:key "database"
         :class "inline-flex items-center px-3 py-2 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"

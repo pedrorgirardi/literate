@@ -34,6 +34,15 @@
   (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(literate/codemirror "Hello")])})
 
 
+  (l (literate/table
+       {:columns
+        [[:a "A"]
+         [:b "B"]
+         [:c "C"]]
+
+        :rows
+        (repeat 100 {:a 1 :b 1 :c 1})}))
+
 
   ;; -- Geoplot.
 
@@ -119,7 +128,7 @@
            "Welcome to Literate"]
 
           [:p.text-xl
-           "Literate is a Clojure & ClojureScript application which you can use to create documents."]
+           "Literate is a Clojure & ClojureScript application which you can use to create interactive documents."]
 
           [:p.mt-4
            "This interface that you're looking at it's called a " [:span.font-bold "Widget"]
@@ -132,7 +141,7 @@
            [:li "Markdown"]
            [:li "Hiccup"]
            [:li "Vega"]
-           [:li "Interactive Map"]
+           [:li "Map"]
            [:li "Column layout"]
            [:li "Row layout"]]])
 
