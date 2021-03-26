@@ -25,20 +25,32 @@
             ["ol/style" :as ol-style]))
 
 (defn TableRow [{:keys [index style]}]
-  [:div
+  [:div.flex
    {:style (js->clj style)}
-   [:span index]])
+   [:div.flex-1
+    [:span index]]
+
+   [:div.flex-1
+    [:span index]]
+
+   [:div.flex-1
+    [:span index]]])
 
 (defn Table [{:widget.table/keys [height
                                   width
-                                  item-size
+                                  row-height
+                                  columns
                                   rows]}]
   [:div.flex.flex-col
-   [:div [:span "Header"]]
+   [:div.flex
+    (for [[_ column-label] columns]
+      ^{:key column-label}
+      [:div.flex-1
+       [:span column-label]])]
    [:> react-window/FixedSizeList
     {:height height
      :width width
-     :itemSize item-size
+     :itemSize row-height
      :itemCount (count rows)}
     (r/reactify-component TableRow)]])
 

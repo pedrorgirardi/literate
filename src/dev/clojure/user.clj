@@ -25,13 +25,16 @@
 
 (def l (partial literate/view {:url "http://localhost:8118"}))
 
-(defn l-table []
+(defn table
+  "Returns a Table Widget entity."
+  [{:keys [height width row-height columns rows]}]
   {:widget/uuid (str (UUID/randomUUID))
    :widget/type :widget.type/table
-   :widget.table/height 500
-   :widget.table/width 500
-   :widget.table/item-size 70
-   :widget.table/rows (take 100 (repeat {:a 1}))})
+   :widget.table/height (or height 400)
+   :widget.table/width (or width 600)
+   :widget.table/row-height (or row-height 50)
+   :widget.table/rows rows
+   :widget.table/columns columns})
 
 (comment
 
@@ -42,7 +45,9 @@
   (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(literate/codemirror "Hello")])})
 
 
-  (l (l-table))
+  (l (table
+       {:columns [[:a "A"] [:b "B"] [:c "C"]]
+        :rows (take 100 (repeat {:a 1 :b 1 :c 1}))}))
 
 
   ;; -- Geoplot.
