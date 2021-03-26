@@ -594,6 +594,11 @@ video {
   background-color: rgba(209, 213, 219, var(--tw-bg-opacity));
 }
 
+.hover\:bg-teal-50:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(240, 253, 250, var(--tw-bg-opacity));
+}
+
 .border-transparent {
   border-color: transparent;
 }

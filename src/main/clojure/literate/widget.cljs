@@ -24,19 +24,6 @@
             ["ol/color" :as ol-color]
             ["ol/style" :as ol-style]))
 
-(defn TableRow [{:keys [index style] :as props}]
-  (js/console.log 'props props)
-  [:div.flex
-   {:style (js->clj style)}
-   [:div.flex-1
-    [:span index]]
-
-   [:div.flex-1
-    [:span index]]
-
-   [:div.flex-1
-    [:span index]]])
-
 (defn Table [{:widget.table/keys [height
                                   width
                                   row-height
@@ -59,7 +46,7 @@
      :itemCount (count rows)}
     (r/reactify-component
       (fn [{:keys [index style]}]
-        [:div.flex
+        [:div.flex.hover:bg-teal-50
          {:style (js->clj style)}
          (let [row (nth rows index nil)]
            (for [[column-key column-label] columns]
