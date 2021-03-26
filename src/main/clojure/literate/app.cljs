@@ -96,7 +96,7 @@
 (defn WidgetContainer [e]
   (r/with-let [mouse-over-ref? (r/atom false)]
     [:div.flex.space-x-2.mb-2.border-l-2.border-transparent.hover:border-teal-500.transition.duration-200.ease-in-out
-     {:on-mouse-enter #(reset! mouse-over-ref? true)
+     {:on-mouse-over #(reset! mouse-over-ref? true)
       :on-mouse-leave #(reset! mouse-over-ref? false)}
 
      [:div.flex.flex-col
