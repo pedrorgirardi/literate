@@ -43,8 +43,9 @@
                                   columns
                                   rows]}]
   [:div.flex.flex-col.text-sm
+
    ;; -- Header
-   [:div.flex
+   [:div.flex.border-b.border-teal-500.pb-1.mb-1
     (for [[_ column-label] columns]
       ^{:key column-label}
       [:div.flex-1
