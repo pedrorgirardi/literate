@@ -24,7 +24,8 @@
             ["ol/color" :as ol-color]
             ["ol/style" :as ol-style]))
 
-(defn TableRow [{:keys [index style]}]
+(defn TableRow [{:keys [index style] :as props}]
+  (js/console.log 'props props)
   [:div.flex
    {:style (js->clj style)}
    [:div.flex-1
@@ -41,18 +42,29 @@
                                   row-height
                                   columns
                                   rows]}]
-  [:div.flex.flex-col
+  [:div.flex.flex-col.text-sm
+   ;; -- Header
    [:div.flex
     (for [[_ column-label] columns]
       ^{:key column-label}
       [:div.flex-1
        [:span column-label]])]
+
+   ;; -- Body
    [:> react-window/FixedSizeList
     {:height height
      :width width
      :itemSize row-height
      :itemCount (count rows)}
-    (r/reactify-component TableRow)]])
+    (r/reactify-component
+      (fn [{:keys [index style]}]
+        [:div.flex
+         {:style (js->clj style)}
+         (let [row (nth rows index nil)]
+           (for [[column-key column-label] columns]
+             ^{:key column-label}
+             [:div.flex-1
+              [:span (get row column-key)]]))]))]])
 
 (defn Codemirror [{:widget.codemirror/keys [height
                                             width

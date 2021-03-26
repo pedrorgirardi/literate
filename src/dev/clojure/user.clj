@@ -46,8 +46,13 @@
 
 
   (l (table
-       {:columns [[:a "A"] [:b "B"] [:c "C"]]
-        :rows (take 100 (repeat {:a 1 :b 1 :c 1}))}))
+       {:columns
+        [[:a "A"]
+         [:b "B"]
+         [:c "C"]]
+
+        :rows
+        (repeat 100 {:a 1 :b 1 :c 1})}))
 
 
   ;; -- Geoplot.
