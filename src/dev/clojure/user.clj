@@ -25,17 +25,6 @@
 
 (def l (partial literate/view {:url "http://localhost:8118"}))
 
-(defn table
-  "Returns a Table Widget entity."
-  [{:keys [height width row-height columns rows]}]
-  {:widget/uuid (str (UUID/randomUUID))
-   :widget/type :widget.type/table
-   :widget.table/height (or height 400)
-   :widget.table/width (or width 600)
-   :widget.table/row-height (or row-height 50)
-   :widget.table/rows rows
-   :widget.table/columns columns})
-
 (comment
 
   (reset)
@@ -45,7 +34,7 @@
   (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(literate/codemirror "Hello")])})
 
 
-  (l (table
+  (l (literate/table
        {:columns
         [[:a "A"]
          [:b "B"]
