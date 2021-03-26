@@ -36,7 +36,7 @@
     (for [[_ column-label] columns]
       ^{:key column-label}
       [:div.flex-1
-       [:span column-label]])]
+       [:span.font-bold column-label]])]
 
    ;; -- Body
    [:> react-window/FixedSizeList
