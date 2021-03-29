@@ -25,7 +25,7 @@
   {:extra-paths ["src/dev/clojure" "src/dev/resources"]
    :extra-deps
    {org.clojure/tools.namespace {:mvn/version "1.1.0"}
-    org.clojure/data.json {:mvn/version "2.0.1"}
+    org.clojure/data.json {:mvn/version "2.0.2"}
     pedrorgirardi/literate.client {:git/url "https://github.com/pedrorgirardi/literate.client"
                                    :sha "81eac81aecb6ebeb2d6a7de15ecfd844a902cc31"}}}
 
