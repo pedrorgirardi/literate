@@ -52,7 +52,9 @@
            (for [[column-key column-label] columns]
              ^{:key column-label}
              [:div.flex-1
-              [:span (get row column-key)]]))]))]])
+              [:span (if (vector? column-key)
+                       (get-in row column-key)
+                       (get row column-key))]]))]))]])
 
 (defn Codemirror [{:widget.codemirror/keys [height
                                             width
