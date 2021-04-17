@@ -1,4 +1,4 @@
-{:deps {:aliases [:app]}
+{:deps {:aliases [:app-dev]}
 
  :nrepl {:port 9000}
 
