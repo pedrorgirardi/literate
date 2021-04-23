@@ -14,7 +14,7 @@
   compojure/compojure {:mvn/version "1.6.2"}
   hiccup/hiccup {:mvn/version "1.0.5"}
   reagent/reagent {:mvn/version "1.0.0" :exclusions [cljsjs/react cljsjs/react-dom]}
-  datascript/datascript {:mvn/version "1.0.7"}
+  datascript/datascript {:mvn/version "1.1.0"}
   com.taoensso/sente {:mvn/version "1.16.2"}}
 
  :aliases
@@ -25,7 +25,7 @@
   {:extra-paths ["src/dev/clojure" "src/dev/resources"]
    :extra-deps
    {org.clojure/tools.namespace {:mvn/version "1.1.0"}
-    org.clojure/data.json {:mvn/version "2.2.0"}
+    org.clojure/data.json {:mvn/version "2.2.1"}
     pedrorgirardi/literate.client {:git/url "https://github.com/pedrorgirardi/literate.client"
                                    :sha "81eac81aecb6ebeb2d6a7de15ecfd844a902cc31"}}}
 
