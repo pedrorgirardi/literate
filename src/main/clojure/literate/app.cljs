@@ -41,9 +41,7 @@
   (let [{:keys [chsk ch-recv send-fn state]}
         (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
     (def chsk chsk)
-    (def ch-chsk ch-recv)
-    (def chsk-send! send-fn)
-    (def chsk-state state)))
+    (def ch-chsk ch-recv)))
 
 (def sente-router-ref (atom (fn [] nil)))
 
