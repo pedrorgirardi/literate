@@ -164,14 +164,15 @@
      [:div.overflow-auto
       [:div.flex.flex-col.items-start.container.mx-auto.py-2
        (for [e widgets]
-            ^{:key (:db/id e)}
-            [WidgetContainer e])]]
+         ^{:key (:db/id e)}
+         [WidgetContainer e])]]
      [:div.flex.flex-col.flex-1.items-center.justify-center
       [Import]])])
 
 
 (defn handler [{:keys [?data] :as m}]
   (let [[event data] ?data]
+    ;; WebSocket logging.
     (js/console.group "Sente")
     (js/console.log (select-keys m [:id :?data]))
     (js/console.groupEnd)
@@ -187,13 +188,15 @@
   (@sente-router-ref))
 
 (defn ^:export init []
-  (js/console.log "Welcome to Literate" (if goog.DEBUG
-                                          "(Dev build)"
-                                          "(Release build)"))
+  (js/console.log "Welcome to Literate"
+    (if goog.DEBUG
+      "(dev build)"
+      "(release build)"))
 
   (when WS
     (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler)))
 
+  ;; Rerender UI whenever the database changes.
   (d/listen! db/conn #(mount))
 
   (mount))
