@@ -160,12 +160,12 @@
 
 
    ;; -- Widgets
-
    (if (seq widgets)
-     [:div.flex.flex-col.items-start.overflow-auto.container.mx-auto.py-2
-      (for [e widgets]
-        ^{:key (:db/id e)}
-        [WidgetContainer e])]
+     [:div.overflow-auto
+      [:div.flex.flex-col.items-start.container.mx-auto.py-2
+       (for [e widgets]
+            ^{:key (:db/id e)}
+            [WidgetContainer e])]]
      [:div.flex.flex-col.flex-1.items-center.justify-center
       [Import]])])
 
