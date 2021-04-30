@@ -25,6 +25,9 @@
 
 (def l (partial literate/view {:url "http://localhost:8118"}))
 
+(defn update-widget [widget with-widget]
+  (merge with-widget (select-keys widget [:widget/uuid])))
+
 (comment
 
   (reset)
@@ -117,6 +120,15 @@
         [:span "Text"]]))
 
 
+  ;; -- How to update a Widget.
+
+  (def html-example (literate/hiccup [:h1 "Time is" (java.time.LocalDateTime/now)]))
+
+  (l html-example)
+
+  (l (update-widget html-example (literate/hiccup [:h1 "Time is " (java.time.LocalDateTime/now)])))
+
+
   ;; -- Welcome.
 
   (l (literate/column
@@ -162,6 +174,4 @@
        (literate/hiccup
          [:span.p-2.text-lg "Codemirror Widget"])
 
-       (literate/codemirror (slurp (io/resource "literate/core.clj")))))
-
-  )
+       (literate/codemirror (slurp (io/resource "literate/core.clj"))))))
