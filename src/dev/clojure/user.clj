@@ -25,8 +25,12 @@
 
 (def l (partial literate/view {:url "http://localhost:8118"}))
 
-(defn update-widget [widget with-widget]
-  (merge with-widget (select-keys widget [:widget/uuid])))
+(defn replace-widget
+  "Select widget UUID and merge with replacement.
+
+   Use this function when you want to transact a 'new version' of widget."
+  [widget replacement]
+  (merge replacement (select-keys widget [:widget/uuid])))
 
 (comment
 
@@ -126,7 +130,7 @@
 
   (l html-example)
 
-  (l (update-widget html-example (literate/hiccup [:h1 "Time is " (java.time.LocalDateTime/now)])))
+  (l (replace-widget html-example (literate/hiccup [:h1 "Time is " (java.time.LocalDateTime/now)])))
 
 
   ;; -- Welcome.
