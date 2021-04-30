@@ -9,6 +9,9 @@
             [datascript.core :as d]
             [reagent.core :as r]
             [reagent.dom :as dom]
+            [reitit.frontend :as rf]
+            [reitit.frontend.controllers :as rfc]
+            [reitit.frontend.easy :as rfe]
 
             [literate.db :as db]
             [literate.widget :as widget]
@@ -45,6 +48,18 @@
 
 (def sente-router-ref (atom (fn [] nil)))
 
+(defn init-db
+  "Init db from a sequence of datoms.
+
+   It is used when reading an uploaded file,
+   or reading a file from a URL."
+  [datoms]
+  (let [datoms (mapv
+                 (fn [datom]
+                   (apply d/datom datom))
+                 datoms)]
+    (d/reset-conn! db/conn (d/init-db datoms db/schema))))
+
 
 ;; ---
 
@@ -79,12 +94,7 @@
            (js/console.log "Import..." f)
 
            (set! (.-onload reader) (fn [e]
-                                     (let [datoms (t/read transit-json-reader (-> e .-target .-result))
-                                           datoms (mapv
-                                                    (fn [datom]
-                                                      (apply d/datom datom))
-                                                    datoms)]
-                                       (d/reset-conn! db/conn (d/init-db datoms db/schema)))))
+                                     (init-db (t/read transit-json-reader (-> e .-target .-result)))))
 
            (set! (.-onerror reader) (fn [e]
                                       (js/console.log (-> e .-target .-error))))
@@ -185,11 +195,31 @@
 (defn ^:dev/before-load stop-sente-router []
   (@sente-router-ref))
 
+(def router
+  (rf/router ["/"]))
+
 (defn ^:export init []
   (js/console.log "Welcome to Literate"
     (if goog.DEBUG
       "(dev build)"
       "(release build)"))
+
+  (let [on-navigate (fn [match history]
+                      ;; There is this option to open a document
+                      ;; from a URL if there is a 'doc' query param.
+                      (when-let [url (get-in match [:query-params :doc])]
+                        (js/console.log "Opening..." url)
+
+                        (.then (js/fetch url)
+                          (fn [response]
+                            (when (.-ok response)
+                              (.then (.text response)
+                                (fn [text]
+                                  ;; Document is expected to be transit-encoded,
+                                  ;; and containing a sequence of datoms.
+                                  (init-db (t/read transit-json-reader text)))))))))]
+
+    (rfe/start! router on-navigate {:use-fragment false}))
 
   (when WS
     (reset! sente-router-ref (sente/start-client-chsk-router! ch-chsk handler)))
