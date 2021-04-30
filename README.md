@@ -5,6 +5,8 @@
 
 Literate is a Clojure & ClojureScript application which you can use to create documents.
 
+[Welcome](https://literate.netlify.app/?doc=https://raw.githubusercontent.com/pedrorgirardi/literate/main/resources/welcome.json)
+
 ![Literate](https://github.com/pedrorgirardi/literate/raw/main/doc/screenshot.png)
 
 [Example project](https://github.com/pedrorgirardi/literate-example)
