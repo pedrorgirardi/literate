@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+		}
+	],
+	"build_systems":
+    [
+        {
+            "name": "Release app",
+            "shell_cmd": "npm run release",
+            "working_dir": "$project_path" 
+        }
+    ]
+
+}
