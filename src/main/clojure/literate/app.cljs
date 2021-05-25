@@ -1,7 +1,5 @@
 (ns literate.app
-  (:require [cljs.spec.alpha :as s]
-            [cljs.pprint :as pprint]
-            [clojure.string :as str]
+  (:require [cljs.pprint :as pprint]
 
             [cognitect.transit :as t]
 
@@ -10,29 +8,16 @@
             [reagent.core :as r]
             [reagent.dom :as dom]
             [reitit.frontend :as rf]
-            [reitit.frontend.controllers :as rfc]
             [reitit.frontend.easy :as rfe]
 
             [literate.db :as db]
             [literate.widget :as widget]
             [literate.specs]
 
-            ["marked" :as marked]
-            ["vega-embed" :as vega-embed]
-            ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]
             ["codemirror/mode/gfm/gfm"]
             ["file-saver" :as FileSaver]
-            ["react-tippy" :as tippy]
-
-            ["ol/Map" :default Map]
-            ["ol/View" :default View]
-            ["ol/format/WKT" :default WKT]
-            ["ol/source" :as ol-source]
-            ["ol/layer" :as ol-layer]
-            ["ol/proj" :as ol-proj]
-            ["ol/color" :as ol-color]
-            ["ol/style" :as ol-style]))
+            ["react-tippy" :as tippy]))
 
 ;; WebSocket is only available in 'dev mode' - that's when we're authoring the document.
 (goog-define ^boolean WS false)

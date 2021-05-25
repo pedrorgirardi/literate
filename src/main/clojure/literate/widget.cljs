@@ -11,8 +11,6 @@
             ["codemirror" :as codemirror]
             ["codemirror/mode/clojure/clojure"]
             ["codemirror/mode/gfm/gfm"]
-            ["file-saver" :as FileSaver]
-            ["react-tippy" :as tippy]
             ["react-window" :as react-window]
 
             ["ol/Map" :default Map]

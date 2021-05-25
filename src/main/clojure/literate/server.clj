@@ -3,7 +3,6 @@
             [org.httpkit.server :as http-kit]
             [compojure.core :refer [defroutes GET POST]]
             [compojure.route :as route]
-            [hiccup.page :as page]
             [taoensso.sente :as sente]
             [taoensso.sente.server-adapters.http-kit :refer [get-sch-adapter]]
             [cognitect.transit :as transit]
