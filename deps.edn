@@ -19,7 +19,10 @@
   metosin/reitit-frontend {:mvn/version "0.5.13"}}
 
  :aliases
- {:main
+ {:repl
+  {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
+  
+  :main
   {:main-opts ["-m" "literate.core" "--port" "8118"]}
 
   :dev
