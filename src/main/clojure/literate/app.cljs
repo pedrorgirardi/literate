@@ -25,8 +25,10 @@
 (def transit-json-reader (t/reader :json))
 (def transit-json-writer (t/writer :json))
 
+(defonce state-ref (r/atom {}))
+
 (when WS
-  (let [{:keys [chsk ch-recv send-fn state]}
+  (let [{:keys [chsk ch-recv]}
         (sente/make-channel-socket-client! "/chsk" nil {:type :auto})]
     (def chsk chsk)
     (def ch-chsk ch-recv)))
@@ -153,12 +155,20 @@
 
 
    ;; -- Widgets
-   (if (seq widgets)
+   
+   (cond
+     (:loading? @state-ref)
+     [:div.flex.flex-col.flex-1.items-center.justify-center
+      [:span "Loading..."]]
+     
+     (seq widgets)
      [:div.overflow-auto
       [:div.flex.flex-col.items-start.container.mx-auto.py-2
        (for [e widgets]
          ^{:key (:db/id e)}
          [WidgetContainer e])]]
+     
+     :else
      [:div.flex.flex-col.flex-1.items-center.justify-center
       [Import]])])
 
@@ -189,14 +199,18 @@
       "(dev build)"
       "(release build)"))
 
-  (let [on-navigate (fn [match history]
+  (let [on-navigate (fn [match _]
                       ;; There is this option to open a document
                       ;; from a URL if there is a 'doc' query param.
                       (when-let [url (get-in match [:query-params :doc])]
                         (js/console.log "Opening..." url)
+                        
+                        (swap! state-ref merge {:loading? true})
 
                         (.then (js/fetch url)
                           (fn [response]
+                            (swap! state-ref merge {:loading? false})
+                            
                             (when (.-ok response)
                               (.then (.text response)
                                 (fn [text]
