@@ -174,6 +174,8 @@
                                 (when style
                                   {:style style}))))
              
+             ;; See http://leaflet-extras.github.io/leaflet-providers/preview/
+             
              esri-world-imagery #js {:url "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                                      :attributions "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"}
              
