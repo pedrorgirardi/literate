@@ -135,66 +135,88 @@
                 geoplot-zoom :widget.geoplot/zoom
                 geoplot-features :widget.geoplot/features}]
   
-  (r/create-class
-    {:reagent-render
-     (fn [_]
-       [:div
-        {:style
-         {:height (or geoplot-height "500px")
-          :width (or geoplot-width "1200px")}}])
-     
-     :component-did-mount
-     (fn [this]
-       (let [geoplot-center-js (some-> geoplot-center clj->js)
-             
-             ;; Provide the coordinates projected into Web Mercator - if center is in WSG84.
-             geoplot-center-js (if geoplot-center-wsg84?
-                                 (doto (some-> geoplot-center-js ol-proj/fromLonLat)
-                                   (#(js/console.log (str "Center projection: " (str/join " " geoplot-center) " (WGS84) to " % " (EPSG:3857)"))))
-                                 geoplot-center-js)
-             
-             geoplot-center-js (or geoplot-center-js #js [0 0])
-             
-             style (when geoplot-style
-                     (ol-style/Style.
-                       (clj->js
-                         (merge {}
-                           ;; Fill color.
-                           (when-let [color (get-in geoplot-style [:fill :color])]
-                             {:fill (ol-style/Fill. #js {:color (ol-color/asString color)})})
+  (let [state-ref (r/atom {:tile :satellite})]
+    (r/create-class
+      {:reagent-render
+       (fn [_]
+         [:div.relative
+          {:style
+           {:height (or geoplot-height "500px")
+            :width (or geoplot-width "1200px")}}
+          
+          [:div.absolute.top-0.right-0.z-50.p-2
+           [:div.flex
+            
+            [:button
+             {:class "inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              :on-click 
+              (fn []
+                (js/console.log "Change tile")
+                (reset! state-ref :satellite))}
+             "Satellite"]]]
+          
+          ])
+       
+       :component-did-mount
+       (fn [this]
+         (let [{selected-tile :tile} @state-ref
+               
+               geoplot-center-js (some-> geoplot-center clj->js)
+               
+               ;; Provide the coordinates projected into Web Mercator - if center is in WSG84.
+               geoplot-center-js (if geoplot-center-wsg84?
+                                   (doto (some-> geoplot-center-js ol-proj/fromLonLat)
+                                     (#(js/console.log (str "Center projection: " (str/join " " geoplot-center) " (WGS84) to " % " (EPSG:3857)"))))
+                                   geoplot-center-js)
+               
+               geoplot-center-js (or geoplot-center-js #js [0 0])
+               
+               style (when geoplot-style
+                       (ol-style/Style.
+                         (clj->js
+                           (merge {}
+                             ;; Fill color.
+                             (when-let [color (get-in geoplot-style [:fill :color])]
+                               {:fill (ol-style/Fill. #js {:color (ol-color/asString color)})})
+                             
+                             ;; Stroke color.
+                             (when-let [color (get-in geoplot-style [:stroke :color])]
+                               {:stroke (ol-style/Stroke. #js {:color (ol-color/asString color)})})))))
+               
+               source (ol-source/Vector. (clj->js {"features" (mapv geoplot-feature-js geoplot-features)}))
+               
+               layer (ol-layer/Vector.
+                       (clj->js (merge {:source source}
+                                  (when style
+                                    {:style style}))))
+               
+               ;; See:
+               ;;  https://switch2osm.org/
+               ;;  http://leaflet-extras.github.io/leaflet-providers/preview/
+               
+               esri-world-imagery #js {:url "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                       :attributions "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"}
+               
+               esri-world-imagery-source (ol-source/XYZ. esri-world-imagery)
+               
+               #_#_osm-source (ol-source/OSM.)]
+           
+           (Map. #js {:target (dom/dom-node this)
+                      
+                      ;; TODO: UI to switch layers.
+                      :layers
+                      #js [(ol-layer/Tile. #js {:source esri-world-imagery-source})
                            
-                           ;; Stroke color.
-                           (when-let [color (get-in geoplot-style [:stroke :color])]
-                             {:stroke (ol-style/Stroke. #js {:color (ol-color/asString color)})})))))
-             
-             source (ol-source/Vector. (clj->js {"features" (mapv geoplot-feature-js geoplot-features)}))
-             
-             layer (ol-layer/Vector.
-                     (clj->js (merge {:source source}
-                                (when style
-                                  {:style style}))))
-             
-             ;; See:
-             ;;  https://switch2osm.org/
-             ;;  http://leaflet-extras.github.io/leaflet-providers/preview/
-             
-             esri-world-imagery #js {:url "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                     :attributions "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"}
-             
-             esri-world-imagery-source (ol-source/XYZ. esri-world-imagery)
-             
-             #_#_osm-source (ol-source/OSM.)]
-         
-         (Map. #js {:target (dom/dom-node this)
-                    
-                    ;; TODO: UI to switch layers.
-                    :layers
-                    #js [(ol-layer/Tile. #js {:source esri-world-imagery-source})
-                         
-                         layer]
-                    
-                    :view (View. #js {:center geoplot-center-js
-                                      :zoom (or geoplot-zoom 4)})})))}))
+                           layer]
+                      
+                      :view (View. #js {:center geoplot-center-js
+                                        :zoom (or geoplot-zoom 4)})})))
+       
+       :component-did-update
+       (fn [this _]
+         (js/console.log "Update"))
+       
+       })))
 
 (declare Widget)
 
