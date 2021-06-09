@@ -7,3 +7,4 @@ resources/public/js
 .nrepl-port
 .DS_Store
 literate.sublime-workspace
+.repl-port
