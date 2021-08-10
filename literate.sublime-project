@@ -1,4 +1,8 @@
 {
+	"pep": {
+        "classpath": ["clojure", "-A:dev:app-dev", "-Spath"],
+        "paths": ["src"]
+    },
 	"folders":
 	[
 		{

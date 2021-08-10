@@ -1,23 +1,24 @@
 (ns literate.app
-  (:require [cljs.pprint :as pprint]
-
-            [cognitect.transit :as t]
-
-            [taoensso.sente :as sente]
-            [datascript.core :as d]
-            [reagent.core :as r]
-            [reagent.dom :as dom]
-            [reitit.frontend :as rf]
-            [reitit.frontend.easy :as rfe]
-
-            [literate.db :as db]
-            [literate.widget :as widget]
-            [literate.specs]
-
-            ["codemirror/mode/clojure/clojure"]
-            ["codemirror/mode/gfm/gfm"]
-            ["file-saver" :as FileSaver]
-            ["react-tippy" :as tippy]))
+  (:require 
+   [cljs.pprint :as pprint]
+   
+   [cognitect.transit :as t]
+   
+   [taoensso.sente :as sente]
+   [datascript.core :as d]
+   [reagent.core :as r]
+   [reagent.dom :as dom]
+   [reitit.frontend :as rf]
+   [reitit.frontend.easy :as rfe]
+   
+   [literate.db :as db]
+   [literate.widget :as widget]
+   [literate.specs]
+   
+   ["codemirror/mode/clojure/clojure"]
+   ["codemirror/mode/gfm/gfm"]
+   ["file-saver" :as FileSaver]
+   ["react-tippy" :as tippy]))
 
 ;; WebSocket is only available in 'dev mode' - that's when we're authoring the document.
 (goog-define ^boolean WS false)
@@ -123,6 +124,22 @@
     
     [:div.flex.space-x-2
      
+     ;; -- Database
+     [:> tippy/Tooltip
+      {:title "View database"
+       :size "small"}
+      [:button
+       {:key "database"
+        :class "inline-flex items-center px-3 py-2 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"
+        :on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
+                                          :widget/type :widget.type/codemirror
+                                          :widget.codemirror/mode "clojure"
+                                          :widget.codemirror/lineNumbers false
+                                          :widget.codemirror/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
+       
+       [IconDatabase]]]
+     
+     
      ;; -- Export
      [:> tippy/Tooltip
       {:title "Download document"
@@ -144,22 +161,7 @@
                      
                      (FileSaver/saveAs blob "widgets.json"))}
        
-       [IconDocumentDownload]]]
-     
-     ;; -- Database
-     [:> tippy/Tooltip
-      {:title "View database"
-       :size "small"}
-      [:button
-       {:key "database"
-        :class "inline-flex items-center px-3 py-2 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"
-        :on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
-                                          :widget/type :widget.type/codemirror
-                                          :widget.codemirror/mode "clojure"
-                                          :widget.codemirror/lineNumbers false
-                                          :widget.codemirror/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
-       
-       [IconDatabase]]]]]
+       [IconDocumentDownload]]]]]
    
    
    ;; -- Widgets
