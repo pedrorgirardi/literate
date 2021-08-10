@@ -5,7 +5,8 @@
   "scripts": {
     "server": "npx shadow-cljs server",
     "watch": "npx shadow-cljs watch :main",
-    "release": "npx shadow-cljs release :main"
+    "release": "npx shadow-cljs release :main",
+    "styles": "NODE_ENV=production npx tailwindcss build -o resources/public/styles.css"
   },
   "dependencies": {
     "codemirror": "^5.61.0",
