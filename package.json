@@ -9,7 +9,7 @@
     "styles": "NODE_ENV=production npx tailwindcss build -o resources/public/styles.css"
   },
   "dependencies": {
-    "codemirror": "^5.61.0",
+    "codemirror": "^5.62.3",
     "file-saver": "^2.0.5",
     "leaflet": "^1.7.1",
     "marked": "^2.0.3",
