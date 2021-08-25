@@ -23,9 +23,9 @@
     "vega-lite": "^5.1.0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.2.5",
-    "postcss": "^8.2.13",
+    "autoprefixer": "^10.3.2",
+    "postcss": "^8.3.6",
     "shadow-cljs": "^2.15.3",
-    "tailwindcss": "^2.1.2"
+    "tailwindcss": "^2.2.7"
   }
 }
