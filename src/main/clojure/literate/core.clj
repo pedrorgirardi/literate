@@ -18,5 +18,5 @@
 
     (server/run-server {:port port})
 
-    (println "Up and running on port:" port)
+    (println "Server is up and running on port:" port)
     (println "Happy coding!")))
