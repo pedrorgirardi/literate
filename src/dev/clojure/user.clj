@@ -1,13 +1,14 @@
 (ns user
-  (:require [clojure.tools.namespace.repl :refer [refresh]]
-            [clojure.java.io :as io]
-            [clojure.data.json :as json]
+  (:require
+   [clojure.tools.namespace.repl :refer [refresh]]
+   [clojure.java.io :as io]
+   [clojure.data.json :as json]
 
-            [literate.server :as server]
-            [literate.client.core :as literate]
+   [literate.server :as server]
+   [literate.client.core :as literate]
 
-            [hiccup.core :as hiccup]
-            [org.httpkit.client :as http])
+   [hiccup.core :as hiccup]
+   [org.httpkit.client :as http])
   (:import (java.util UUID)))
 
 (def stop-server
@@ -126,7 +127,7 @@
 
   ;; -- How to update a Widget.
 
-  (def html-example (literate/hiccup [:h1 "Time is" (java.time.LocalDateTime/now)]))
+  @(def html-example (literate/hiccup [:h1 "Time is" (java.time.LocalDateTime/now)]))
 
   (l html-example)
 
