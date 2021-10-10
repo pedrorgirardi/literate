@@ -99,7 +99,7 @@
 
 (defn WidgetContainer [e]
   (r/with-let [mouse-over-ref? (r/atom false)]
-    [:div.flex.space-x-2.mb-2.border-l-2.border-transparent.hover:border-teal-500.transition.duration-200.ease-in-out
+    [:div.flex.border-l-2.border-transparent.hover:border-teal-500.transition.duration-200.ease-in-out
      {:on-mouse-over #(reset! mouse-over-ref? true)
       :on-mouse-leave #(reset! mouse-over-ref? false)}
 
@@ -183,7 +183,7 @@
        :ready
        (if (seq widgets)
          [:div.overflow-auto
-          [:div.flex.flex-col.items-start.container.mx-auto.py-2
+          [:div.flex.flex-col.items-start.container.mx-auto.py-2.space-y-3
            (for [e widgets]
              ^{:key (:db/id e)}
              [WidgetContainer e])]]
