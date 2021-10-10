@@ -134,7 +134,7 @@
         :on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
                                           :widget/type :widget.type/codemirror
                                           :widget.codemirror/mode "clojure"
-                                          :widget.codemirror/lineNumbers false
+                                          :widget.codemirror/lineNumbers true
                                           :widget.codemirror/value (with-out-str (pprint/pprint (db/all-widgets)))}])}
        
        [IconDatabase]]]
