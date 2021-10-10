@@ -2,7 +2,6 @@
   (:require
    [clojure.tools.namespace.repl :refer [refresh]]
    [clojure.java.io :as io]
-   [clojure.data.json :as json]
 
    [literate.server :as server]
    [literate.client.core :as literate]
