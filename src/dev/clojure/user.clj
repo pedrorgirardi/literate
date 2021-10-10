@@ -104,7 +104,7 @@
 
   ;; -- Markdown.
 
-  (l (literate/markdown "**Welcome to Literate**\n\nEval some forms to get started!"))
+  (l (literate/markdown "# Welcome to Literate\n\n## This is a markdown Widget"))
 
 
   ;; -- HTML.

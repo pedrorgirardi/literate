@@ -5,7 +5,9 @@ module.exports = {
   corePlugins: {
     preflight: true
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography')
+  ],
   future: {
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,

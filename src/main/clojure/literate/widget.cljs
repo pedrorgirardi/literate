@@ -83,7 +83,7 @@
 
 (defn Markdown
   [e]
-  [:div.flex-1.bg-white.px-3.py-1.font-thin
+  [:div.prose.prose-sm
    {:dangerouslySetInnerHTML
     {:__html (marked (:widget/markdown e))}}])
 

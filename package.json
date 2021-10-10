@@ -9,10 +9,11 @@
     "styles": "NODE_ENV=production npx tailwindcss build -o resources/public/styles.css"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.4.1",
     "codemirror": "^5.63.1",
     "file-saver": "^2.0.5",
     "leaflet": "^1.7.1",
-    "marked": "^2.0.3",
+    "marked": "^3.0.7",
     "ol": "^6.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
