@@ -1,6 +1,6 @@
 {:deps {:aliases [:app-dev]}
 
- :nrepl {:port 9000}
+ :nrepl false
 
  :jvm-opts ["-Xmx2G"]
 

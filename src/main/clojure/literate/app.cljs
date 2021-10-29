@@ -20,8 +20,7 @@
    ["file-saver" :as FileSaver]
    ["react-tippy" :as tippy]))
 
-;; WebSocket is only available in 'dev mode' - that's when we're authoring the document.
-(goog-define ^boolean WS false)
+(goog-define ^boolean WS true)
 
 (def transit-json-reader (t/reader :json))
 (def transit-json-writer (t/writer :json))
