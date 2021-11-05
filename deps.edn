@@ -14,7 +14,7 @@
   compojure/compojure {:mvn/version "1.6.2"}
   hiccup/hiccup {:mvn/version "1.0.5"}
   reagent/reagent {:mvn/version "1.1.0"}
-  datascript/datascript {:mvn/version "1.2.8"}
+  datascript/datascript {:mvn/version "1.2.10"}
   com.taoensso/sente {:mvn/version "1.16.2"}
   metosin/reitit-frontend {:mvn/version "0.5.15"}}
  
