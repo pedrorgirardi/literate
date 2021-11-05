@@ -23,7 +23,7 @@
 
   (refresh :after `start-server))
 
-(def l (partial literate/view {:url "http://localhost:8118"}))
+(def l (partial literate/transact {:url "http://localhost:8118"}))
 
 (defn replace-widget
   "Select widget UUID and merge with replacement.
