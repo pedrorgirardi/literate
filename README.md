@@ -1,6 +1,3 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/5ea899a8-a118-44a0-bdef-d6da791f82ce/deploy-status)](https://app.netlify.com/sites/literate/deploys)
-
-
 # Literate
 
 Literate is a Clojure & ClojureScript application which you can use to create interactive web documents from a Clojure REPL.
