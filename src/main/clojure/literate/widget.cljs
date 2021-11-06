@@ -1,58 +1,75 @@
 (ns literate.widget
-  (:require [clojure.string :as str]
+  (:require
+   [clojure.string :as str]
 
-            [reagent.core :as r]
-            [reagent.dom :as dom]
+   [reagent.core :as r]
+   [reagent.dom :as dom]
 
-            [literate.specs]
+   [literate.specs]
 
-            ["marked" :as marked]
-            ["vega-embed" :as vega-embed]
-            ["codemirror" :as codemirror]
-            ["codemirror/mode/clojure/clojure"]
-            ["codemirror/mode/gfm/gfm"]
-            ["react-window" :as react-window]
+   ["marked" :as marked]
+   ["vega-embed" :as vega-embed]
+   ["codemirror" :as codemirror]
+   ["codemirror/mode/clojure/clojure"]
+   ["codemirror/mode/gfm/gfm"]
+   ["react-window" :as react-window]
 
-            ["ol/Map" :default Map]
-            ["ol/View" :default View]
-            ["ol/format/WKT" :default WKT]
-            ["ol/source" :as ol-source]
-            ["ol/layer" :as ol-layer]
-            ["ol/proj" :as ol-proj]
-            ["ol/color" :as ol-color]
-            ["ol/style" :as ol-style]))
+   ["ol/Map" :default Map]
+   ["ol/View" :default View]
+   ["ol/format/WKT" :default WKT]
+   ["ol/source" :as ol-source]
+   ["ol/layer" :as ol-layer]
+   ["ol/proj" :as ol-proj]
+   ["ol/color" :as ol-color]
+   ["ol/style" :as ol-style]))
 
 (defn Table [{:widget.table/keys [height
                                   width
                                   row-height
                                   columns
                                   rows]}]
-  [:div.flex.flex-col.text-sm
+  (let [;; Columns can also be represented with a collection of keyfn,
+        ;; but the app expects a tuple [keyfn label].
+        ;;
+        ;; Examples:
+        ;;
+        ;; - Without label:
+        ;; {:columns [:a :b]}
+        ;;
+        ;; - With label:
+        ;; {:columns [[:name "Name"] [:age "Age"]]}
+        columns (map
+                  (fn [column]
+                    (if (vector? column)
+                      column
+                      [column (str column)]))
+                  columns)]
+    [:div.flex.flex-col.text-sm
 
-   ;; -- Header
-   [:div.flex.border-b.border-teal-500.pb-1.mb-1
-    (for [[_ column-label] columns]
-      ^{:key column-label}
-      [:div.flex-1
-       [:span.font-bold column-label]])]
+     ;; -- Header
+     [:div.flex.border-b.border-teal-500.pb-1.mb-1
+      (for [[_ column-label] columns]
+        ^{:key column-label}
+        [:div.flex-1
+         [:span.font-bold column-label]])]
 
-   ;; -- Body
-   [:> react-window/FixedSizeList
-    {:height height
-     :width width
-     :itemSize row-height
-     :itemCount (count rows)}
-    (r/reactify-component
-      (fn [{:keys [index style]}]
-        [:div.flex.hover:bg-teal-50
-         {:style (js->clj style)}
-         (let [row (nth rows index nil)]
-           (for [[column-key column-label] columns]
-             ^{:key column-label}
-             [:div.flex-1
-              [:span (if (vector? column-key)
-                       (get-in row column-key)
-                       (get row column-key))]]))]))]])
+     ;; -- Body
+     [:> react-window/FixedSizeList
+      {:height height
+       :width width
+       :itemSize row-height
+       :itemCount (count rows)}
+      (r/reactify-component
+        (fn [{:keys [index style]}]
+          [:div.flex.hover:bg-teal-50
+           {:style (js->clj style)}
+           (let [row (nth rows index nil)]
+             (for [[column-key column-label] columns]
+               ^{:key column-label}
+               [:div.flex-1
+                [:span (if (vector? column-key)
+                         (get-in row column-key)
+                         (get row column-key))]]))]))]]))
 
 (defn Codemirror [{:widget.codemirror/keys [height
                                             width
