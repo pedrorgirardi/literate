@@ -4,7 +4,7 @@
    [clojure.java.io :as io]
 
    [literate.server :as server]
-   [literate.client.core :as literate]
+   [literate.client :as l]
 
    [hiccup.core :as hiccup]
    [org.httpkit.client :as http])
@@ -23,7 +23,7 @@
 
   (refresh :after `start-server))
 
-(def l (partial literate/transact {:url "http://localhost:8118"}))
+(def l (partial l/transact {:url "http://localhost:8118"}))
 
 (defn replace-widget
   "Select widget UUID and merge with replacement.
@@ -38,10 +38,10 @@
 
   ;; -- Client API.
 
-  (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(literate/codemirror "Hello")])})
+  (http/post "http://localhost:8118/api/v1/transact" {:body (server/transit-encode [(l/codemirror "Hello")])})
 
 
-  (l (literate/table
+  (l (l/table
        {:columns
         [[:a "A"]
          [:b "B"]
@@ -77,7 +77,7 @@
 
   ;; -- Vega Lite.
 
-  (l (literate/vega-lite
+  (l (l/vega-lite
        {:description "A simple bar chart with embedded data."
         :data {:values
                [{:a "A" :b 28}
@@ -97,19 +97,19 @@
 
   ;; -- Codemirror.
 
-  (l (literate/codemirror (slurp (io/resource "literate/core.clj")) {:lineNumbers true}))
-  (l (literate/codemirror "**Welcome to Literate**\n\nEval some forms to get started!" {:mode "gfm"
+  (l (l/codemirror (slurp (io/resource "literate/core.clj")) {:lineNumbers true}))
+  (l (l/codemirror "**Welcome to Literate**\n\nEval some forms to get started!" {:mode "gfm"
                                                                                         :height "auto"}))
 
 
   ;; -- Markdown.
 
-  (l (literate/markdown "# Welcome to Literate\n\n## This is a markdown Widget"))
+  (l (l/markdown "# Welcome to Literate\n\n## This is a markdown Widget"))
 
 
   ;; -- HTML.
 
-  (l (literate/html
+  (l (l/html
        (hiccup/html
          [:div.bg-white.p-3
           [:h1.text-6xl "Hello, world!"]
@@ -118,7 +118,7 @@
 
   ;; -- Hiccup.
 
-  (l (literate/hiccup
+  (l (l/hiccup
        [:div.bg-white.p-3
         [:h1.text-6xl "Hello, world!"]
         [:span "Text"]]))
@@ -126,18 +126,18 @@
 
   ;; -- How to update a Widget.
 
-  @(def html-example (literate/hiccup [:h1 "Time is" (java.time.LocalDateTime/now)]))
+  @(def html-example (l/hiccup [:h1 "Time is" (java.time.LocalDateTime/now)]))
 
   (l html-example)
 
-  (l (replace-widget html-example (literate/hiccup [:h1 "Time is " (java.time.LocalDateTime/now)])))
+  (l (replace-widget html-example (l/hiccup [:h1 "Time is " (java.time.LocalDateTime/now)])))
 
 
   ;; -- Welcome.
 
-  (l (literate/column
+  (l (l/column
        {}
-       (literate/hiccup
+       (l/hiccup
          [:div.flex.flex-col.space-y-3.p-3.font-light
           [:h1.text-3xl
            {:style {:font-family "Cinzel"}}
@@ -161,10 +161,10 @@
            [:li "Column layout"]
            [:li "Row layout"]]])
 
-       (literate/hiccup
+       (l/hiccup
          [:span.p-2.text-lg "Vega Lite Widget"])
 
-       (literate/vega-lite
+       (l/vega-lite
          {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
           :description "A simple bar chart with embedded data."
           :data {:url "https://vega.github.io/editor/data/stocks.csv"}
@@ -175,7 +175,7 @@
                      :y {:field "price"
                          :type "quantitative"}}})
 
-       (literate/hiccup
+       (l/hiccup
          [:span.p-2.text-lg "Codemirror Widget"])
 
-       (literate/codemirror (slurp (io/resource "literate/core.clj"))))))
+       (l/codemirror (slurp (io/resource "literate/core.clj"))))))
