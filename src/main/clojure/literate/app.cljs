@@ -114,9 +114,9 @@
 (defn App [widgets]
   [:div.h-screen.flex.flex-col
    
-   ;; -- Header
+   ;; -- Nav
    
-   [:div.h-14.flex.justify-end.items-center.px-10.py-2
+   [:nav.h-14.flex.justify-end.items-center.px-10.py-2
 
     
     [:div.flex.space-x-2
@@ -179,12 +179,12 @@
        
        :ready
        (if (seq widgets)
-         [:div.overflow-auto
-          [:div.flex.flex-col.items-start.container.mx-auto.py-2.space-y-3
-           (for [e widgets]
-             ^{:key (:db/id e)}
-             [WidgetContainer e])]]
+         [:div.flex.flex-col.items-start.container.mx-auto.py-2.space-y-3
+          (for [e widgets]
+            ^{:key (:db/id e)}
+            [WidgetContainer e])]
          
+         ;; Ready - but empty.
          [:div.flex.flex-col.flex-1.items-center.justify-center
           [Import]])))])
 
