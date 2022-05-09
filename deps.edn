@@ -50,7 +50,7 @@
   {:extra-deps
    {org.clojure/clojurescript {:mvn/version "1.10.879"}
     thheller/shadow-cljs {:mvn/version "2.15.10"}
-    binaryage/devtools {:mvn/version "1.0.3"}}}
+    binaryage/devtools {:mvn/version "1.0.6"}}}
   
   :test
   {:extra-paths ["src/test/clojure" "src/test/resources"]}}}
