@@ -102,12 +102,25 @@
      {:on-mouse-over #(reset! mouse-over-ref? true)
       :on-mouse-leave #(reset! mouse-over-ref? false)}
 
+     ;; -- Widget
+
      [widget/Widget e]
+
+     
+     ;; -- Options
 
      [:div.flex.flex-col.p-1
       {:class (when @mouse-over-ref? "bg-gray-50")}
-      [:button.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.m-1.focus:outline-none.cursor-default
-       {:class (when-not @mouse-over-ref? "invisible")
+      [:button
+       {:class ["h-6 w-6"
+                "inline-flex items-center justify-center"
+                "bg-gray-200 hover:bg-gray-300"
+                "text-gray-600"
+                "focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-teal-500"
+                "transition duration-200 ease-in-out"
+                "rounded"
+                "cursor-default"
+                (when-not @mouse-over-ref? "invisible")]
         :on-click #(db/retract-entity (:db/id e))}
        [IconClose {:class "w-5 h-5"}]]]]))
 
