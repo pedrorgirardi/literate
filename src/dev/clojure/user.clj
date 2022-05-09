@@ -183,4 +183,6 @@
        (l/hiccup
          [:span.p-2.text-lg "Codemirror Widget"])
 
-       (l/codemirror (slurp (io/resource "literate/core.clj"))))))
+       (l/codemirror (slurp (io/resource "literate/core.clj")))))
+
+  )
