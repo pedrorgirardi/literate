@@ -131,7 +131,7 @@
 
   ;; -- How to update a Widget.
 
-  @(def html-example (l/hiccup [:h1 "Time is" (java.time.LocalDateTime/now)]))
+  @(def html-example (l/hiccup [:h1 "Time is " (java.time.LocalDateTime/now)]))
 
   (l html-example)
 
