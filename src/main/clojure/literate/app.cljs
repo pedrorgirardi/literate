@@ -98,28 +98,26 @@
 
 (defn WidgetContainer [e]
   (r/with-let [mouse-over-ref? (r/atom false)]
-    [:div.flex.border-l-2.border-transparent.hover:border-teal-500.transition.duration-200.ease-in-out
+    [:div.flex.border.border-transparent.hover:border-gray-100
      {:on-mouse-over #(reset! mouse-over-ref? true)
       :on-mouse-leave #(reset! mouse-over-ref? false)}
 
-     [:div.flex.flex-col
-      {:class (when @mouse-over-ref? "bg-teal-50")}
-      [:button.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.m-1.focus:outline-none
+     [widget/Widget e]
+
+     [:div.flex.flex-col.p-1
+      {:class (when @mouse-over-ref? "bg-gray-50")}
+      [:button.text-gray-600.rounded.bg-gray-200.hover:bg-gray-300.h-5.w-5.flex.items-center.justify-center.m-1.focus:outline-none.cursor-default
        {:class (when-not @mouse-over-ref? "invisible")
         :on-click #(db/retract-entity (:db/id e))}
-       [IconClose {:class "w-5 h-5"}]]]
-
-     [widget/Widget e]]))
+       [IconClose {:class "w-5 h-5"}]]]]))
 
 (defn App [widgets]
   [:div.h-screen.flex.flex-col
    
    ;; -- Header
    
-   [:div.flex.justify-between.items-center.px-10.py-2.border-b.h-14
-    [:span.text-lg.text-gray-700
-     {:style {:font-family "Cinzel"}}
-     "Literate"]
+   [:div.h-14.flex.justify-end.items-center.px-10.py-2
+
     
     [:div.flex.space-x-2
      
@@ -127,7 +125,7 @@
      [:> tippy/Tooltip
       {:title "View database"
        :size "small"}
-      [:button
+      [:button.cursor-default
        {:key "database"
         :class "inline-flex items-center px-3 py-2 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"
         :on-click #(d/transact! db/conn [{:widget/uuid (str (random-uuid))
@@ -143,7 +141,7 @@
      [:> tippy/Tooltip
       {:title "Download document"
        :size "small"}
-      [:button
+      [:button.cursor-default
        {:key "download"
         :class [(if (empty? widgets)
                   "text-gray-300 pointer-events-none"

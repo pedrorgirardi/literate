@@ -42,7 +42,8 @@
 
 
   (l (l/table
-       {:columns [:a :b :c]
+       {:row-height 30
+        :columns [:a :b :c]
         :rows (repeat 100 {:a 1 :b 1 :c 1})}))
 
   (l (l/table
