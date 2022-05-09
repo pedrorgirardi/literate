@@ -8,7 +8,7 @@
   com.cognitect/transit-clj {:mvn/version "1.0.329"}
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   
-  ring/ring-core {:mvn/version "1.9.4"}
+  ring/ring-core {:mvn/version "1.9.5"}
   ring/ring-defaults {:mvn/version "0.3.3"}
   http-kit/http-kit {:mvn/version "2.5.3"}
   compojure/compojure {:mvn/version "1.6.2"}
