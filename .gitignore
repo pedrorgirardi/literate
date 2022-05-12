@@ -3,7 +3,7 @@ node_modules/
 .idea/
 .cpcache/
 .shadow-cljs/
-resources/public/js
+resources/public/js/cljs-runtime/
 .nrepl-port
 .DS_Store
 literate.sublime-workspace
