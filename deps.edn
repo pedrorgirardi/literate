@@ -18,6 +18,11 @@
   com.taoensso/sente {:mvn/version "1.16.2"}
   metosin/reitit-frontend {:mvn/version "0.5.18"}}
  
+
+ :tools/usage
+ {:ns-default literate.core}
+
+
  :aliases
  {:repl
   {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
