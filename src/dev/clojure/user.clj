@@ -186,9 +186,11 @@
 
       (l/codemirror (slurp (io/resource "literate/core.clj")))))
 
+
+
   (l welcome)
 
-  (spit "welcome-tx-data.json" (l/transit-encode [welcome]))
+  (l/spit "welcome-tx-data.json" welcome)
 
 
   )
