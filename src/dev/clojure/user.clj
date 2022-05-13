@@ -140,49 +140,55 @@
 
   ;; -- Welcome.
 
-  (l (l/column
-       {}
-       (l/hiccup
-         [:div.flex.flex-col.space-y-3.p-3.font-light
-          [:h1.text-3xl
-           {:style {:font-family "Cinzel"}}
-           "Welcome to Literate"]
+  (def welcome
+    (l/column
+      {}
+      (l/hiccup
+        [:div.flex.flex-col.space-y-3.p-3.font-light
+         [:h1.text-3xl
+          {:style {:font-family "Cinzel"}}
+          "Welcome to Literate"]
 
-          [:p.text-xl
-           "Literate is a Clojure & ClojureScript application which you can use to create interactive documents."]
+         [:p.text-xl
+          "Literate is a Clojure & ClojureScript application which you can use to create interactive documents."]
 
-          [:p.mt-4
-           "This interface that you're looking at it's called a " [:span.font-bold "Widget"]
-           ", and you can create one from a Clojure REPL."]
+         [:p.mt-4
+          "This interface that you're looking at it's called a " [:span.font-bold "Widget"]
+          ", and you can create one from a Clojure REPL."]
 
-          [:p.mt-2.mb1 "There are a few different types of Widgets that are supported:"]
+         [:p.mt-2.mb1 "There are a few different types of Widgets that are supported:"]
 
-          [:ul.list-disc.list-inside.ml-2
-           [:li "Codemirror"]
-           [:li "Markdown"]
-           [:li "Hiccup"]
-           [:li "Vega"]
-           [:li "Map"]
-           [:li "Column layout"]
-           [:li "Row layout"]]])
+         [:ul.list-disc.list-inside.ml-2
+          [:li "Codemirror"]
+          [:li "Markdown"]
+          [:li "Hiccup"]
+          [:li "Vega"]
+          [:li "Map"]
+          [:li "Column layout"]
+          [:li "Row layout"]]])
 
-       (l/hiccup
-         [:span.p-2.text-lg "Vega Lite Widget"])
+      (l/hiccup
+        [:span.p-2.text-lg "Vega Lite Widget"])
 
-       (l/vega-lite
-         {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
-          :description "A simple bar chart with embedded data."
-          :data {:url "https://vega.github.io/editor/data/stocks.csv"}
-          :transform [{"filter" "datum.symbol==='GOOG'"}],
-          :mark "line"
-          :encoding {:x {:field "date"
-                         :type "temporal"}
-                     :y {:field "price"
-                         :type "quantitative"}}})
+      (l/vega-lite
+        {"$schema" "https://vega.github.io/schema/vega-lite/v4.json"
+         :description "A simple bar chart with embedded data."
+         :data {:url "https://vega.github.io/editor/data/stocks.csv"}
+         :transform [{"filter" "datum.symbol==='GOOG'"}],
+         :mark "line"
+         :encoding {:x {:field "date"
+                        :type "temporal"}
+                    :y {:field "price"
+                        :type "quantitative"}}})
 
-       (l/hiccup
-         [:span.p-2.text-lg "Codemirror Widget"])
+      (l/hiccup
+        [:span.p-2.text-lg "Codemirror Widget"])
 
-       (l/codemirror (slurp (io/resource "literate/core.clj")))))
+      (l/codemirror (slurp (io/resource "literate/core.clj")))))
+
+  (l welcome)
+
+  (spit "welcome-tx-data.json" (l/transit-encode [welcome]))
+
 
   )
