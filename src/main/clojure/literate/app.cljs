@@ -241,13 +241,22 @@
                             (let [data (t/read transit-json-reader text)]
                               (cond
                                 (get-in match [:query-params :import])
-                                (db-from-serializable data)
+                                (do
+                                  (js/console.log "Importing...")
+                                  (db-from-serializable data))
 
                                 (get-in match [:query-params :transact])
-                                (d/transact! db/conn data)))
+                                (do
+                                  (js/console.log "Transacting...")
+                                  (d/transact! db/conn data))))
                             
                             (swap! state-ref merge {:status :ready})
-                            (catch js/Error _
+
+                            (js/console.log "Ready")
+
+                            (catch js/Error error
+                              (js/console.error error)
+
                               (swap! state-ref merge {:status :error}))))))
                     
                     ;; HTTP error - response is not ok.
