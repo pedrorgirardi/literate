@@ -231,7 +231,7 @@
                 (fn [response]                
                   (if (.-ok response)
                     (do
-                      (js/console.log "Processing...")
+                      (js/console.log "Processing ⌛️")
                       
                       (swap! state-ref merge {:status :processing})
                       
@@ -241,18 +241,14 @@
                             (let [data (t/read transit-json-reader text)]
                               (cond
                                 (get-in match [:query-params :import])
-                                (do
-                                  (js/console.log "Importing...")
-                                  (db-from-serializable data))
+                                (db-from-serializable data)
 
                                 (get-in match [:query-params :transact])
-                                (do
-                                  (js/console.log "Transacting...")
-                                  (d/transact! db/conn data))))
+                                (d/transact! db/conn data)))
                             
                             (swap! state-ref merge {:status :ready})
 
-                            (js/console.log "Ready")
+                            (js/console.log "Done ✅")
 
                             (catch js/Error error
                               (js/console.error error)
