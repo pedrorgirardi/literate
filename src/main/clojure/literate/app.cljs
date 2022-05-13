@@ -35,17 +35,13 @@
 
 (def sente-router-ref (atom (fn [] nil)))
 
-(defn init-db
+(defn db-from-serializable
   "Init db from a sequence of datoms.
 
    It is used when reading an uploaded file,
    or reading a file from a URL."
-  [datoms]
-  (let [datoms (mapv
-                 (fn [datom]
-                   (apply d/datom datom))
-                 datoms)]
-    (d/reset-conn! db/conn (d/init-db datoms db/schema))))
+  [serializable]
+  (d/reset-conn! db/conn (d/from-serializable serializable)))
 
 
 ;; ---
@@ -84,7 +80,7 @@
            
            (set! (.-onload reader) 
              (fn [e]
-               (init-db (t/read transit-json-reader (-> e .-target .-result)))
+               (db-from-serializable (t/read transit-json-reader (-> e .-target .-result)))
                
                (swap! state-ref merge {:status :ready})))
            
@@ -160,12 +156,7 @@
                   "text-gray-300 pointer-events-none"
                   "text-gray-600")
                 "inline-flex items-center px-3 py-2 border hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"]
-        :on-click #(let [encoded (t/write
-                                   transit-json-writer
-                                   (map
-                                     (fn [{:keys [e a v]}]
-                                       [e a v])
-                                     (d/datoms @db/conn :eavt)))
+        :on-click #(let [encoded (t/write transit-json-writer (d/serializable (d/db db/conn)))
                          
                          blob (js/Blob. #js [encoded] #js {"type" "application/transit+json"})]
                      
@@ -250,7 +241,7 @@
                           (try
                             ;; Document is expected to be transit-encoded,
                             ;; and containing a sequence of datoms.
-                            (init-db (t/read transit-json-reader text))
+                            (db-from-serializable (t/read transit-json-reader text))
                             
                             (swap! state-ref merge {:status :ready})
                             (catch js/Error _
