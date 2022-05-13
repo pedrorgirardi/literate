@@ -220,9 +220,8 @@
   
   (let [on-navigate 
         (fn [match _]
-          ;; There is this option to open a document
-          ;; from a URL if there is a 'doc' query param.
-          (if-let [url (get-in match [:query-params :doc])]
+          (if-let [url (or (get-in match [:query-params :import])
+                         (get-in match [:query-params :transact]))]
             (do
               (js/console.log "Loading..." url)
               
@@ -239,9 +238,13 @@
                       (.then (.text response)
                         (fn [text]
                           (try
-                            ;; Document is expected to be transit-encoded,
-                            ;; and containing a sequence of datoms.
-                            (db-from-serializable (t/read transit-json-reader text))
+                            (let [data (t/read transit-json-reader text)]
+                              (cond
+                                (get-in match [:query-params :import])
+                                (db-from-serializable data)
+
+                                (get-in match [:query-params :transact])
+                                (d/transact! db/conn data)))
                             
                             (swap! state-ref merge {:status :ready})
                             (catch js/Error _
