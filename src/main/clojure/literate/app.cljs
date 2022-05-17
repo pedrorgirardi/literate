@@ -80,9 +80,15 @@
            
            (set! (.-onload reader) 
              (fn [e]
-               (db-from-serializable (t/read transit-json-reader (-> e .-target .-result)))
-               
-               (swap! state-ref merge {:status :ready})))
+               (try
+                 (db-from-serializable (t/read transit-json-reader (-> e .-target .-result)))
+
+                 (swap! state-ref merge {:status :ready})
+
+                 (catch js/Error error
+                   (js/console.error "Can't import file\n" error)
+
+                   (swap! state-ref merge {:status :error})))))
            
            (set! (.-onerror reader)
              (fn [e]
@@ -179,7 +185,17 @@
        
        :error
        [:div.flex.flex-col.flex-1.items-center.justify-center
-        [:span "Error"]]
+        [:p.text-2xl
+         "Oops..."]
+
+        [:p
+         "Something went wrong"]
+
+        [:button.cursor-default
+         {:class "inline-flex items-center mt-5 px-3 py-1 border text-gray-600 hover:text-gray-800 rounded-md hover:shadow-md hover:bg-gray-100 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-200 ease-in-out"
+          :on-click #(.reload (.-location js/window) true)}
+
+         "Reload"]]
        
        :ready
        (if (seq widgets)
