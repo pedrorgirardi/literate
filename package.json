@@ -27,7 +27,7 @@
   "devDependencies": {
     "autoprefixer": "^10.3.2",
     "postcss": "^8.3.6",
-    "shadow-cljs": "^2.19.0",
+    "shadow-cljs": "^2.19.6",
     "tailwindcss": "^2.2.19"
   }
 }
