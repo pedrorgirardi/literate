@@ -13,7 +13,6 @@
     "@tailwindcss/typography": "^0.4.1",
     "codemirror": "^5.65.8",
     "file-saver": "^2.0.5",
-    "leaflet": "^1.7.1",
     "marked": "^3.0.8",
     "ol": "^7.0.0",
     "react": "^17.0.2",
