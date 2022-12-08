@@ -3,7 +3,7 @@
  :deps
  {org.clojure/clojure {:mvn/version "1.11.1"}
   org.clojure/core.async {:mvn/version "1.5.648"}
-  org.clojure/tools.cli {:mvn/version "1.0.206"}
+  org.clojure/tools.cli {:mvn/version "1.0.214"}
   
   com.cognitect/transit-clj {:mvn/version "1.0.329"}
   com.cognitect/transit-cljs {:mvn/version "0.8.280"}
