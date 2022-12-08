@@ -28,6 +28,9 @@
                                   row-height
                                   columns
                                   rows]}]
+
+  ;; See https://github.com/Autodesk/react-base-table
+
   (let [;; Columns can also be represented with a collection of keyfn,
         ;; but the app expects a tuple [keyfn label].
         ;;
