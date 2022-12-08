@@ -39,8 +39,7 @@
   
   :app-dev
   {:extra-deps
-   {org.clojure/clojurescript {:mvn/version "1.11.60"}
-    thheller/shadow-cljs {:mvn/version "2.19.9"}
+   {thheller/shadow-cljs {:mvn/version "2.20.14"}
     binaryage/devtools {:mvn/version "1.0.6"}}}
   
   :test
